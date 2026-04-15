@@ -1,0 +1,52 @@
+
+Woche 1
+=======
+
+In der ersten Woche des Tsunami Labs soll das Projekt aufgesetzt und
+ein F-Wave-Solver implementiert werden.
+
+Beiträge der Gruppenmitglieder
+------------------------------
+
+
+Marvin Döring
+*************
+
+Das Aufsetzten des Projektes und der Dokumentation wurde von Marvin Döring übernommen.
+Zu beginn haben wir das `initiale Projekt`_ geforked und mit ``Scons`` kompiliert.
+Als Versionskontrollsystem verwenden wir `git`_. Zur Erzeugung von Codedokumentation 
+benutzen wir `Doxygen`_ und um den Prozess zu Dokumentieren soll eine 
+`Sphinx`_ Dokumentationswebseite erstellt werden. 
+
+.. _initiale Projekt: https://github.com/breuera/tsunami_lab
+.. _git: https://github.com/MarvDe/tsunami_lab
+.. _Doxygen: https://www.doxygen.nl/
+.. _Sphinx: https://www.sphinx-doc.org/en/master/
+
+Philipp Prell 
+*************
+
+Das Implementieren des F-Wave-Solver und der dazugehörigen Unit-Tests hat Philipp Prell übernommen. 
+Dabei haben wir uns an der Struktur des Roe-Solvers orientiert und Doxygen gerechte 
+Kommentare verwendet. 
+
+Funktionen:
+~~~~~~~~~~~
+
+* ``waveSpeeds`` berechnet die Roe Eigenwerte, welche den linken und 
+  rechten Wellengeschwindigkeiten entsprechen auf Grundlage der 
+  Wassersäulenhöhen und Momenta. 
+* ``waveStrengths`` berechnet die Wellenstärken mit der Fluxfunktion.
+* ``netUpdates`` benutzt die vorherigen Funktionen um neue Werte 
+  für die Wassersäulenhöhen und Momenta zu berechnen.
+
+Tests:
+~~~~~~
+
+1. Korrektheit der ``waveSpeeds``.
+2. Korrektheit der ``waveStrengths``.
+3. Korrektheit der ``netUpdates``.
+
+
+
+
