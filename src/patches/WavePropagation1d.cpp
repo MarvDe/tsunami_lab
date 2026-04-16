@@ -8,7 +8,7 @@
 #include "../solvers/Roe.h"
 #include "../solvers/F_wave.h"
 
-tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells ) {
+tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, unsigned int i_solver_id ): solver_id(i_solver_id) {
   m_nCells = i_nCells;
 
   // allocate memory including a single ghost cell on each side
@@ -57,12 +57,22 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     // compute net-updates
     t_real l_netUpdates[2][2];
 
-    solvers::Roe::netUpdates( l_hOld[l_ceL],
+    if (solver_id == 0){
+      solvers::Roe::netUpdates( l_hOld[l_ceL],
                               l_hOld[l_ceR],
                               l_huOld[l_ceL],
                               l_huOld[l_ceR],
                               l_netUpdates[0],
                               l_netUpdates[1] );
+    }
+    else{
+      solvers::Fwave::netUpdates( l_hOld[l_ceL],
+                        l_hOld[l_ceR],
+                        l_huOld[l_ceL],
+                        l_huOld[l_ceR],
+                        l_netUpdates[0],
+                        l_netUpdates[1] );
+    }
 
     // update the cells' quantities
     l_hNew[l_ceL]  -= i_scaling * l_netUpdates[0][0];
