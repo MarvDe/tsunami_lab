@@ -20,7 +20,7 @@ int main( int   i_argc,
   tsunami_lab::t_idx l_ny = 1;
   
   // id of solver
-  unsigned int l_solver_id = 0;
+  tsunami_lab::t_idx l_solver_id = 0;
 
   // set cell size
   tsunami_lab::t_real l_dxy = 1;
