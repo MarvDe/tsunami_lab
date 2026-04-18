@@ -3,7 +3,7 @@
 #include <string.h>
 #include <iostream>
 
-void tsunami_lab::io::Parser::parse(const int i_argc, const char *i_argv[], tsunami_lab::t_idx &o_cellx, tsunami_lab::t_idx &o_solverId){
+void tsunami_lab::io::Parser::parse(int i_argc, char *i_argv[], tsunami_lab::t_idx &o_cellx, tsunami_lab::t_idx &o_solverId){
 
     // standard output of flags
     o_cellx = 1;

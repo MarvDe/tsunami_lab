@@ -18,7 +18,8 @@ class tsunami_lab::io::Parser{
      * @param i_argv array of arguments
      * @param o_cellx output argument for cells in x direction
      * @param o_solverId output argument for solver (0=Roe, 1=Fwave) 
+     * 
      **/
-    static void parse(const int i_argc, const char *i_argv[], tsunami_lab::t_idx &o_cellx, tsunami_lab::t_idx &o_solverId);
+    static void parse(int i_argc, char *i_argv[], tsunami_lab::t_idx &o_cellx, tsunami_lab::t_idx &o_solverId);
 
 };
