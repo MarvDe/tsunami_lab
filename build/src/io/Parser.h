@@ -3,8 +3,8 @@
 #define TSUNAMI_LAB_IO_PARSER_H
 
 #include "../constants.h"
-#include <array>
-#include <vector>
+#include <string>
+#include <unordered_map>
 
 namespace tsunami_lab {
   namespace io {
@@ -17,19 +17,38 @@ namespace tsunami_lab {
  **/
 class tsunami_lab::io::Parser{
   private:
-    static const tsunami_lab::t_idx m_MaxFlagNameSize {20};
+
+    // ! map of argName: argValue pairs
+    std::unordered_map<std::string, std::string> m_args;
 
   public:
+
     /**
-     * Function for parsing runtime arguments.
-     *
+     * Constructor.
+     * 
      * @param i_argc number of arguments
      * @param i_argv array of arguments
-     * @param o_cellx output argument for cells in x direction
-     * @param o_solverId output argument for solver (0=Roe, 1=Fwave) 
+     */
+    Parser(int i_argc, char *i_argv[]);
+
+    /**
+     * Function for retrieving arguments of type t_idx.
+     *
+     * @param i_name name of argument
+     * @param i_fallback fallback value if the argument doesn't exist
      * 
      **/
-    static void parse(int i_argc, char *i_argv[], tsunami_lab::t_idx &o_cellx, tsunami_lab::t_idx &o_solverId);
+    t_idx get(const std::string &i_name, t_idx i_fallback);
+
+    /**
+     * Function for retrieving arguments of type string.
+     *
+     * @param i_name name of argument
+     * @param i_fallback fallback value if the argument doesn't exist
+     * 
+     **/
+    std::string get(const std::string &i_name, const std::string &i_fallback);
+
 
 };
 

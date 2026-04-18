@@ -16,10 +16,10 @@ namespace tsunami_lab {
  **/
 class tsunami_lab::setups::RareRare1d:  public Setup{
       private:
-    //! height on the left side 
+    //! water height
     t_real m_height = 0;
     
-    //! height on the right side
+    //! water momentum
     t_real m_momentum = 0;
 
     //! location of the disconstinuity
@@ -29,11 +29,11 @@ class tsunami_lab::setups::RareRare1d:  public Setup{
     /**
      * Constructor.
      *
-     * @param i_heightLeft water height.
+     * @param i_height water height.
      * @param i_momentum water momentum.
      * @param i_locationDiscontinuity(x-coordinate) of the disconstinuity.
      **/
-    RareRare1d( t_real i_heightLeft,
+    RareRare1d( t_real i_height,
                 t_real i_momentum,
                 t_real i_locationDiscontinuity);
 

@@ -6,6 +6,7 @@
  **/
 #include "patches/WavePropagation1d.h"
 #include "setups/DamBreak1d.h"
+#include "setups/RareRare1d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include <cstdlib>
@@ -13,6 +14,7 @@
 #include <cmath>
 #include <fstream>
 #include <limits>
+#include <string>
 
 int main( int   i_argc,
           char *i_argv[] ) {
@@ -21,7 +23,10 @@ int main( int   i_argc,
   tsunami_lab::t_idx l_ny = 1;
   
   // id of solver
-  tsunami_lab::t_idx l_solver_id = 0;
+  tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::ROE;
+
+  // id of setup
+  tsunami_lab::t_idx l_setupId = tsunami_lab::setups::DAM_BREAK;
 
   // set cell size
   tsunami_lab::t_real l_dxy = 1;
@@ -32,23 +37,50 @@ int main( int   i_argc,
   std::cout << "### https://scalable.uni-jena.de ###" << std::endl;
   std::cout << "####################################" << std::endl;
 
+
   // parse runtime arguments
-  tsunami_lab::io::Parser::parse(i_argc, i_argv, l_nx, l_solver_id);
+  auto l_parser = tsunami_lab::io::Parser(i_argc, i_argv);
+
+  // choose solver
+  std::string l_solverName = l_parser.get("solver", "roe");
+  if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
+  else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
+  else l_solverName = "roe";
+
+  // select number of cells in x direction
+  l_nx = l_parser.get("cellx", 1);
+  if (l_nx == 0) l_nx = 1;
+
+  // choose setup
+  std::string l_setupName = l_parser.get("setup", "damBreak");
+  if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
+  else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
+  else l_setupName = "damBreak";
 
   std::cout << "runtime configuration" << std::endl;
   std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
   std::cout << "  number of cells in y-direction: " << l_ny << std::endl;
   std::cout << "  cell size:                      " << l_dxy << std::endl;
-  std::cout << "  solver:                         " << ((l_solver_id == 0) ? "Roe" : "Fwave") << std::endl;
+  std::cout << "  solver:                         " << l_solverName << std::endl;
+  std::cout << "  setup:                          " << l_setupName << std::endl;
+
 
   // construct setup
   tsunami_lab::setups::Setup *l_setup;
-  l_setup = new tsunami_lab::setups::DamBreak1d( 10,
+  if (l_setupId == tsunami_lab::setups::RARE_RARE){
+    l_setup = new tsunami_lab::setups::RareRare1d( 10,
                                                  5,
                                                  5 );
+  }
+  else{
+    l_setup = new tsunami_lab::setups::DamBreak1d( 10,
+                                                 5,
+                                                 5 );
+  }
+  
   // construct solver
   tsunami_lab::patches::WavePropagation *l_waveProp;
-  l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solver_id );
+  l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId );
 
   // maximum observed height in the setup
   tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
