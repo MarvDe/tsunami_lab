@@ -5,42 +5,43 @@
 
 void tsunami_lab::io::Parser::parse(int i_argc, char *i_argv[], tsunami_lab::t_idx &o_cellx, tsunami_lab::t_idx &o_solverId){
 
-    // standard output of flags
+    // standard values 
     o_cellx = 1;
     o_solverId = 0;
 
     // parsing arguments
-    for (int i = 1; i < i_argc; i++){
-        const char *current_flag = i_argv[i];
-        int j = 0;
-        const int max_flag_name_size = 20;
-        char flag_name[max_flag_name_size] = "";
-        bool parsed_name = false;
+    for (int l_flagIndex{1}; l_flagIndex < i_argc; l_flagIndex++){
+        const char *l_currentFlag = i_argv[l_flagIndex];
+        
+        char l_flagName[m_MaxFlagNameSize] = "";
+        
 
         // parse name
-        while (j < max_flag_name_size && current_flag[j] != '\0'){
-            if (current_flag[j] == '='){
-                parsed_name = true;
-                j++;
+        bool l_parsedName = false;
+        tsunami_lab::t_idx l_charIndex {0};
+        while (l_charIndex < m_MaxFlagNameSize && l_currentFlag[l_charIndex] != '\0'){
+            if (l_currentFlag[l_charIndex] == '='){
+                l_parsedName = true;
+                l_charIndex++;
                 break;
             }
-            flag_name[j] = current_flag[j];
-            j++;
+            l_flagName[l_charIndex] = l_currentFlag[l_charIndex];
+            l_charIndex++;
         }
     
         // parse value
-        if (parsed_name){
+        if (l_parsedName){
             // set solver 
-            if ( strcmp(flag_name, "solver") == 0 ){
-                int solverId = atoi(current_flag + j * sizeof(char));
+            if ( strcmp(l_flagName, "solver") == 0 ){
+                int solverId = atoi(l_currentFlag + l_charIndex * sizeof(char));
                 // check for invalid input 
                 if (solverId >= 0 && solverId <= 1){
                     o_solverId = solverId;
                 }
             }
             // set cellx 
-            else if ( strcmp(flag_name, "cellx") == 0 ){
-                int cellx = atoi(current_flag + j * sizeof(char));
+            else if ( strcmp(l_flagName, "cellx") == 0 ){
+                int cellx = atoi(l_currentFlag + l_charIndex * sizeof(char));
                 // check for invalid input 
                 if (cellx > 0){
                     o_cellx = cellx;

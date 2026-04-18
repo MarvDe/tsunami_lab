@@ -10,6 +10,9 @@ namespace tsunami_lab {
 }
 
 class tsunami_lab::io::Parser{
+  private:
+    static const tsunami_lab::t_idx m_MaxFlagNameSize {20};
+
   public:
     /**
      * Function for parsing runtime arguments.
