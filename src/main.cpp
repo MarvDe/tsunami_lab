@@ -7,6 +7,7 @@
 #include "patches/WavePropagation1d.h"
 #include "setups/DamBreak1d.h"
 #include "io/Csv.h"
+#include "io/Parser.h"
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
@@ -31,26 +32,8 @@ int main( int   i_argc,
   std::cout << "### https://scalable.uni-jena.de ###" << std::endl;
   std::cout << "####################################" << std::endl;
 
-  if( i_argc != 3 ) {
-    std::cerr << "invalid number of arguments, usage:" << std::endl;
-    std::cerr << "  ./build/tsunami_lab N_CELLS_X SOLVER_ID" << std::endl;
-    std::cerr << "where N_CELLS_X is the number of cells in x-direction." << std::endl;
-    std::cerr << "where SOLVER_ID is 0 for Roe and 1 for Fwave." << std::endl;
-    return EXIT_FAILURE;
-  }
-  else {
-    l_nx = atoi( i_argv[1] );
-    l_solver_id = atoi( i_argv[2] );
-    if( l_nx < 1 ) {
-      std::cerr << "invalid number of cells" << std::endl;
-      return EXIT_FAILURE;
-    }
-    if (l_solver_id > 1){
-      std::cerr << "invalid solver id" << std::endl;
-      return EXIT_FAILURE;
-    }
-    l_dxy = 10.0 / l_nx;
-  }
+  tsunami_lab::io::Parser::parse(i_argc, i_argv, l_nx, l_solver_id);
+
   std::cout << "runtime configuration" << std::endl;
   std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
   std::cout << "  number of cells in y-direction: " << l_ny << std::endl;

@@ -12,7 +12,13 @@ TEST_CASE( "Test argument parsing.", "[Parser]" ){
     * Output: o_solverId = 1, o_cellx = 10
     */
 
-  const char *argv1[] = {"programName", "solver=10", "aaa", "cellx=0", "bbb"};
+  char name[] = "programName";
+  char arg1_1[] = "solver=10";
+  char arg2_1[] = "aaa";
+  char arg3_1[] = "cellx=0";
+  char arg4_1[] = "bbb";
+
+  char *argv1[] = {name, arg1_1, arg2_1, arg3_1, arg4_1};
   tsunami_lab::t_idx l_solverId1, l_cellx1; 
   tsunami_lab::io::Parser::parse(
     5,
@@ -24,7 +30,13 @@ TEST_CASE( "Test argument parsing.", "[Parser]" ){
   REQUIRE( l_cellx1 == Approx( 1 ) );
 
 
-  const char *argv2[] = {"programName", "solver=1", "aaa", "cellx=10", "bbb"};
+
+  char arg1_2[] = "solver=1";
+  char arg2_2[] = "aaa";
+  char arg3_2[] = "cellx=10";
+  char arg4_2[] = "bbb";
+
+  char *argv2[] = {name, arg1_2, arg2_2, arg3_2, arg4_2};
   tsunami_lab::t_idx l_solverId2, l_cellx2; 
   tsunami_lab::io::Parser::parse(
     5,
