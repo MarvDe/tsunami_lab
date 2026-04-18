@@ -268,3 +268,70 @@ TEST_CASE( "Test the derivation of the F-Wave Roe net-updates.", "[FWaveUpdates]
 
 
 }
+
+#include <iostream>
+
+TEST_CASE( "Test sanity check.", "[FwaveUpdate2]" ){
+    /*
+    * Test case:
+    *  first 10 values of middle_states.csv
+    */
+
+  float l_netUpdatesL[2];
+  float l_netUpdatesR[2];
+  
+  float l_sL;
+  float l_sR;
+  float l_hm;
+
+  // hLeft, hRight, huLeft, huRight
+  float l_inputs[] = {
+    8899.326826472694,8899.326826472694,122.0337839252433,-122.0337839252433,
+    9894.065328676988,9894.065328676988,763.616897222239,-763.616897222239,
+    1387.176994373967,1387.176994373967,-101.9619713277172,101.9619713277172,
+    9976.904476606509,9976.904476606509,-906.6229611756387,906.6229611756387,
+    6907.360046520149,6907.360046520149,-180.6064611678331,180.6064611678331,
+    1065.53384380855,1065.53384380855,64.19327065348772,-64.19327065348772,
+    3042.136044684769,3042.136044684769,-27.52440428024561,27.52440428024561,
+    5973.686834276039,5973.686834276039,417.2334213893989,-417.2334213893989,
+    10458.94716344883,10458.94716344883,-366.1438461063776,366.1438461063776,
+    10539.5774699817,10539.5774699817,-988.5578370907829,988.5578370907829
+  };
+  // hStar
+  float l_outputs[] = {
+    8899.739847378269f,
+    9896.516538751875f,
+    1386.303079031417f,
+    9974.006714260977f,
+    6906.666250464617f,
+    1066.161808657808f,
+    3041.976718035753f,
+    5975.410506492273f,
+    10457.80412356421f,
+    10536.50332526859f
+  };
+
+  for (int i = 0; i < 10; i++){
+
+    tsunami_lab::solvers::Fwave::waveSpeeds(
+      l_inputs[i * 4], // hLeft
+      l_inputs[i * 4 + 1], // hRight
+      l_inputs[i * 4 + 2] / l_inputs[i * 4], // uLeft
+      l_inputs[i * 4 + 3] / l_inputs[i * 4 + 1], // uRight
+      l_sL,
+      l_sR
+    );
+
+    tsunami_lab::solvers::Fwave::netUpdates( l_inputs[i * 4], // hLeft
+                                         l_inputs[i * 4 + 1], // hRight
+                                         l_inputs[i * 4 + 2], // huLeft
+                                         l_inputs[i * 4 + 3], // huRight
+                                        l_netUpdatesL,
+                                        l_netUpdatesR );
+    
+    l_hm = l_inputs[i * 4] + l_netUpdatesL[0] / l_sL;
+    
+    REQUIRE( l_hm == Approx(l_outputs[i]) );
+  }
+
+}

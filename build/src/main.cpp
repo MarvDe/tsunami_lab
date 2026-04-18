@@ -32,12 +32,14 @@ int main( int   i_argc,
   std::cout << "### https://scalable.uni-jena.de ###" << std::endl;
   std::cout << "####################################" << std::endl;
 
+  // parse runtime arguments
   tsunami_lab::io::Parser::parse(i_argc, i_argv, l_nx, l_solver_id);
 
   std::cout << "runtime configuration" << std::endl;
   std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
   std::cout << "  number of cells in y-direction: " << l_ny << std::endl;
   std::cout << "  cell size:                      " << l_dxy << std::endl;
+  std::cout << "  solver:                         " << ((l_solver_id == 0) ? "Roe" : "Fwave") << std::endl;
 
   // construct setup
   tsunami_lab::setups::Setup *l_setup;
@@ -94,7 +96,7 @@ int main( int   i_argc,
   tsunami_lab::t_real l_scaling = l_dt / l_dxy;
 
   // set up time and print control
-  tsunami_lab::t_idx  l_timeStep = 1;
+  tsunami_lab::t_idx  l_timeStep = 0;
   tsunami_lab::t_idx  l_nOut = 0;
   tsunami_lab::t_real l_endTime = 3;
   tsunami_lab::t_real l_simTime = 0;
