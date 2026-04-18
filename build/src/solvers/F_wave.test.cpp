@@ -271,7 +271,7 @@ TEST_CASE( "Test the derivation of the F-Wave Roe net-updates.", "[FWaveUpdates]
 
 #include <iostream>
 
-TEST_CASE( "Test sanity check.", "[FwaveUpdate2]" ){
+TEST_CASE( "Test sanity check.", "[FwaveUpdate]" ){
     /*
     * Test case:
     *  first 10 values of middle_states.csv
