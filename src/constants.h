@@ -15,6 +15,10 @@ namespace tsunami_lab {
 
   //! floating point type
   typedef float t_real;
+
+  //! solver ids
+  const t_idx ROE = 0;
+  const t_idx FWAVE = 1;
 }
 
 #endif

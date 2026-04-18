@@ -1,4 +1,7 @@
 
+#ifndef TSUNAMI_LAB_IO_PARSER_H
+#define TSUNAMI_LAB_IO_PARSER_H
+
 #include "../constants.h"
 #include <array>
 #include <vector>
@@ -9,6 +12,9 @@ namespace tsunami_lab {
   }
 }
 
+/**
+ * parsing runtime arguments
+ **/
 class tsunami_lab::io::Parser{
   private:
     static const tsunami_lab::t_idx m_MaxFlagNameSize {20};
@@ -26,3 +32,5 @@ class tsunami_lab::io::Parser{
     static void parse(int i_argc, char *i_argv[], tsunami_lab::t_idx &o_cellx, tsunami_lab::t_idx &o_solverId);
 
 };
+
+#endif

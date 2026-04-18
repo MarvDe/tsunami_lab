@@ -35,7 +35,7 @@ void tsunami_lab::io::Parser::parse(int i_argc, char *i_argv[], tsunami_lab::t_i
             if ( strcmp(l_flagName, "solver") == 0 ){
                 int solverId = atoi(l_currentFlag + l_charIndex * sizeof(char));
                 // check for invalid input 
-                if (solverId >= 0 && solverId <= 1){
+                if (solverId == tsunami_lab::ROE || solverId == tsunami_lab::FWAVE){
                     o_solverId = solverId;
                 }
             }
