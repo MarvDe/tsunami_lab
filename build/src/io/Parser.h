@@ -41,6 +41,15 @@ class tsunami_lab::io::Parser{
     t_idx get(const std::string &i_name, t_idx i_fallback);
 
     /**
+     * Function for retrieving arguments of type float.
+     *
+     * @param i_name name of argument
+     * @param i_fallback fallback value if the argument doesn't exist
+     * 
+     **/
+    float get(const std::string &i_name, float i_fallback);
+
+    /**
      * Function for retrieving arguments of type string.
      *
      * @param i_name name of argument

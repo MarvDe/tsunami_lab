@@ -47,15 +47,19 @@ int main( int   i_argc,
   else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
   else l_solverName = "roe";
 
-  // select number of cells in x direction
-  l_nx = l_parser.get("cellx", 1);
-  if (l_nx == 0) l_nx = 1;
-
   // choose setup
   std::string l_setupName = l_parser.get("setup", "damBreak");
   if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
   else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
   else l_setupName = "damBreak";
+
+  // select number of cells in x direction
+  l_nx = l_parser.get("cellx", (tsunami_lab::t_idx)1);
+  if (l_nx == 0) l_nx = 1;
+
+  // select number of cells in x direction
+  tsunami_lab::t_real l_endTime = l_parser.get("endtime", (tsunami_lab::t_real)3.0);
+  if (l_endTime < 0.0) l_endTime = 3.0;
 
   std::cout << "runtime configuration" << std::endl;
   std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
@@ -63,6 +67,7 @@ int main( int   i_argc,
   std::cout << "  cell size:                      " << l_dxy << std::endl;
   std::cout << "  solver:                         " << l_solverName << std::endl;
   std::cout << "  setup:                          " << l_setupName << std::endl;
+  std::cout << "  end time:                       " << l_endTime << std::endl;
 
 
   // construct setup
@@ -130,7 +135,6 @@ int main( int   i_argc,
   // set up time and print control
   tsunami_lab::t_idx  l_timeStep = 0;
   tsunami_lab::t_idx  l_nOut = 0;
-  tsunami_lab::t_real l_endTime = 3;
   tsunami_lab::t_real l_simTime = 0;
 
   std::cout << "entering time loop" << std::endl;

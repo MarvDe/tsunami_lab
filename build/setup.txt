@@ -1,0 +1,1 @@
+solver=fwave cellx=12 setup=rareRare endtime=10.0
