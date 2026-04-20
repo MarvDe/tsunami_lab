@@ -37,3 +37,11 @@ std::string tsunami_lab::io::Parser::get(const std::string &i_name, const std::s
     }
     return l_item->second;
 }
+
+float tsunami_lab::io::Parser::get(const std::string &i_name, float i_fallback){
+    auto l_item = m_args.find(i_name);
+    if (l_item == m_args.end()){
+        return i_fallback;
+    }
+    return std::stof(l_item->second);
+}
