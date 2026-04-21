@@ -7,6 +7,7 @@
 #include "patches/WavePropagation1d.h"
 #include "setups/DamBreak1d.h"
 #include "setups/RareRare1d.h"
+#include "setups/ShockShock1d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include <cstdlib>
@@ -51,6 +52,7 @@ int main( int   i_argc,
   std::string l_setupName = l_parser.get("setup", "damBreak");
   if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
   else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
+  else if (l_setupName.compare("shockShock") == 0) l_setupId = tsunami_lab::setups::SHOCK_SHOCK;
   else l_setupName = "damBreak";
 
   // select number of cells in x direction
@@ -74,6 +76,11 @@ int main( int   i_argc,
   tsunami_lab::setups::Setup *l_setup;
   if (l_setupId == tsunami_lab::setups::RARE_RARE){
     l_setup = new tsunami_lab::setups::RareRare1d( 10,
+                                                 5,
+                                                 5 );
+  }
+  else if (l_setupId == tsunami_lab::setups::SHOCK_SHOCK){
+    l_setup = new tsunami_lab::setups::ShockShock1d( 10,
                                                  5,
                                                  5 );
   }
