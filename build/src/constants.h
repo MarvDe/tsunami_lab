@@ -26,6 +26,7 @@ namespace tsunami_lab {
     //! solver ids
     const t_idx DAM_BREAK = 0;
     const t_idx RARE_RARE = 1;
+    const t_idx SHOCK_SHOCK = 2;
   }
 
 }
