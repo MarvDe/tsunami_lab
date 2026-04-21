@@ -21,7 +21,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     unsigned short m_step = 0;
 
     // flag to choose solver, 0=Roe, 1=F_wave
-    unsigned int solver_id = 0;
+    tsunami_lab::t_idx m_solverId = 0;
 
     //! number of cells discretizing the computational domain
     t_idx m_nCells = 0;
@@ -39,7 +39,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * @param i_nCells number of cells.
      * @param i_solver_id flag to choose solver, 0=Roe, 1=F_wave.
      **/
-    WavePropagation1d( t_idx i_nCells, unsigned int i_solver_id );
+    WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solver_id );
 
     /**
      * Destructor which frees all allocated memory.

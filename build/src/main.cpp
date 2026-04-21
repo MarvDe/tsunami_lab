@@ -6,12 +6,15 @@
  **/
 #include "patches/WavePropagation1d.h"
 #include "setups/DamBreak1d.h"
+#include "setups/RareRare1d.h"
 #include "io/Csv.h"
+#include "io/Parser.h"
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
 #include <fstream>
 #include <limits>
+#include <string>
 
 int main( int   i_argc,
           char *i_argv[] ) {
@@ -20,7 +23,10 @@ int main( int   i_argc,
   tsunami_lab::t_idx l_ny = 1;
   
   // id of solver
-  unsigned int l_solver_id = 0;
+  tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::ROE;
+
+  // id of setup
+  tsunami_lab::t_idx l_setupId = tsunami_lab::setups::DAM_BREAK;
 
   // set cell size
   tsunami_lab::t_real l_dxy = 1;
@@ -31,39 +37,55 @@ int main( int   i_argc,
   std::cout << "### https://scalable.uni-jena.de ###" << std::endl;
   std::cout << "####################################" << std::endl;
 
-  if( i_argc != 3 ) {
-    std::cerr << "invalid number of arguments, usage:" << std::endl;
-    std::cerr << "  ./build/tsunami_lab N_CELLS_X SOLVER_ID" << std::endl;
-    std::cerr << "where N_CELLS_X is the number of cells in x-direction." << std::endl;
-    std::cerr << "where SOLVER_ID is 0 for Roe and 1 for Fwave." << std::endl;
-    return EXIT_FAILURE;
-  }
-  else {
-    l_nx = atoi( i_argv[1] );
-    l_solver_id = atoi( i_argv[2] );
-    if( l_nx < 1 ) {
-      std::cerr << "invalid number of cells" << std::endl;
-      return EXIT_FAILURE;
-    }
-    if (l_solver_id > 1){
-      std::cerr << "invalid solver id" << std::endl;
-      return EXIT_FAILURE;
-    }
-    l_dxy = 10.0 / l_nx;
-  }
+
+  // parse runtime arguments
+  auto l_parser = tsunami_lab::io::Parser(i_argc, i_argv);
+
+  // choose solver
+  std::string l_solverName = l_parser.get("solver", "roe");
+  if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
+  else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
+  else l_solverName = "roe";
+
+  // choose setup
+  std::string l_setupName = l_parser.get("setup", "damBreak");
+  if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
+  else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
+  else l_setupName = "damBreak";
+
+  // select number of cells in x direction
+  l_nx = l_parser.get("cellx", (tsunami_lab::t_idx)1);
+  if (l_nx == 0) l_nx = 1;
+
+  // select number of cells in x direction
+  tsunami_lab::t_real l_endTime = l_parser.get("endtime", (tsunami_lab::t_real)3.0);
+  if (l_endTime < 0.0) l_endTime = 3.0;
+
   std::cout << "runtime configuration" << std::endl;
   std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
   std::cout << "  number of cells in y-direction: " << l_ny << std::endl;
   std::cout << "  cell size:                      " << l_dxy << std::endl;
+  std::cout << "  solver:                         " << l_solverName << std::endl;
+  std::cout << "  setup:                          " << l_setupName << std::endl;
+  std::cout << "  end time:                       " << l_endTime << std::endl;
+
 
   // construct setup
   tsunami_lab::setups::Setup *l_setup;
-  l_setup = new tsunami_lab::setups::DamBreak1d( 10,
+  if (l_setupId == tsunami_lab::setups::RARE_RARE){
+    l_setup = new tsunami_lab::setups::RareRare1d( 10,
                                                  5,
                                                  5 );
+  }
+  else{
+    l_setup = new tsunami_lab::setups::DamBreak1d( 10,
+                                                 5,
+                                                 5 );
+  }
+  
   // construct solver
   tsunami_lab::patches::WavePropagation *l_waveProp;
-  l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solver_id );
+  l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId );
 
   // maximum observed height in the setup
   tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
@@ -111,9 +133,8 @@ int main( int   i_argc,
   tsunami_lab::t_real l_scaling = l_dt / l_dxy;
 
   // set up time and print control
-  tsunami_lab::t_idx  l_timeStep = 1;
+  tsunami_lab::t_idx  l_timeStep = 0;
   tsunami_lab::t_idx  l_nOut = 0;
-  tsunami_lab::t_real l_endTime = 3;
   tsunami_lab::t_real l_simTime = 0;
 
   std::cout << "entering time loop" << std::endl;
