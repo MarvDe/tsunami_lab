@@ -30,8 +30,8 @@ Das Implementieren des F-Wave-Solver und der dazugehörigen Unit-Tests hat Phili
 Dabei haben wir uns an der Struktur des Roe-Solvers orientiert und Doxygen gerechte 
 Kommentare verwendet. 
 
-Funktionen:
-~~~~~~~~~~~
+Funktionen
+~~~~~~~~~~
 
 * ``waveSpeeds`` berechnet die Roe Eigenwerte, welche den linken und 
   rechten Wellengeschwindigkeiten entsprechen auf Grundlage der 
@@ -40,8 +40,8 @@ Funktionen:
 * ``netUpdates`` benutzt die vorherigen Funktionen um neue Werte 
   für die Wassersäulenhöhen und Momenta zu berechnen.
 
-Tests:
-~~~~~~
+Tests
+~~~~~
 
 1. Korrektheit der ``waveSpeeds``.
 2. Korrektheit der ``waveStrengths``.

@@ -39,7 +39,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * @param i_nCells number of cells.
      * @param i_solver_id flag to choose solver, 0=Roe, 1=F_wave.
      **/
-    WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solver_id );
+    WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId );
 
     /**
      * Destructor which frees all allocated memory.

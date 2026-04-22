@@ -87,7 +87,7 @@ int main( int   i_argc,
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 10,
                                                  5,
-                                                 5 );
+                                                 20 );
   }
   
   // construct solver
