@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['timestep_0',['timestep',['../classtsunami__lab_1_1patches_1_1WavePropagation.html#a3d8390f139fc8cede21eb4f534a4e7fc',1,'tsunami_lab::patches::WavePropagation::timeStep()'],['../classtsunami__lab_1_1patches_1_1WavePropagation1d.html#ac1884ddb6a52c08a5b65f60e21f6a547',1,'tsunami_lab::patches::WavePropagation1d::timeStep()']]]
+  ['rarerare1d_0',['RareRare1d',['../classtsunami__lab_1_1setups_1_1RareRare1d.html#aa4622194c7e9d8d7843b2627a029a942',1,'tsunami_lab::setups::RareRare1d']]]
 ];
