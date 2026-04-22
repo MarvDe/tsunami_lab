@@ -34,3 +34,4 @@ Die Software ``tsunami_lab`` und Unit-Tests sind nach dem Bauen des Projektes im
 
 .. toctree::
   woche1 
+  woche2
