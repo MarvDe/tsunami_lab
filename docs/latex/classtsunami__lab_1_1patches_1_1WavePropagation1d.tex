@@ -11,7 +11,7 @@ Collaboration diagram for tsunami\+\_\+lab\+::patches\+::Wave\+Propagation1d\+:
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation1d_a888e18ad0bdf59dd05c05f2dc0f90efb}{Wave\+Propagation1d}} (\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+n\+Cells)
+\mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation1d_ac5e3d2dca3e4aeae21cb15d098577794}{Wave\+Propagation1d}} (\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+n\+Cells, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{tsunami\+\_\+lab\+::t\+\_\+idx}} i\+\_\+solver\+Id)
 \item 
 \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation1d_af9cb88214b84e3c2cabbb8a1daaf4784}{\texorpdfstring{$\sim$}{\string~}\+Wave\+Propagation1d}} ()
 \item 
@@ -41,17 +41,19 @@ virtual \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_a5f0a9d
 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation1d_a888e18ad0bdf59dd05c05f2dc0f90efb}\label{classtsunami__lab_1_1patches_1_1WavePropagation1d_a888e18ad0bdf59dd05c05f2dc0f90efb} 
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation1d_ac5e3d2dca3e4aeae21cb15d098577794}\label{classtsunami__lab_1_1patches_1_1WavePropagation1d_ac5e3d2dca3e4aeae21cb15d098577794} 
 \index{tsunami\_lab::patches::WavePropagation1d@{tsunami\_lab::patches::WavePropagation1d}!WavePropagation1d@{WavePropagation1d}}
 \index{WavePropagation1d@{WavePropagation1d}!tsunami\_lab::patches::WavePropagation1d@{tsunami\_lab::patches::WavePropagation1d}}
 \doxysubsubsection{\texorpdfstring{WavePropagation1d()}{WavePropagation1d()}}
-{\footnotesize\ttfamily tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation1d\+::\+Wave\+Propagation1d (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+n\+Cells }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation1d\+::\+Wave\+Propagation1d (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+n\+Cells,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{tsunami\+\_\+lab\+::t\+\_\+idx}}}]{i\+\_\+solver\+Id }\end{DoxyParamCaption})}
 
 Constructs the 1d wave propagation solver.
 
 
 \begin{DoxyParams}{Parameters}
-{\em i\+\_\+n\+Cells} & number of cells.\\
+{\em i\+\_\+n\+Cells} & number of cells. \\
+\hline
+{\em i\+\_\+solver\+\_\+id} & flag to choose solver, 0=Roe, 1=F\+\_\+wave.\\
 \hline
 \end{DoxyParams}
 \begin{DoxyAuthor}{Author}

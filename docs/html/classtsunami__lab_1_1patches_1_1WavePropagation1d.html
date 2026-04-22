@@ -92,8 +92,8 @@ Collaboration diagram for tsunami_lab::patches::WavePropagation1d:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a888e18ad0bdf59dd05c05f2dc0f90efb" id="r_a888e18ad0bdf59dd05c05f2dc0f90efb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1patches_1_1WavePropagation1d.html#a888e18ad0bdf59dd05c05f2dc0f90efb">WavePropagation1d</a> (<a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> i_nCells)</td></tr>
-<tr class="separator:a888e18ad0bdf59dd05c05f2dc0f90efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5e3d2dca3e4aeae21cb15d098577794" id="r_ac5e3d2dca3e4aeae21cb15d098577794"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1patches_1_1WavePropagation1d.html#ac5e3d2dca3e4aeae21cb15d098577794">WavePropagation1d</a> (<a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a> i_nCells, <a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">tsunami_lab::t_idx</a> i_solverId)</td></tr>
+<tr class="separator:ac5e3d2dca3e4aeae21cb15d098577794"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9cb88214b84e3c2cabbb8a1daaf4784" id="r_af9cb88214b84e3c2cabbb8a1daaf4784"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1patches_1_1WavePropagation1d.html#af9cb88214b84e3c2cabbb8a1daaf4784">~WavePropagation1d</a> ()</td></tr>
 <tr class="separator:af9cb88214b84e3c2cabbb8a1daaf4784"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1884ddb6a52c08a5b65f60e21f6a547" id="r_ac1884ddb6a52c08a5b65f60e21f6a547"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtsunami__lab_1_1patches_1_1WavePropagation1d.html#ac1884ddb6a52c08a5b65f60e21f6a547">timeStep</a> (<a class="el" href="namespacetsunami__lab.html#a2db0f215df0d48460ce6a8c1e7bfe5a9">t_real</a> i_scaling)</td></tr>
@@ -119,8 +119,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5f0a9d03b1ab9387cf90f172800aaa92 inherit pub_methods_classtsunami__lab_1_1patches_1_1WavePropagation"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a888e18ad0bdf59dd05c05f2dc0f90efb" name="a888e18ad0bdf59dd05c05f2dc0f90efb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a888e18ad0bdf59dd05c05f2dc0f90efb">&#9670;&#160;</a></span>WavePropagation1d()</h2>
+<a id="ac5e3d2dca3e4aeae21cb15d098577794" name="ac5e3d2dca3e4aeae21cb15d098577794"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5e3d2dca3e4aeae21cb15d098577794">&#9670;&#160;</a></span>WavePropagation1d()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -129,15 +129,26 @@ Public Member Functions</h2></td></tr>
           <td class="memname">tsunami_lab::patches::WavePropagation1d::WavePropagation1d </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">t_idx</a>&#160;</td>
-          <td class="paramname"><em>i_nCells</em></td><td>)</td>
+          <td class="paramname"><em>i_nCells</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="namespacetsunami__lab.html#afd26f38678e954f652489c828656cbca">tsunami_lab::t_idx</a>&#160;</td>
+          <td class="paramname"><em>i_solverId</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Constructs the 1d wave propagation solver.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">i_nCells</td><td>number of cells.</td></tr>
+    <tr><td class="paramname">i_nCells</td><td>number of cells. </td></tr>
+    <tr><td class="paramname">i_solver_id</td><td>flag to choose solver, 0=Roe, 1=F_wave.</td></tr>
   </table>
   </dd>
 </dl>

@@ -1,0 +1,92 @@
+\doxysection{tsunami\+\_\+lab\+::io\+::Parser Class Reference}
+\hypertarget{classtsunami__lab_1_1io_1_1Parser}{}\label{classtsunami__lab_1_1io_1_1Parser}\index{tsunami\_lab::io::Parser@{tsunami\_lab::io::Parser}}
+
+
+{\ttfamily \#include $<$Parser.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classtsunami__lab_1_1io_1_1Parser_a454c82323f904146ce18bdb533685e60}{Parser}} (int i\+\_\+argc, char \texorpdfstring{$\ast$}{*}i\+\_\+argv\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Parser_a2848bce78abeaabec7d90a20bd94ca4a}{get}} (const std\+::string \&i\+\_\+name, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+fallback)
+\item 
+float \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Parser_a3b12febdf7a5c97c2afaf4368cf4f221}{get}} (const std\+::string \&i\+\_\+name, float i\+\_\+fallback)
+\item 
+std\+::string \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Parser_ac26abf5b9f6e45272ba3db8c2d7ede27}{get}} (const std\+::string \&i\+\_\+name, const std\+::string \&i\+\_\+fallback)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+parsing runtime arguments 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classtsunami__lab_1_1io_1_1Parser_a454c82323f904146ce18bdb533685e60}\label{classtsunami__lab_1_1io_1_1Parser_a454c82323f904146ce18bdb533685e60} 
+\index{tsunami\_lab::io::Parser@{tsunami\_lab::io::Parser}!Parser@{Parser}}
+\index{Parser@{Parser}!tsunami\_lab::io::Parser@{tsunami\_lab::io::Parser}}
+\doxysubsubsection{\texorpdfstring{Parser()}{Parser()}}
+{\footnotesize\ttfamily tsunami\+\_\+lab\+::io\+::\+Parser\+::\+Parser (\begin{DoxyParamCaption}\item[{int}]{i\+\_\+argc,  }\item[{char \texorpdfstring{$\ast$}{*}}]{i\+\_\+argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+Constructor.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+argc} & number of arguments \\
+\hline
+{\em i\+\_\+argv} & array of arguments \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classtsunami__lab_1_1io_1_1Parser_ac26abf5b9f6e45272ba3db8c2d7ede27}\label{classtsunami__lab_1_1io_1_1Parser_ac26abf5b9f6e45272ba3db8c2d7ede27} 
+\index{tsunami\_lab::io::Parser@{tsunami\_lab::io::Parser}!get@{get}}
+\index{get@{get}!tsunami\_lab::io::Parser@{tsunami\_lab::io::Parser}}
+\doxysubsubsection{\texorpdfstring{get()}{get()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily std\+::string tsunami\+\_\+lab\+::io\+::\+Parser\+::get (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{i\+\_\+name,  }\item[{const std\+::string \&}]{i\+\_\+fallback }\end{DoxyParamCaption})}
+
+Function for retrieving arguments of type string.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+name} & name of argument \\
+\hline
+{\em i\+\_\+fallback} & fallback value if the argument doesn\textquotesingle{}t exist \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classtsunami__lab_1_1io_1_1Parser_a3b12febdf7a5c97c2afaf4368cf4f221}\label{classtsunami__lab_1_1io_1_1Parser_a3b12febdf7a5c97c2afaf4368cf4f221} 
+\index{tsunami\_lab::io::Parser@{tsunami\_lab::io::Parser}!get@{get}}
+\index{get@{get}!tsunami\_lab::io::Parser@{tsunami\_lab::io::Parser}}
+\doxysubsubsection{\texorpdfstring{get()}{get()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily float tsunami\+\_\+lab\+::io\+::\+Parser\+::get (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{i\+\_\+name,  }\item[{float}]{i\+\_\+fallback }\end{DoxyParamCaption})}
+
+Function for retrieving arguments of type float.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+name} & name of argument \\
+\hline
+{\em i\+\_\+fallback} & fallback value if the argument doesn\textquotesingle{}t exist \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classtsunami__lab_1_1io_1_1Parser_a2848bce78abeaabec7d90a20bd94ca4a}\label{classtsunami__lab_1_1io_1_1Parser_a2848bce78abeaabec7d90a20bd94ca4a} 
+\index{tsunami\_lab::io::Parser@{tsunami\_lab::io::Parser}!get@{get}}
+\index{get@{get}!tsunami\_lab::io::Parser@{tsunami\_lab::io::Parser}}
+\doxysubsubsection{\texorpdfstring{get()}{get()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{tsunami\+\_\+lab\+::t\+\_\+idx}} tsunami\+\_\+lab\+::io\+::\+Parser\+::get (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{i\+\_\+name,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+fallback }\end{DoxyParamCaption})}
+
+Function for retrieving arguments of type t\+\_\+idx.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+name} & name of argument \\
+\hline
+{\em i\+\_\+fallback} & fallback value if the argument doesn\textquotesingle{}t exist \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/marvind/\+Desktop/\+Programs/tsunami\+\_\+lab/src/io/Parser.\+h\item 
+/home/marvind/\+Desktop/\+Programs/tsunami\+\_\+lab/src/io/Parser.\+cpp\end{DoxyCompactItemize}
