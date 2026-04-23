@@ -32,6 +32,9 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     //! momenta for the current and next time step for all cells
     t_real * m_hu[2] = { nullptr, nullptr };
 
+    //! bathymetry data 
+    t_real * m_bathymetry = {};
+
   public:
     /**
      * Constructs the 1d wave propagation solver.
@@ -93,6 +96,18 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     }
 
     /**
+     * Gets the cells' bathymetry.
+     *
+     * @param i_ix id of the cell in x-direction.
+     * 
+     * @return bathymetry
+     **/
+    t_real getBathymetry( t_idx i_ix, 
+                                t_idx ) {
+      return m_bathymetry[i_ix];
+    }
+
+    /**
      * Sets the height of the cell to the given value.
      *
      * @param i_ix id of the cell in x-direction.
@@ -122,6 +137,26 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     void setMomentumY( t_idx,
                        t_idx,
                        t_real ) {};
+    
+    /**
+     * Sets the cells' bathymetry.
+     *
+     * @param i_ix id of the cell in x-direction.
+     * 
+     * 
+     * @return bathymetry
+     **/
+    void setBathymetry( t_idx i_ix, 
+                        t_idx, 
+                        t_real i_height){
+      m_bathymetry[i_ix] = i_height;
+      if (i_ix == 1){
+        m_bathymetry[0] = i_height;
+      }
+      else if (i_ix == m_nCells){
+        m_bathymetry[m_nCells + 1] = i_height;
+      }
+    }
 };
 
 #endif

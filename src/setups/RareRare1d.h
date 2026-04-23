@@ -61,6 +61,16 @@ class tsunami_lab::setups::RareRare1d:  public Setup{
      **/
     t_real getMomentumY( t_real, 
                          t_real ) const;
+    
+    /**
+     * gets the bathymetry.
+     *
+     * @return Bathymetry.
+     **/
+    t_real getBathymetry( t_real,
+                          t_real ) const {
+        return 0;
+    }
 };
 
 #endif
