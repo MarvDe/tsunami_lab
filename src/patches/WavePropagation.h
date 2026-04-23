@@ -63,6 +63,17 @@ class tsunami_lab::patches::WavePropagation {
     virtual t_real const * getMomentumY() = 0;
 
     /**
+     * Gets the cells' bathymetry.
+     *
+     * @param i_ix id of the cell in x-direction.
+     * @param i_iy id of the cell in y-direction.
+     * 
+     * @return bathymetry
+     **/
+    virtual t_real getBathymetry( t_idx i_ix, 
+                                  t_idx i_iy ) = 0;
+
+    /**
      * Sets the height of the cell to the given value.
      *
      * @param i_ix id of the cell in x-direction.
@@ -94,6 +105,19 @@ class tsunami_lab::patches::WavePropagation {
     virtual void setMomentumY( t_idx  i_ix,
                                t_idx  i_iy,
                                t_real i_hv ) = 0;
+    
+  /**
+     * Sets the cells' bathymetry.
+     *
+     * @param i_ix id of the cell in x-direction.
+     * @param i_iy id of the cell in y-direction.
+     * @param i_height height of bathymetry
+     * 
+     * @return bathymetry
+     **/
+    virtual void setBathymetry( t_idx i_ix, 
+                                t_idx i_iy, t_real i_height 
+                              ) = 0;
 };
 
 #endif
