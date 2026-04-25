@@ -47,6 +47,8 @@ class tsunami_lab::solvers::Fwave {
      * @param i_uR particle velocity of the rightside.
      * @param i_huL momentum of the left side.
      * @param i_huR momentum of the right side.
+     * @param i_bL bathymetry of the left side.
+     * @param i_bR bathymetry of the right side.
      * @param i_waveSpeedL speed of the wave propagating to the left.
      * @param i_waveSpeedR speed of the wave propagating to the right.
      * @param o_strengthL will be set to the strength of the wave propagating to the left.
@@ -58,6 +60,8 @@ class tsunami_lab::solvers::Fwave {
                                t_real   i_uR,
                                t_real   i_huL,
                                t_real   i_huR,
+                               t_real   i_bL,
+                               t_real   i_bR,
                                t_real   i_waveSpeedL,
                                t_real   i_waveSpeedR,
                                t_real & o_strengthL,
