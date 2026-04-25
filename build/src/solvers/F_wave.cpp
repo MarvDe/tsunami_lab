@@ -28,6 +28,8 @@ void tsunami_lab::solvers::Fwave::waveStrengths(t_real   i_hL,
                                                 t_real   i_uR,
                                                 t_real   i_huL, 
                                                 t_real   i_huR,
+                                                t_real   i_bL,
+                                                t_real   i_bR,
                                                 t_real   i_waveSpeedL, 
                                                 t_real   i_waveSpeedR, 
                                                 t_real & o_strengthL, 
@@ -43,9 +45,12 @@ void tsunami_lab::solvers::Fwave::waveStrengths(t_real   i_hL,
     //calculate flux function for both sides
     t_real l_fR[2] = {i_huR, i_huR * i_uR + 0.5f * m_g * i_hR * i_hR};
     t_real l_fL[2] = {i_huL, i_huL * i_uL + 0.5f * m_g * i_hL * i_hL};
+    
+    // bathymetry
+    t_real l_psi = -m_g * 0.5f * (i_hL + i_hR) * (i_bR - i_bL);
 
     //calculate delta f for strength calculation
-    t_real l_df[2] = {l_fR[0] - l_fL[0], l_fR[1] - l_fL[1]};
+    t_real l_df[2] = {l_fR[0] - l_fL[0], l_fR[1] - l_fL[1] - l_psi};
 
     //calculate: sigmas = l_rInv * df
     o_strengthL = l_rInv[0][0] * l_df[0];
@@ -88,6 +93,8 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
                     l_uR,
                     i_huL,
                     i_huR,
+                    i_bL,
+                    i_bR,
                     l_sL,
                     l_sR,
                     l_aL,
@@ -97,10 +104,10 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
     t_real l_zR[2] = {0};
 
     l_zL[0] = l_aL;
-    l_zL[1] = l_aL * l_sL - (-m_g * (i_bR - i_bL) * (i_hL + i_hR) / 2);
+    l_zL[1] = l_aL * l_sL;
     
     l_zR[0] = l_aR;
-    l_zR[1] = l_aR * l_sR - (-m_g * (i_bR - i_bL) * (i_hL + i_hR) / 2);
+    l_zR[1] = l_aR * l_sR;
     
     for (unsigned int l_pt = 0; l_pt < 2; l_pt++){
         //init 

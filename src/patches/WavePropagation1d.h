@@ -35,6 +35,10 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     //! bathymetry data 
     t_real * m_bathymetry = {};
 
+    // ! ghost cell updating conditions (0 = outflow, 1 = reflecting)
+    t_idx m_ghostL = 0; 
+    t_idx m_ghostR = 0;
+
   public:
     /**
      * Constructs the 1d wave propagation solver.
@@ -43,6 +47,16 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * @param i_solver_id flag to choose solver, 0=Roe, 1=F_wave.
      **/
     WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId );
+
+    /**
+     * Constructs the 1d wave propagation solver.
+     *
+     * @param i_nCells number of cells.
+     * @param i_solver_id flag to choose solver, 0=Roe, 1=F_wave.
+     * @param i_ghostL type of boundary for left ghost cell.
+     * @param i_ghostR type of boundary for right ghost cell.
+     **/
+    WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId, t_idx i_ghostL, t_idx i_ghostR );
 
     /**
      * Destructor which frees all allocated memory.
@@ -97,14 +111,11 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
 
     /**
      * Gets the cells' bathymetry.
-     *
-     * @param i_ix id of the cell in x-direction.
      * 
      * @return bathymetry
      **/
-    t_real getBathymetry( t_idx i_ix, 
-                                t_idx ) {
-      return m_bathymetry[i_ix];
+    t_real const * getBathymetry() {
+      return m_bathymetry;
     }
 
     /**
@@ -157,6 +168,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
         m_bathymetry[m_nCells + 1] = i_height;
       }
     }
+
 };
 
 #endif

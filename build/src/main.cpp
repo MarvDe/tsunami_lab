@@ -82,7 +82,7 @@ int main( int   i_argc,
   else if (l_setupId == tsunami_lab::setups::SHOCK_SHOCK){
     l_setup = new tsunami_lab::setups::ShockShock1d( 10,
                                                  5,
-                                                 5 );
+                                                 100 );
   }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 10,
@@ -92,7 +92,7 @@ int main( int   i_argc,
   
   // construct solver
   tsunami_lab::patches::WavePropagation *l_waveProp;
-  l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId );
+  l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId, 0, 0 );
 
   // maximum observed height in the setup
   tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
@@ -113,6 +113,7 @@ int main( int   i_argc,
                                                         l_y );
       tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
                                                         l_y );
+      tsunami_lab::t_real l_bathymetry = l_setup->getBathymetry( l_x, l_y );
 
       // set initial values in wave propagation solver
       l_waveProp->setHeight( l_cx,
@@ -126,6 +127,8 @@ int main( int   i_argc,
       l_waveProp->setMomentumY( l_cx,
                                 l_cy,
                                 l_hv );
+      
+      l_waveProp->setBathymetry( l_cx, l_cy, l_bathymetry );
 
     }
   }
@@ -165,6 +168,7 @@ int main( int   i_argc,
                                    l_waveProp->getHeight(),
                                    l_waveProp->getMomentumX(),
                                    nullptr,
+                                   l_waveProp->getBathymetry(),
                                    l_file );
       l_file.close();
       l_nOut++;

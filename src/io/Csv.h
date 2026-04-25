@@ -29,6 +29,7 @@ class tsunami_lab::io::Csv {
      * @param i_h water height of the cells; optional: use nullptr if not required.
      * @param i_hu momentum in x-direction of the cells; optional: use nullptr if not required.
      * @param i_hv momentum in y-direction of the cells; optional: use nullptr if not required.
+     * @param i_bathymetry bathymetry data of the cells; optional: use nullptr if not required.
      * @param io_stream stream to which the CSV-data is written.
      **/
     static void write( t_real               i_dxy,
@@ -38,6 +39,7 @@ class tsunami_lab::io::Csv {
                        t_real       const * i_h,
                        t_real       const * i_hu,
                        t_real       const * i_hv,
+                       t_real       const * i_bathymetry,
                        std::ostream       & io_stream );
 };
 
