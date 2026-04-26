@@ -33,7 +33,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     t_real * m_hu[2] = { nullptr, nullptr };
 
     //! bathymetry data 
-    t_real * m_bathymetry = {};
+    t_real * m_bathymetry = nullptr;
 
     // ! ghost cell updating conditions (0 = outflow, 1 = reflecting)
     t_idx m_ghostL = 0; 
