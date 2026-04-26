@@ -27,6 +27,7 @@ namespace tsunami_lab {
     const t_idx DAM_BREAK = 0;
     const t_idx RARE_RARE = 1;
     const t_idx SHOCK_SHOCK = 2;
+    const t_idx TSUNAMI_EVENT = 3;
   }
 
 }

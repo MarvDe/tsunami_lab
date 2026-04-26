@@ -76,3 +76,17 @@ TEST_CASE( "Test the CSV-writer for 2D settings.", "[CsvWrite2d]" ) {
   REQUIRE( l_stream1.str().size() == l_ref1.size() );
   REQUIRE( l_stream1.str() == l_ref1 );
 }
+
+TEST_CASE( "Test the CSV-reader.", "[CsvRead]" ) {
+
+  std::stringstream l_stream0;
+
+  l_stream0 << "10,20,30\n40,50,60";
+
+  tsunami_lab::t_real l_bathymetry[2];
+  
+  tsunami_lab::io::Csv::readBathymetry(2, l_stream0, l_bathymetry);
+
+  REQUIRE( l_bathymetry[0] == Approx(30));
+  REQUIRE( l_bathymetry[1] == Approx(60));
+}

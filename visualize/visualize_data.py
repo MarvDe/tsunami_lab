@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
 Wave Visualization Script
-Reads multiple CSV files (files/*.csv) with columns: x, y, height, momentum_x[, bathymetry]
-The bathymetry column is optional: if present it is plotted alongside the wave height,
-otherwise only the height is shown.
+Reads multiple CSV files (files/*.csv) with columns: x, y, height, momentum_x, bathymetry
+Bathymetry is mandatory. Water is displayed as height + bathymetry (relative to bathymetry).
 Generates two animated GIFs:
-  1. wave_height.gif  — wave height (+ bathymetry if available) vs. x
+  1. wave_height.gif  — water surface (height + bathymetry) and bathymetry vs. x
   2. wave_momentum.gif — momentum_x vs. x
 """
 
@@ -20,7 +19,7 @@ import pandas as pd
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-CSV_PATTERN = "../build/*.csv"
+CSV_PATTERN = "../build/solution_*.csv"
 HEIGHT_GIF  = "wave_height.gif"
 MOMENTUM_GIF = "wave_momentum.gif"
 FPS = 5                 # frames per second in the output GIFs
@@ -40,39 +39,27 @@ def load_files(pattern: str):
     frames = []
     for p in paths:
         df = pd.read_csv(p)
-        required = {"x", "height", "momentum_x"}
+        required = {"x", "height", "momentum_x", "bathymetry"}
         missing = required - set(df.columns)
         if missing:
             sys.exit(f"File '{p}' is missing columns: {missing}")
+        # Compute displayed water surface height relative to bathymetry
+        df["water_surface"] = df["height"] + df["bathymetry"]
         frames.append(df.sort_values("x").reset_index(drop=True))
 
-    # Bathymetry is optional: only plot it when ALL files provide the column
-    has_bathymetry = all("bathymetry" in df.columns for df in frames)
-    any_bathy = any("bathymetry" in df.columns for df in frames)
-    if has_bathymetry:
-        print("Bathymetry column detected — will be plotted alongside wave height.")
-    elif any_bathy:
-        print("Warning: 'bathymetry' column is absent in some files — "
-              "bathymetry will not be plotted.")
-    else:
-        print("No bathymetry column found — plotting height only.")
-
     print(f"Loaded {len(frames)} file(s).")
-    return frames, paths, has_bathymetry
+    return frames, paths
 
 
 # ── Axis limits (computed once so the animation doesn't jump around) ──────────
 
-def global_limits(frames: list[pd.DataFrame], has_bathymetry: bool):
+def global_limits(frames: list[pd.DataFrame]):
     x_min = min(df["x"].min() for df in frames)
     x_max = max(df["x"].max() for df in frames)
 
-    if has_bathymetry:
-        h_min = min(min(df["height"].min(), df["bathymetry"].min()) for df in frames)
-        h_max = max(max(df["height"].max(), df["bathymetry"].max()) for df in frames)
-    else:
-        h_min = min(df["height"].min() for df in frames)
-        h_max = max(df["height"].max() for df in frames)
+    # Height axis spans from lowest bathymetry to highest water surface
+    h_min = min(df["bathymetry"].min() for df in frames)
+    h_max = max(df["water_surface"].max() for df in frames)
 
     m_min = min(df["momentum_x"].min() for df in frames)
     m_max = max(df["momentum_x"].max() for df in frames)
@@ -88,10 +75,10 @@ def global_limits(frames: list[pd.DataFrame], has_bathymetry: bool):
 # ── GIF builder ───────────────────────────────────────────────────────────────
 
 def build_gif(frames, paths, xlim, ylim, output_path,
-              plot_fn, ylabel, title_prefix, has_bathymetry=False):
+              plot_fn, ylabel, title_prefix):
     """
     Generic GIF builder.
-    plot_fn(ax, df, has_bathymetry) draws the desired data onto ax.
+    plot_fn(ax, df) draws the desired data onto ax.
     """
     fig, ax = plt.subplots(figsize=(9, 4), dpi=DPI)
     fig.patch.set_facecolor("#0d1117")
@@ -111,7 +98,7 @@ def build_gif(frames, paths, xlim, ylim, output_path,
     artists = []   # one list of artists per frame
 
     for i, (df, path) in enumerate(zip(frames, paths)):
-        frame_artists = plot_fn(ax, df, has_bathymetry)
+        frame_artists = plot_fn(ax, df)
         ax.set_ylim(*ylim)   # re-apply after plotting to undo any matplotlib auto-expansion
         # Create a new Text object each frame so ArtistAnimation can swap them
         title_obj = ax.text(0.5, 1.01,
@@ -130,37 +117,34 @@ def build_gif(frames, paths, xlim, ylim, output_path,
 
 # ── Plot functions ─────────────────────────────────────────────────────────────
 
-def plot_height(ax, df, has_bathymetry=False):
-    """Returns list of Artist objects for one frame (height, + bathymetry if available)."""
+def plot_height(ax, df):
+    """Returns list of Artist objects for one frame.
+    Water surface = height + bathymetry, filled down to bathymetry.
+    Bathymetry is filled down to the bottom of the axis.
+    """
     artists = []
 
-    line_h, = ax.plot(df["x"], df["height"],
-                      color="#58a6ff", linewidth=1.8,
-                      label="height", zorder=3)
-    artists.append(line_h)
+    # Bathymetry bed (filled to axis bottom)
+    line_b, = ax.plot(df["x"], df["bathymetry"],
+                      color="#f0883e", linewidth=1.5,
+                      linestyle="--", label="bathymetry", zorder=3)
+    fill_b = ax.fill_between(df["x"], df["bathymetry"],
+                              ax.get_ylim()[0],
+                              color="#f0883e", alpha=0.25, zorder=1)
 
-    if has_bathymetry:
-        fill_h = ax.fill_between(df["x"], df["height"],
-                                  df["bathymetry"],
-                                  where=(df["height"] >= df["bathymetry"]),
-                                  color="#58a6ff", alpha=0.15, zorder=2)
-        line_b, = ax.plot(df["x"], df["bathymetry"],
-                          color="#f0883e", linewidth=1.5,
-                          linestyle="--", label="bathymetry", zorder=3)
-        fill_b = ax.fill_between(df["x"], df["bathymetry"],
-                                  ax.get_ylim()[0],
-                                  color="#f0883e", alpha=0.25, zorder=1)
-        artists += [fill_h, line_b, fill_b]
-    else:
-        fill_h = ax.fill_between(df["x"], df["height"],
-                                  ax.get_ylim()[0],
-                                  color="#58a6ff", alpha=0.15, zorder=2)
-        artists.append(fill_h)
+    # Water column (water_surface down to bathymetry)
+    line_h, = ax.plot(df["x"], df["water_surface"],
+                      color="#58a6ff", linewidth=1.8,
+                      label="water surface", zorder=4)
+    fill_h = ax.fill_between(df["x"], df["water_surface"], df["bathymetry"],
+                              color="#58a6ff", alpha=0.15, zorder=2)
+
+    artists += [line_b, fill_b, line_h, fill_h]
 
     return artists
 
 
-def plot_momentum(ax, df, has_bathymetry=False):
+def plot_momentum(ax, df):
     """Returns list of Artist objects for one frame (momentum_x)."""
     line_m, = ax.plot(df["x"], df["momentum_x"],
                       color="#3fb950", linewidth=1.8, zorder=3)
@@ -177,18 +161,15 @@ def plot_momentum(ax, df, has_bathymetry=False):
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    frames, paths, has_bathymetry = load_files(CSV_PATTERN)
-    xlim, hlim, mlim = global_limits(frames, has_bathymetry)
+    frames, paths = load_files(CSV_PATTERN)
+    xlim, hlim, mlim = global_limits(frames)
 
-    ylabel_h = "height / bathymetry" if has_bathymetry else "height"
-    title_h  = "Wave Height & Bathymetry" if has_bathymetry else "Wave Height"
     build_gif(frames, paths,
               xlim=xlim, ylim=hlim,
               output_path=HEIGHT_GIF,
               plot_fn=plot_height,
-              ylabel=ylabel_h,
-              title_prefix=title_h,
-              has_bathymetry=has_bathymetry)
+              ylabel="height (m)",
+              title_prefix="Wave Height & Bathymetry")
 
     build_gif(frames, paths,
               xlim=xlim, ylim=mlim,

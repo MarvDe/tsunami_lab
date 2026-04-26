@@ -10,6 +10,7 @@
 #include "../constants.h"
 #include <cstring>
 #include <iostream>
+#include <fstream>
 
 namespace tsunami_lab {
   namespace io {
@@ -41,6 +42,17 @@ class tsunami_lab::io::Csv {
                        t_real       const * i_hv,
                        t_real       const * i_bathymetry,
                        std::ostream       & io_stream );
+    
+    /**
+     * Reads bathymetry data.
+     * 
+     * @param i_cellx number of cells to read.
+     * @param i_stream data stream to CSV file.
+     * @param o_bathymetry bathymetry data.
+     */
+    static void readBathymetry( t_idx             i_cellx,
+                                std::istream &    i_stream,
+                                t_real       *    o_bathymetry);
 };
 
 #endif
