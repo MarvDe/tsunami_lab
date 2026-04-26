@@ -159,15 +159,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      **/
     void setBathymetry( t_idx i_ix, 
                         t_idx, 
-                        t_real i_height){
-      m_bathymetry[i_ix] = i_height;
-      if (i_ix == 1){
-        m_bathymetry[0] = i_height;
-      }
-      else if (i_ix == m_nCells){
-        m_bathymetry[m_nCells + 1] = i_height;
-      }
-    }
+                        t_real i_height);
 
 };
 

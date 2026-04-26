@@ -8,8 +8,6 @@
 #include "../solvers/Roe.h"
 #include "../solvers/F_wave.h"
 
-#include <iostream>
-
 tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId ): m_solverId(i_solverId) {
   m_nCells = i_nCells;
 
@@ -95,6 +93,8 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     t_real l_hR = l_hOld[l_ceR];
     t_real l_huL = l_huOld[l_ceL];
     t_real l_huR = l_huOld[l_ceR];
+    t_real l_bL = m_bathymetry[l_ceL];
+    t_real l_bR = m_bathymetry[l_ceR];
     
     // compute net-updates
     t_real l_netUpdates[2][2];
@@ -103,22 +103,21 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     bool l_dryL = false, l_dryR = false;
     if (l_hL <= 1e-6f && l_hR <= 1e-6f) { // both cells dry
       // skip evaluation
-      std::cout << "dry both" << std::endl;
       continue;
     }
     else if (l_hL <= 1e-6f){               // left cell dry
       // set reflecting boundary conditions left
-      std::cout << "dry l" << std::endl;
       l_dryL = true;
       l_hL = l_hR;
       l_huL = -l_huR;
+      l_bL  = l_bR;
     }
     else if (l_hR <= 1e-6f){      // right cell dry
       // set reflecting boundary conditions right
-      std::cout << "dry r" << std::endl;
       l_dryR = true;
       l_hR = l_hL;
       l_huR = -l_huL;
+      l_bR  = l_bL;
     }
  
     // select roe solver 
@@ -137,8 +136,8 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
                                   l_hR,
                                   l_huL,
                                   l_huR,
-                                  m_bathymetry[l_ceL],
-                                  m_bathymetry[l_ceR],
+                                  l_bL,
+                                  l_bR,
                                   l_netUpdates[0],
                                   l_netUpdates[1] );
     }
@@ -159,7 +158,6 @@ void tsunami_lab::patches::WavePropagation1d::setGhostOutflow() {
   t_real * l_h = m_h[m_step];
   t_real * l_hu = m_hu[m_step];
 
-
   // set left boundary
   if (m_ghostL == 1){
     l_h[0] = l_h[1];
@@ -170,8 +168,6 @@ void tsunami_lab::patches::WavePropagation1d::setGhostOutflow() {
     l_hu[0] = l_hu[1];
   }
 
-
-
   // set right boundary
   if (m_ghostR == 1){
     l_h[m_nCells+1] = l_h[m_nCells];
@@ -180,7 +176,18 @@ void tsunami_lab::patches::WavePropagation1d::setGhostOutflow() {
   else{
     l_h[m_nCells+1] = l_h[m_nCells];
     l_hu[m_nCells+1] = l_hu[m_nCells];
-  }
-  
+  }  
 
+}
+
+void tsunami_lab::patches::WavePropagation1d::setBathymetry( t_idx i_ix, 
+                                                             t_idx, 
+                                                             t_real i_height){ 
+  m_bathymetry[i_ix + 1] = i_height;
+  if (i_ix == 0){
+    m_bathymetry[0] = i_height;
+  }
+  if (i_ix == m_nCells - 1){
+    m_bathymetry[m_nCells + 1] = i_height;
+  }
 }

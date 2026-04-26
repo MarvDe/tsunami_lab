@@ -43,3 +43,23 @@ void tsunami_lab::io::Csv::write( t_real               i_dxy,
   }
   io_stream << std::flush;
 }
+
+void tsunami_lab::io::Csv::readBathymetry( t_idx             i_cellx,
+                                           std::istream &    i_stream,
+                                           t_real       *    o_bathymetry){
+  
+  std::string l_entry;
+  
+  for ( t_idx l_i = 0; l_i < i_cellx; l_i++){
+    // read line of file
+    if (getline(i_stream, l_entry)){
+      // find last comma in line
+      t_idx l_pos = l_entry.find_last_of(',');
+      // convert height from string to float
+      t_real l_height = atof(l_entry.substr(l_pos + 1).c_str());
+      // set height in array
+      o_bathymetry[l_i] = l_height;
+    } 
+    else return;  
+  }
+}

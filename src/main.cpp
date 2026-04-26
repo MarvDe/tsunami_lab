@@ -8,6 +8,7 @@
 #include "setups/DamBreak1d.h"
 #include "setups/RareRare1d.h"
 #include "setups/ShockShock1d.h"
+#include "setups/TsunamiEvent1d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include <cstdlib>
@@ -24,13 +25,17 @@ int main( int   i_argc,
   tsunami_lab::t_idx l_ny = 1;
   
   // id of solver
-  tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::ROE;
+  tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::FWAVE;
 
   // id of setup
-  tsunami_lab::t_idx l_setupId = tsunami_lab::setups::DAM_BREAK;
+  tsunami_lab::t_idx l_setupId = tsunami_lab::setups::TSUNAMI_EVENT;
 
   // set cell size
   tsunami_lab::t_real l_dxy = 1;
+
+  // outflow types
+  tsunami_lab::t_idx l_outflowTypeL = 0;
+  tsunami_lab::t_idx l_outflowTypeR = 0;
 
   std::cout << "####################################" << std::endl;
   std::cout << "### Tsunami Lab                  ###" << std::endl;
@@ -53,6 +58,7 @@ int main( int   i_argc,
   if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
   else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
   else if (l_setupName.compare("shockShock") == 0) l_setupId = tsunami_lab::setups::SHOCK_SHOCK;
+  else if (l_setupName.compare("tsunamiEvent") == 0) l_setupId = tsunami_lab::setups::TSUNAMI_EVENT;
   else l_setupName = "damBreak";
 
   // select number of cells in x direction
@@ -84,6 +90,19 @@ int main( int   i_argc,
                                                  5,
                                                  100 );
   }
+  else if (l_setupId == tsunami_lab::setups::TSUNAMI_EVENT){
+
+    std::cout << "Extracting bathymetry data from 'profile_commas.csv'." << std::endl;
+    l_nx = 1762;
+    l_dxy = 250;
+    std::ifstream l_inFile("profile_commas.csv"); 
+    tsunami_lab::t_real *l_bathymetry = new tsunami_lab::t_real[l_nx]; 
+    tsunami_lab::io::Csv::readBathymetry(l_nx, l_inFile, l_bathymetry);
+
+    l_setup = new tsunami_lab::setups::TsunamiEvent1d(l_nx, l_bathymetry, l_dxy);
+    // cleaning up 
+    delete[] l_bathymetry;
+  }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 10,
                                                  5,
@@ -92,7 +111,7 @@ int main( int   i_argc,
   
   // construct solver
   tsunami_lab::patches::WavePropagation *l_waveProp;
-  l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId, 0, 0 );
+  l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId, l_outflowTypeL, l_outflowTypeR );
 
   // maximum observed height in the setup
   tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
