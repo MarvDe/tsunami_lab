@@ -25,7 +25,7 @@ private:
     t_idx m_cellx = 0;
 
     //! input bathymetry data
-    t_real * m_bIn;
+    t_real * m_bIn = nullptr;
 
     //! size of cell
     t_real m_dx = 0;
@@ -51,6 +51,11 @@ public:
      */
     TsunamiEvent1d( t_idx i_cellx, t_real const * i_bIn, t_real i_dx );
     
+    /**
+     * Destructor.
+     */
+    ~TsunamiEvent1d();
+
     /**
      * Gets waterheight at a given point.
      * @return height at the given point.

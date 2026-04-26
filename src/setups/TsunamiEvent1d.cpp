@@ -60,3 +60,7 @@ tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::verticalDisplacement(t_
         return 0;
     }
 }
+
+tsunami_lab::setups::TsunamiEvent1d::~TsunamiEvent1d(){
+    delete[] m_bIn;
+}

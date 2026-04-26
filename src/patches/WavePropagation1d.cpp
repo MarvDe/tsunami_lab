@@ -61,6 +61,7 @@ tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsun
 
 
 tsunami_lab::patches::WavePropagation1d::~WavePropagation1d() {
+  delete[] m_bathymetry;
   for( unsigned short l_st = 0; l_st < 2; l_st++ ) {
     delete[] m_h[l_st];
     delete[] m_hu[l_st];
