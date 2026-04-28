@@ -127,7 +127,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     void setHeight( t_idx  i_ix,
                     t_idx,
                     t_real i_h ) {
-      m_h[m_step][i_ix+1] = i_h;
+      m_h[m_step][i_ix + 1] = i_h;
     }
 
     /**
