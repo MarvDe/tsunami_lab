@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Woche 2 &mdash; Tsunami Lab 2026 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=f5127f15" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+
+  
+      <script src="_static/jquery.js?v=8dae8fb0"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=fc6fd62b"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Woche 1" href="woche1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Tsunami Lab
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="woche1.html">Woche 1</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Woche 2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#beitrage-der-gruppenmitglieder">Beiträge der Gruppenmitglieder</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gemeinsam">Gemeinsam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#marvin-doring">Marvin Döring</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sanity-check">Sanity Check</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#runtime-parsing">Runtime Parsing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rare-rare-setup">Rare-Rare Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dammbruch-experimente">Dammbruch Experimente</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#github-actions">Github Actions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#philipp-prell">Philipp Prell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shock-shock-setup">Shock-Shock Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#zusammenhang-zwischen-wasserhohe-und-wassermomentum-auf-die-wellengeschwindigkeiten">Zusammenhang zwischen Wasserhöhe und Wassermomentum auf die Wellengeschwindigkeiten</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dorf-evakuierung">Dorf Evakuierung</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Tsunami Lab</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Woche 2</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/woche2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="woche-2">
+<h1>Woche 2<a class="headerlink" href="#woche-2" title="Link to this heading"></a></h1>
+<p>In der zweiten Woche des Tsunami Labs soll der F-Wave-Solver integriert werden.
+Dabei muss die Korrektheit überprüft werden und neben dem Dammbruch Setup sollen
+noch die Rare-Rare und Shock-Shock Setups implementiert werden.</p>
+<section id="beitrage-der-gruppenmitglieder">
+<h2>Beiträge der Gruppenmitglieder<a class="headerlink" href="#beitrage-der-gruppenmitglieder" title="Link to this heading"></a></h2>
+<section id="gemeinsam">
+<h3>Gemeinsam<a class="headerlink" href="#gemeinsam" title="Link to this heading"></a></h3>
+<p>Das Integrieren des F-Wave-Solvers in die <code class="docutils literal notranslate"><span class="pre">WavePropagation1d</span></code> Klasse haben wir mit einem
+zusätzlichen Parameter umgesetzt. Die Option <code class="docutils literal notranslate"><span class="pre">solverId</span></code> wird dem Konstruktor übergeben.
+Der Wert 0 entspricht dabei dem Roe-Solver und 1 dem F-Wave-Solver.</p>
+</section>
+<section id="marvin-doring">
+<h3>Marvin Döring<a class="headerlink" href="#marvin-doring" title="Link to this heading"></a></h3>
+<section id="sanity-check">
+<h4>Sanity Check<a class="headerlink" href="#sanity-check" title="Link to this heading"></a></h4>
+<p>Zu den Tests des F-Wave-Solvers wurde ein weiterer Fall hinzugefügt, welcher die ersten
+zehn Werte aus der <a class="reference external" href="https://scalable.uni-jena.de/assets/tsunami_lab/middle_states.csv">middle_states.csv</a> überprüft.</p>
+</section>
+<section id="runtime-parsing">
+<h4>Runtime Parsing<a class="headerlink" href="#runtime-parsing" title="Link to this heading"></a></h4>
+<p>Um das wechseln zwischen verschiedenen Einstellungen wie zum Beispiel die Anzahl der Zellen,
+die Art des Solvers oder das Setup zu wählen wurde die Klasse <code class="docutils literal notranslate"><span class="pre">Parser</span></code> eingeführt. Runtime
+Argumente können somit in der Form <code class="docutils literal notranslate"><span class="pre">arg_name=arg_value</span></code> dem Programm übergeben werden.</p>
+</section>
+<section id="rare-rare-setup">
+<h4>Rare-Rare Setup<a class="headerlink" href="#rare-rare-setup" title="Link to this heading"></a></h4>
+<p>Die Klasse <code class="docutils literal notranslate"><span class="pre">RareRare1d</span></code> dient als Setup für den Rare-Rare Fall. Dabei werden die Wasserhöhe,
+das Wassermomentum und die Position der Diskontinuität übergeben. Die initialen Werte der Wassersäulen
+werden dann nach der Formel berechnet:</p>
+<div class="math notranslate nohighlight" id="rare">
+<span id="equation-rare"></span><span class="eqno">(1)<a class="headerlink" href="#rare" title="Link to this equation"></a></span>\[f(x_{i})
+    = (x_{i} &gt; x_{dis}) ? q_{l} : q_{r}\]</div>
+</section>
+<section id="dammbruch-experimente">
+<h4>Dammbruch Experimente<a class="headerlink" href="#dammbruch-experimente" title="Link to this heading"></a></h4>
+<p><strong>Für das Dammbruch Setup haben wir folgende Tests durchgeführt:</strong></p>
+<p>(<a class="reference download internal" download="" href="_downloads/907f8513811724a9130d0882e67003e2/woche2-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/280b0799286c2c9fd39a4b588d228d92/woche2-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/33d3d23434ebec1d8ee6ff712f2ac05a/woche2-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/1146d1bd72e6f5b581a1104973e3697a/woche2-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/woche2-1.png" class="plot-directive" src="_images/woche2-1.png" />
+</figure>
+<p>(<a class="reference download internal" download="" href="_downloads/83bda20b46d42622ef1d65f39eda708b/woche2-2.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/184a9e87c50cdb8a7c301a33c3266c4f/woche2-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/ddef834fcb45fa8cb00da76438a755cf/woche2-2.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/b73d452fc3538481f08e281659ceb870/woche2-2.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/woche2-2.png" class="plot-directive" src="_images/woche2-2.png" />
+</figure>
+<p>Man erkennt im Plot zum Wassermomentum, dass das Momentum deutlich stärker
+ist, wenn die initiale linke Wasserhöhe steigt.</p>
+</section>
+<section id="github-actions">
+<h4>Github Actions<a class="headerlink" href="#github-actions" title="Link to this heading"></a></h4>
+<p>Wir nutzen Github Actions um beim Pushen automatisch die Unit-Tests auszuführen.</p>
+</section>
+</section>
+<section id="philipp-prell">
+<h3>Philipp Prell<a class="headerlink" href="#philipp-prell" title="Link to this heading"></a></h3>
+<section id="shock-shock-setup">
+<h4>Shock-Shock Setup<a class="headerlink" href="#shock-shock-setup" title="Link to this heading"></a></h4>
+<p>Für die Klasse <code class="docutils literal notranslate"><span class="pre">ShockShock1d</span></code> wurde die Formel:</p>
+<div class="math notranslate nohighlight" id="shock">
+<span id="equation-shock"></span><span class="eqno">(2)<a class="headerlink" href="#shock" title="Link to this equation"></a></span>\[f(x_{i})
+    = (x_{i} &lt; x_{dis}) ? q_{l} : q_{r}\]</div>
+<p>verwendet. Sie ist der <code class="docutils literal notranslate"><span class="pre">RareRare1d</span></code> Klasse in der Funktionsweise sehr ähnlich.</p>
+</section>
+<section id="zusammenhang-zwischen-wasserhohe-und-wassermomentum-auf-die-wellengeschwindigkeiten">
+<h4>Zusammenhang zwischen Wasserhöhe und Wassermomentum auf die Wellengeschwindigkeiten<a class="headerlink" href="#zusammenhang-zwischen-wasserhohe-und-wassermomentum-auf-die-wellengeschwindigkeiten" title="Link to this heading"></a></h4>
+<p><strong>Für das Shock-Shock Setup haben wir folgende Tests durchgeführt:</strong></p>
+<p>(<a class="reference download internal" download="" href="_downloads/d100cb80386a754f5a985181c6e02f4e/woche2-3.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/b998940b2169a9c2481b451a5d946de5/woche2-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/1ec8dcbb8802cd6f0543a8cb60ac9b02/woche2-3.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/f0af1771d9aab3b1cfcbd8207d64cf62/woche2-3.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/woche2-3.png" class="plot-directive" src="_images/woche2-3.png" />
+</figure>
+<p>(<a class="reference download internal" download="" href="_downloads/0d45deb3adea79c82baab1e48693a561/woche2-4.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/317cb9d4da93301b8f3851a51cbdfb14/woche2-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/d978e9aef89f4da1b930ee581b58fe72/woche2-4.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/c9ad6a42ebc752740b8011f4636fc92a/woche2-4.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/woche2-4.png" class="plot-directive" src="_images/woche2-4.png" />
+</figure>
+<p>(<a class="reference download internal" download="" href="_downloads/494b517b98d3d315542f7d82bb8f02fc/woche2-5.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/12af7adf8ca874088a76176e135cc64e/woche2-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/78fb4bcec8f7731bdbafdb8edb64d5f2/woche2-5.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/9b2a8aea925244a45c55018e0f901224/woche2-5.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/woche2-5.png" class="plot-directive" src="_images/woche2-5.png" />
+</figure>
+<p>Man kann also beobachten, dass eine Erhöhung des Momentums dazu führt, dass die Wasserhöhe
+deutlich mehr ansteigt.</p>
+<p><strong>Für das Rare-Rare Setup haben wir folgende Tests durchgeführt:</strong></p>
+<p>(<a class="reference download internal" download="" href="_downloads/a0e37da3cfe37ddae73c730424bf7423/woche2-6.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/e80adec7fff059b2338fb7d238c4f81f/woche2-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/cb0a883266467a7dee5202a5367c9e07/woche2-6.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/ae941ab45126e3ed48c264398fc3d377/woche2-6.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/woche2-6.png" class="plot-directive" src="_images/woche2-6.png" />
+</figure>
+<p>(<a class="reference download internal" download="" href="_downloads/c49af5d9054fca722ceba4828b8bb56d/woche2-7.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/06ab150125b40d1feeebde0b6105be32/woche2-7.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/89fb61f47f11c3cb795f559020d7f946/woche2-7.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/2cbd96286c2101b0cdcb7683f96fc6b7/woche2-7.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/woche2-7.png" class="plot-directive" src="_images/woche2-7.png" />
+</figure>
+<p>(<a class="reference download internal" download="" href="_downloads/5f53145c86c2ff838189ae25c04efaa2/woche2-8.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/55c7f3df1056f39a142d81de156f112b/woche2-8.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/708a87bfb3d8ae0ba952f66b483b8cb0/woche2-8.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/2ebd862c96d30254f954aa1ba9ec2067/woche2-8.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/woche2-8.png" class="plot-directive" src="_images/woche2-8.png" />
+</figure>
+<p>Die Rarefaction-Welle scheint linear zu sein, wenn das Momentum hoch ist.
+Im Gegensatz wirk sie bei niedrigerem Mometum eher abgerundet.</p>
+<p><strong>Mathematische Beobachtung der Wellengeschwindigkeiten an der Diskontinuität</strong></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}h_r &amp;= h_l \\
+u_r &amp;= -u_l \\
+h^{Roe} &amp;= \frac{h_l + h_r}{2} = h_l \\
+u^{Roe} &amp;= \frac{u_l \sqrt{h_l} + u_r \sqrt{h_r}}{\sqrt{h_l} + \sqrt{h_r}} \\
+&amp;= \frac{u_l \sqrt{h_l}  -u_l \sqrt{h_l}}{\sqrt{h_l} + \sqrt{h_l}} \\
+&amp;= 0 \\
+\lambda^{Roe}_1 &amp;= u^{Roe} - \sqrt{g h^{Roe}} \\
+&amp;= -\sqrt{g h_l} \\
+\lambda^{Roe}_2 &amp;= u^{Roe} + \sqrt{g h^{Roe}} \\
+&amp;= \sqrt{g h_l}\end{split}\]</div>
+<p>An der Diskontinuität scheint das Momentum mathematisch keinen Einfluss auf die
+Wellengeschwindigkeiten zu haben.</p>
+</section>
+<section id="dorf-evakuierung">
+<h4>Dorf Evakuierung<a class="headerlink" href="#dorf-evakuierung" title="Link to this heading"></a></h4>
+<p>Eine Flutwelle aus einem großen Reservoir bewegt sich 25 km stromabwärts auf ein Dorf zu.
+Gesucht ist die Zeit bis zum Eintreffen der Welle im Dorf.</p>
+<p>Gegeben:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}q_l =  \begin{bmatrix}
+          14 \\ 0
+        \end{bmatrix}, \quad
+q_r =  \begin{bmatrix}
+          3.5 \\ 0.7
+        \end{bmatrix},  \quad
+s = 25000\text{ m}\end{split}\]</div>
+<p>Lösung:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}h^{Roe}(q_l, q_r) &amp;= \frac{14 + 3.5}{2} \\
+&amp;= 8.75 \\
+u^{Roe}(q_l, q_r) &amp;= \frac{ 0 \sqrt{14} + 0.7 \sqrt{3.5}}{\sqrt{14} + \sqrt{3.5}} \\
+&amp;\approx 0.2333\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\lambda^{Roe}_1(q_l,q_r) &amp;= u^{Roe}(q_l,q_r) - \sqrt{g h^{Roe}(q_l, q_r)} \\
+&amp;= 0.2333 - 9.26327 \\
+&amp;= -9.02997\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\lambda^{Roe}_2(q_l,q_r) &amp;= u^{Roe}(q_l,q_r) + \sqrt{g h^{Roe}(q_l, q_r)} \\
+&amp;= 0.2333 + 9.26327 \\
+&amp;= 9.49657\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\lambda_{max} &amp;= \lambda_2^{Roe} \\
+&amp;= 9.49657 \frac{m}{s}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}t &amp;= \frac{25000 \ m}{9.49657 \frac{m}{s}} \\
+&amp;\approx 2633 \ s \\
+&amp;\approx 43.884 \ min  \\
+&amp;\approx 40 \ min \ 53 \ s\end{split}\]</div>
+<p>Die Dorfbewohner haben etwa 41 Minuten Zeit, um das Gebiet zu verlassen.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="woche1.html" class="btn btn-neutral float-left" title="Woche 1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Philipp Prell, Marvin Doering.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
