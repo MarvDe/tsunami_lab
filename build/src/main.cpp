@@ -37,6 +37,9 @@ int main( int   i_argc,
   tsunami_lab::t_idx l_outflowTypeL = 0;
   tsunami_lab::t_idx l_outflowTypeR = 0;
 
+  // bathymetry file path
+  std::string l_bathymetryFilePath = "profile_commas.csv";
+
   std::cout << "####################################" << std::endl;
   std::cout << "### Tsunami Lab                  ###" << std::endl;
   std::cout << "###                              ###" << std::endl;
@@ -92,10 +95,15 @@ int main( int   i_argc,
   }
   else if (l_setupId == tsunami_lab::setups::TSUNAMI_EVENT){
 
-    std::cout << "Extracting bathymetry data from 'profile_commas.csv'." << std::endl;
+    std::cout << "Extracting bathymetry data from '" << l_bathymetryFilePath << "'." << std::endl;
     l_nx = 1762;
     l_dxy = 250;
-    std::ifstream l_inFile("profile_commas.csv"); 
+    std::ifstream l_inFile(l_bathymetryFilePath); 
+    if (!l_inFile.is_open()){
+      std::cerr << "Could not open bathymetry file " << l_bathymetryFilePath << std::endl;
+      return EXIT_FAILURE;
+    }
+
     tsunami_lab::t_real *l_bathymetry = new tsunami_lab::t_real[l_nx]; 
     tsunami_lab::io::Csv::readBathymetry(l_nx, l_inFile, l_bathymetry);
 
