@@ -9,6 +9,8 @@
 #include "setups/RareRare1d.h"
 #include "setups/ShockShock1d.h"
 #include "setups/TsunamiEvent1d.h"
+#include "setups/SubcriticalFlow1d.h"
+#include "setups/SupercriticalFlow1d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include <cstdlib>
@@ -110,6 +112,16 @@ int main( int   i_argc,
     l_setup = new tsunami_lab::setups::TsunamiEvent1d(l_nx, l_bathymetry, l_dxy);
     // cleaning up 
     delete[] l_bathymetry;
+  }
+  else if(l_setupId == tsunami_lab::setups::SUBCRITICAL_FLOW){
+    l_setup = new tsunami_lab::setups::SubcriticalFlow1d();
+    l_dxy = 0.1;
+    l_nx /=l_dxy;
+  }
+  else if(l_setupId == tsunami_lab::setups::SUPERCRITICAL_FLOW){
+    l_setup = new tsunami_lab::setups::SupercriticalFlow1d();
+    l_dxy = 0.1;
+    l_nx /=l_dxy;
   }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 10,

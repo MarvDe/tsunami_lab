@@ -28,6 +28,8 @@ namespace tsunami_lab {
     const t_idx RARE_RARE = 1;
     const t_idx SHOCK_SHOCK = 2;
     const t_idx TSUNAMI_EVENT = 3;
+    const t_idx SUBCRITICAL_FLOW = 4;
+    const t_idx SUPERCRITICAL_FLOW = 5;
   }
 
 }
