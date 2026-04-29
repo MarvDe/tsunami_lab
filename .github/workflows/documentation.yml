@@ -1,27 +1,54 @@
-name: documentation
+name: Deploy Docs
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - main
 
+# Allow deployment to GitHub Pages
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# Only allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  docs:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
       - name: Install dependencies
         run: |
-          pip install sphinx sphinx_rtd_theme myst_parser matplotlib 
-      - name: Sphinx build
-        run: |
-          sphinx-build docs/sphinx/source docs/sphinx/build
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          pip install sphinx
+          # Add any extra Sphinx extensions or themes you use, e.g.:
+          # pip install sphinx-rtd-theme myst-parser
+
+      - name: Build docs
+        run: sphinx-build docs/sphinx/source docs/sphinx/build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          publish_branch: main
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/sphinx/build
-          force_orphan: true
+          path: docs/sphinx/build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
