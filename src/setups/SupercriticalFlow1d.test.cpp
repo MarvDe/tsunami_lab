@@ -93,4 +93,5 @@ TEST_CASE( "Test the getter functions of the supercritical flow setup.", "[Super
     number = obj->getMomentumY(0,10);
     REQUIRE( number == 0.f );
 
+    delete obj;
 }
