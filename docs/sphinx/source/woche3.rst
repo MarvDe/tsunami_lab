@@ -64,12 +64,6 @@ Fukushima aus dem Datenset gelesen und in einer CSV Datei gespeichert.
 
 .. _GEBCO_2026 Grid (ice surface elevation): https://www.gebco.net/data-products/gridded-bathymetry-data
 
-**Bildausschnitt vom Datensatz**
-
-.. image:: ../images/GEBCO_japan.tif
-
-
-
 **Küstenstreifen vor Fukushima**
 
 .. image:: ../images/coast_line_fukushima.png
