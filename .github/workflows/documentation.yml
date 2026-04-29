@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install sphinx
+          pip install sphinx sphinx-rtd-theme myst-parser matplotlib
           # Add any extra Sphinx extensions or themes you use, e.g.:
           # pip install sphinx-rtd-theme myst-parser
 
