@@ -14,6 +14,10 @@ Beiträge der Gruppenmitglieder
 Gemeinsam
 *********
 
+Damit der F-Wave-Solver mit Bathymetry-Daten umgehen kann haben wir einen zusätzlichen 
+Term in die Flux Funktion eingefügt. Die Bathymetry der linken und rechten Zelle 
+wird dann einfach an die ``netUpdates`` Funktion übergeben.
+
 
 
 Marvin Döring
@@ -23,7 +27,7 @@ Visualisierung
 ~~~~~~~~~~~~~~
 
 Für die bessere Visualisierung von Simulationsergebnissen verwenden wir ein Python-Skript.
-Somit können wir die ausgegebenen CSV Dateien in GIFs umwendeln und hier auf der Dokumentationswebseite
+Somit können wir die ausgegebenen CSV Dateien in GIFs umwandeln und hier auf der Dokumentationswebseite
 präsentieren.
 
 Reflektionen
@@ -60,6 +64,12 @@ Fukushima aus dem Datenset gelesen und in einer CSV Datei gespeichert.
 
 .. _GEBCO_2026 Grid (ice surface elevation): https://www.gebco.net/data-products/gridded-bathymetry-data
 
+**Bildausschnitt vom Datensatz**
+
+.. image:: ../images/GEBCO_japan.tif
+
+
+
 **Küstenstreifen vor Fukushima**
 
 .. image:: ../images/coast_line_fukushima.png
@@ -82,7 +92,7 @@ die Darstellung noch einmal etwas verändert
 
 **Nähere Betrachtung der Welle**
 
-.. image:: ../images/wave_momentum_fukushima_zoom.gif
+.. image:: ../images/wave_height_fukushima_zoom.gif
 
 Philipp Prell 
 *************
