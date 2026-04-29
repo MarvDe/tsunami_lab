@@ -115,7 +115,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * @return bathymetry
      **/
     t_real const * getBathymetry() {
-      return m_bathymetry;
+      return m_bathymetry+1;
     }
 
     /**

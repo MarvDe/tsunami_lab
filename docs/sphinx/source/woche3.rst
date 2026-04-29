@@ -82,7 +82,7 @@ die Darstellung noch einmal etwas verändert
 
 **Nähere Betrachtung der Welle**
 
-
+.. image:: ../images/wave_momentum_fukushima_zoom.gif
 
 Philipp Prell 
 *************

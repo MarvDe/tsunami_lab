@@ -6,8 +6,23 @@ Bathymetry is mandatory. Water is displayed as height + bathymetry (relative to 
 Generates two animated GIFs:
   1. wave_height.gif  — water surface (height + bathymetry) and bathymetry vs. x
   2. wave_momentum.gif — momentum_x vs. x
+
+Usage:
+    python visualize_wave.py [options]
+
+Optional zoom arguments (all in data units):
+    --xmin FLOAT   Left bound of the x-axis
+    --xmax FLOAT   Right bound of the x-axis
+    --hmin FLOAT   Lower bound of the height y-axis
+    --hmax FLOAT   Upper bound of the height y-axis
+    --mmin FLOAT   Lower bound of the momentum y-axis
+    --mmax FLOAT   Upper bound of the momentum y-axis
+
+Example — zoom into a 500-unit wide region:
+    python visualize_wave.py --xmin 1000 --xmax 1500 --hmin 0 --hmax 5
 """
 
+import argparse
 import glob
 import os
 import sys
@@ -160,9 +175,35 @@ def plot_momentum(ax, df):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
+def parse_args():
+    p = argparse.ArgumentParser(
+        description="Visualize wave simulation CSV files as animated GIFs."
+    )
+    p.add_argument("--xmin", type=float, default=None, help="Left bound of x-axis")
+    p.add_argument("--xmax", type=float, default=None, help="Right bound of x-axis")
+    p.add_argument("--hmin", type=float, default=None, help="Lower bound of height y-axis")
+    p.add_argument("--hmax", type=float, default=None, help="Upper bound of height y-axis")
+    p.add_argument("--mmin", type=float, default=None, help="Lower bound of momentum y-axis")
+    p.add_argument("--mmax", type=float, default=None, help="Upper bound of momentum y-axis")
+    return p.parse_args()
+
+
 def main():
+    args = parse_args()
     frames, paths = load_files(CSV_PATTERN)
     xlim, hlim, mlim = global_limits(frames)
+
+    # Override axis limits with any user-supplied values
+    xlim = (args.xmin if args.xmin is not None else xlim[0],
+            args.xmax if args.xmax is not None else xlim[1])
+    hlim = (args.hmin if args.hmin is not None else hlim[0],
+            args.hmax if args.hmax is not None else hlim[1])
+    mlim = (args.mmin if args.mmin is not None else mlim[0],
+            args.mmax if args.mmax is not None else mlim[1])
+
+    print(f"x-axis  : {xlim[0]:.4g} → {xlim[1]:.4g}")
+    print(f"height  : {hlim[0]:.4g} → {hlim[1]:.4g}")
+    print(f"momentum: {mlim[0]:.4g} → {mlim[1]:.4g}")
 
     build_gif(frames, paths,
               xlim=xlim, ylim=hlim,
