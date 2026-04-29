@@ -15,7 +15,9 @@ l_sources = [ 'solvers/Roe.cpp',
               'io/Parser.cpp',
               'setups/ShockShock1d.cpp',
               'setups/TsunamiEvent1d.cpp',
-              'setups/RareRare1d.cpp' ]
+              'setups/RareRare1d.cpp',
+              'setups/SubcriticalFlow1d.cpp',
+              'setups/SupercriticalFlow1d.cpp' ]
 
 for l_so in l_sources:
   env.sources.append( env.Object( l_so ) )
@@ -32,7 +34,9 @@ l_tests = [ 'tests.cpp',
             'setups/DamBreak1d.test.cpp',
             'setups/RareRare1d.test.cpp',
             'setups/TsunamiEvent1d.test.cpp',
-            'setups/ShockShock1d.test.cpp' ]
+            'setups/ShockShock1d.test.cpp', 
+            'setups/SubcriticalFlow1d.test.cpp',
+            'setups/SupercriticalFlow1d.test.cpp' ]
 
 for l_te in l_tests:
   env.tests.append( env.Object( l_te ) )

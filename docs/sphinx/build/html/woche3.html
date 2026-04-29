@@ -7,16 +7,17 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Woche 3 &mdash; Tsunami Lab 2026 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=f5127f15" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=7ab3649f" />
       <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
 
   
-      <script src="_static/jquery.js?v=8dae8fb0"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=fc6fd62b"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -54,7 +55,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#d-tsunami-simulation">1D Tsunami Simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#philipp-prell">Philipp Prell</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#philipp-prell">Philipp Prell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydraulic-jumps">Hydraulic Jumps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#subcritical-flow">Subcritical Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#supercritical-flow">Supercritical Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#subcritical-case">Subcritical Case</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#supercritical-case">Supercritical Case</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydraulic-jump-momentum-profile">Hydraulic Jump – Momentum Profile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#versagen-des-f-wave-solvers">Versagen des f-wave Solvers</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -95,13 +105,23 @@ namens hydraulischer Sprung (oder Wechselsprung) analysiert.</p>
 <h2>Beiträge der Gruppenmitglieder<a class="headerlink" href="#beitrage-der-gruppenmitglieder" title="Link to this heading"></a></h2>
 <section id="gemeinsam">
 <h3>Gemeinsam<a class="headerlink" href="#gemeinsam" title="Link to this heading"></a></h3>
+<p>Damit der F-Wave-Solver mit Bathymetry-Daten umgehen kann haben wir einen zusätzlichen
+Term in die Flux Funktion eingefügt. Die Bathymetry der linken und rechten Zelle
+wird dann einfach an die <code class="docutils literal notranslate"><span class="pre">netUpdates</span></code> Funktion übergeben.</p>
+<p>Damit die Welle realistisch simuliert werden kann, haben wir die Klassen
+<code class="docutils literal notranslate"><span class="pre">patches::WavePropagation</span></code> sowie <code class="docutils literal notranslate"><span class="pre">patches::WavePropagation1d</span></code> so erweitert,
+dass die Bathymetrie explizit berücksichtigt wird.
+Für die Ghostzellen setzen wir dabei die Randwerte der Bathymetrie als
+:math:b_0 := b_1 und :math:b_{n+1} := b_n.
+Die Auswirkungen dieser Anpassung lassen sich besonders anschaulich in :ref:hydraulic_jumps
+erkennen.</p>
 </section>
 <section id="marvin-doring">
 <h3>Marvin Döring<a class="headerlink" href="#marvin-doring" title="Link to this heading"></a></h3>
 <section id="visualisierung">
 <h4>Visualisierung<a class="headerlink" href="#visualisierung" title="Link to this heading"></a></h4>
 <p>Für die bessere Visualisierung von Simulationsergebnissen verwenden wir ein Python-Skript.
-Somit können wir die ausgegebenen CSV Dateien in GIFs umwendeln und hier auf der Dokumentationswebseite
+Somit können wir die ausgegebenen CSV Dateien in GIFs umwandeln und hier auf der Dokumentationswebseite
 präsentieren.</p>
 </section>
 <section id="reflektionen">
@@ -124,7 +144,7 @@ der nassen Zelle.</p>
 <section id="d-tsunami-simulation">
 <h4>1D Tsunami Simulation<a class="headerlink" href="#d-tsunami-simulation" title="Link to this heading"></a></h4>
 <p>Um ein echtes Tsunami-Event zu Simulieren haben wir das <a class="reference external" href="https://www.gebco.net/data-products/gridded-bathymetry-data">GEBCO_2026 Grid (ice surface elevation)</a>
-herunter geladen um globale Bathymetry zu extrahieren. Um mit den Rohdaten umzugehen verwenden wir
+heruntergeladen und globale Bathymetry zu extrahiert. Für den Umgang mit den Rohdaten verwenden wir
 die Python Bibilothek <code class="docutils literal notranslate"><span class="pre">netCDF4</span></code>. Wir haben einen eindimensionalen Küstenstreifen vor
 Fukushima aus dem Datenset gelesen und in einer CSV Datei gespeichert.</p>
 <p><strong>Küstenstreifen vor Fukushima</strong></p>
@@ -140,10 +160,104 @@ Dieses Setup simuliert ein Tsunami.</p>
 <p>Die Welle ist aufgrund der Skalierung nicht gut zu erkennen, deshalb haben wir
 die Darstellung noch einmal etwas verändert</p>
 <p><strong>Nähere Betrachtung der Welle</strong></p>
+<img alt="_images/wave_height_fukushima_zoom.gif" src="_images/wave_height_fukushima_zoom.gif" />
 </section>
 </section>
 <section id="philipp-prell">
 <h3>Philipp Prell<a class="headerlink" href="#philipp-prell" title="Link to this heading"></a></h3>
+<section id="hydraulic-jumps">
+<h4>Hydraulic Jumps<a class="headerlink" href="#hydraulic-jumps" title="Link to this heading"></a></h4>
+<p>Da <span class="math notranslate nohighlight">\(t = 0\)</span> kann man einfach die gegebene Höhe <span class="math notranslate nohighlight">\(h(x,0)\)</span> und den Impuls <span class="math notranslate nohighlight">\(hu(x,0)\)</span> verwenden.
+Die Geschwindigkeit ergibt sich zu:</p>
+<div class="math notranslate nohighlight">
+\[u(x,0) = \frac{hu(x,0)}{h(x,0)}.\]</div>
+<p>Gesucht ist das Maximum der Froude-Zahl:</p>
+<div class="math notranslate nohighlight">
+\[F_{t_0}(x,0) = \frac{u(x,0)}{\sqrt{g h(x,0)}} = \frac{hu(x,0)}{\sqrt{g h(x,0)^3}}.\]</div>
+<p>Da in beiden Beispielen der Impuls konstant ist, hängt die Froude-Zahl nur von der Wassertiefe <span class="math notranslate nohighlight">\(h(x,0)\)</span> ab.
+Das Maximum wird daher dort erreicht, wo <span class="math notranslate nohighlight">\(h(x,0)\)</span> minimal ist.</p>
+<p>Physikalisch entspricht dies dem Punkt maximaler Strömungsempfindlichkeit, da kleine Änderungen der Wassertiefe dort den größten Einfluss auf die Wellenausbreitung haben.</p>
+</section>
+<section id="subcritical-flow">
+<h4>Subcritical Flow<a class="headerlink" href="#subcritical-flow" title="Link to this heading"></a></h4>
+<p>Gegeben für <span class="math notranslate nohighlight">\(x \in (0,25)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}b(x) =
+\begin{cases}
+    -1.8 - 0.05 (x-10)^2 \quad &amp;\text{if } x \in (8,12) \\
+    -2 \quad &amp;\text{else}
+\end{cases}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[h(x,0) = -b(x), \quad hu(x,0) = 4.42\]</div>
+<p>Damit ergibt sich:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}h(x,0) =
+\begin{cases}
+    1.8 + 0.05 (x-10)^2 \quad &amp;\text{if } x \in (8,12) \\
+    2 \quad &amp;\text{else}
+\end{cases}\end{split}\]</div>
+<p>Das Minimum von <span class="math notranslate nohighlight">\(h(x,0)\)</span> ist:</p>
+<div class="math notranslate nohighlight">
+\[\min_{x \in (0,25)} h(x,0) = 1.8 \quad \text{bei } x = 10.\]</div>
+<p>Damit folgt:</p>
+<div class="math notranslate nohighlight">
+\[F_{t_0}(10,0) =
+\frac{4.42}{\sqrt{9.81 \cdot 1.8^3}}
+\approx 0.58436\]</div>
+<p>Der Fluss ist damit eindeutig subkritisch (<span class="math notranslate nohighlight">\(F &lt; 1\)</span>), was bedeutet, dass sich Störungen sowohl stromaufwärts als auch stromabwärts ausbreiten können.</p>
+</section>
+<section id="supercritical-flow">
+<h4>Supercritical Flow<a class="headerlink" href="#supercritical-flow" title="Link to this heading"></a></h4>
+<p>Gegeben für <span class="math notranslate nohighlight">\(x \in (0,25)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}b(x) =
+\begin{cases}
+    -0.13 - 0.05 (x-10)^2 \quad &amp;\text{if } x \in (8,12) \\
+    -0.33 \quad &amp;\text{else}
+\end{cases}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[h(x,0) = -b(x), \quad hu(x,0) = 0.18\]</div>
+<p>Damit ergibt sich:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}h(x,0) =
+\begin{cases}
+    0.13 + 0.05 (x-10)^2 \quad &amp;\text{if } x \in (8,12) \\
+    0.33 \quad &amp;\text{else}
+\end{cases}\end{split}\]</div>
+<p>Das Minimum ist:</p>
+<div class="math notranslate nohighlight">
+\[\min_{x \in (0,25)} h(x,0) = 0.13 \quad \text{bei } x = 10.\]</div>
+<p>Somit folgt:</p>
+<div class="math notranslate nohighlight">
+\[F_{t_0}(10,0) =
+\frac{0.18}{\sqrt{9.81 \cdot 0.13^3}}
+\approx 1.2261\]</div>
+<p>Der Fluss ist damit superkritisch (<span class="math notranslate nohighlight">\(F &gt; 1\)</span>), was bedeutet, dass Informationen nur stromabwärts propagieren können.</p>
+</section>
+<section id="subcritical-case">
+<span id="id1"></span><h4>Subcritical Case<a class="headerlink" href="#subcritical-case" title="Link to this heading"></a></h4>
+<img alt="_images/wave_height_subcriticalflow2.gif" src="_images/wave_height_subcriticalflow2.gif" />
+<img alt="_images/wave_momentum_subcriticalflow2.gif" src="_images/wave_momentum_subcriticalflow2.gif" />
+</section>
+<section id="supercritical-case">
+<h4>Supercritical Case<a class="headerlink" href="#supercritical-case" title="Link to this heading"></a></h4>
+<img alt="_images/wave_height_supercriticalflow2.gif" src="_images/wave_height_supercriticalflow2.gif" />
+<img alt="_images/wave_momentum_supercriticalflow2.gif" src="_images/wave_momentum_supercriticalflow2.gif" />
+</section>
+<section id="hydraulic-jump-momentum-profile">
+<h4>Hydraulic Jump – Momentum Profile<a class="headerlink" href="#hydraulic-jump-momentum-profile" title="Link to this heading"></a></h4>
+<p id="plot-momentum-distribution">(<a class="reference download internal" download="" href="_downloads/6922fa714c94701bd51ce5e37d5f101c/woche3-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/177d2028b10eb1778886e9e36fe3de1d/woche3-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/59fdd38919dfbdcff5da29ae1b027195/woche3-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/dd07b01f8ece0481a07d7353e52479d9/woche3-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="_images/woche3-1.png" class="plot-directive" src="_images/woche3-1.png" />
+</figure>
+</section>
+<section id="versagen-des-f-wave-solvers">
+<h4>Versagen des f-wave Solvers<a class="headerlink" href="#versagen-des-f-wave-solvers" title="Link to this heading"></a></h4>
+<p>erwartet wird, dass der impuls konstant bleibt, nachdem sich die Simulation eingependelt hat,
+also dass <span class="math notranslate nohighlight">\(hu = const\)</span>. In der Simulation <a class="reference internal" href="#plot-momentum-distribution"><span class="std std-ref">Momentum plot</span></a>
+kann man eindeutig sehen, dass <span class="math notranslate nohighlight">\(hu \approx 0.125\)</span>, außer für <span class="math notranslate nohighlight">\(x = 11.55\)</span> ist <span class="math notranslate nohighlight">\(hu(x) = 0.146742\)</span>.
+das bedeutet, dass der f-wave solver einen fehler macht.</p>
+</section>
 </section>
 </section>
 </section>
