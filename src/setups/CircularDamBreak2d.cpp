@@ -20,8 +20,8 @@ tsunami_lab::setups::CircularDamBreak2d::CircularDamBreak2d(  t_real i_heightCir
   m_dxy = i_dxy;
 
   m_bathymetry = new tsunami_lab::t_real[m_cellX * m_cellY];
-  for (t_idx l_y; l_y < m_cellY; l_y++){
-    for (t_idx l_x; l_x < m_cellX; l_x++){
+  for (t_idx l_y = 0; l_y < m_cellY; l_y++){
+    for (t_idx l_x = 0; l_x < m_cellX; l_x++){
       m_bathymetry[l_x + l_y * m_cellX] = i_bathymetry[l_x + l_y * m_cellX];
     }
   }
