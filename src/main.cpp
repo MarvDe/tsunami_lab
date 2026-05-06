@@ -15,6 +15,7 @@
 #include "setups/CircularDamBreak2d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
+#include "io/Stations.h"
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
@@ -212,6 +213,20 @@ int main( int   i_argc,
     }
   }
 
+  // setup stations for measurement
+  tsunami_lab::io::Stations l_stations(l_nx, l_ny, l_dxy);
+  std::ofstream l_zeroFile;
+  l_zeroFile.open( "station_zero.csv" );
+  std::ofstream l_middleFile;
+  l_middleFile.open( "station_middle.csv" );
+  std::ofstream l_lastFile;
+  l_lastFile.open( "station_last.csv" );
+
+  l_stations.addStation("Zero", 0, 0, l_zeroFile);
+  l_stations.addStation("Middle", (l_nx - 1) / 2, (l_ny - 1) / 2, l_middleFile);
+  l_stations.addStation("Last", l_nx - 1, l_ny - 1, l_lastFile);
+  
+
   // derive maximum wave speed in setup; the momentum is ignored
   tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
 
@@ -243,7 +258,7 @@ int main( int   i_argc,
       tsunami_lab::io::Csv::write( l_dxy,
                                    l_nx,
                                    l_ny,
-                                   l_nx + 2,
+                                   l_waveProp->getStride(),
                                    l_waveProp->getHeight(),
                                    l_waveProp->getMomentumX(),
                                    l_waveProp->getMomentumY(),
@@ -252,6 +267,15 @@ int main( int   i_argc,
       l_file.close();
       l_nOut++;
     }
+
+    l_stations.write(
+      l_simTime,
+      l_waveProp->getHeight(),
+      l_waveProp->getMomentumX(),
+      l_waveProp->getMomentumY(),
+      l_waveProp->getBathymetry(),
+      l_waveProp->getStride()
+    );
 
     l_waveProp->setGhostOutflow();
     l_waveProp->timeStep( l_scaling );
