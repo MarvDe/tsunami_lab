@@ -30,6 +30,7 @@ namespace tsunami_lab {
     const t_idx TSUNAMI_EVENT = 3;
     const t_idx SUBCRITICAL_FLOW = 4;
     const t_idx SUPERCRITICAL_FLOW = 5;
+    const t_idx DAM_BREAK_2D = 6;
   }
 
 }

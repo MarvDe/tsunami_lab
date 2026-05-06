@@ -5,12 +5,14 @@
  * Entry-point for simulations.
  **/
 #include "patches/WavePropagation1d.h"
+#include "patches/WavePropagation2d.h"
 #include "setups/DamBreak1d.h"
 #include "setups/RareRare1d.h"
 #include "setups/ShockShock1d.h"
 #include "setups/TsunamiEvent1d.h"
 #include "setups/SubcriticalFlow1d.h"
 #include "setups/SupercriticalFlow1d.h"
+#include "setups/CircularDamBreak2d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include <cstdlib>
@@ -64,11 +66,17 @@ int main( int   i_argc,
   else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
   else if (l_setupName.compare("shockShock") == 0) l_setupId = tsunami_lab::setups::SHOCK_SHOCK;
   else if (l_setupName.compare("tsunamiEvent") == 0) l_setupId = tsunami_lab::setups::TSUNAMI_EVENT;
+  else if (l_setupName.compare("supercriticalFlow") == 0) l_setupId = tsunami_lab::setups::SUPERCRITICAL_FLOW;
+  else if (l_setupName.compare("subcriticalFlow") == 0) l_setupId = tsunami_lab::setups::SUBCRITICAL_FLOW;
+  else if (l_setupName.compare("damBreak2d") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK_2D;
   else l_setupName = "damBreak";
 
   // select number of cells in x direction
   l_nx = l_parser.get("cellx", (tsunami_lab::t_idx)1);
   if (l_nx == 0) l_nx = 1;
+
+  l_ny = l_parser.get("celly", (tsunami_lab::t_idx)1);
+  if (l_ny == 0) l_ny = 1;
 
   // select number of cells in x direction
   tsunami_lab::t_real l_endTime = l_parser.get("endtime", (tsunami_lab::t_real)3.0);
@@ -93,7 +101,7 @@ int main( int   i_argc,
   else if (l_setupId == tsunami_lab::setups::SHOCK_SHOCK){
     l_setup = new tsunami_lab::setups::ShockShock1d( 10,
                                                  5,
-                                                 100 );
+                                                 50 );
   }
   else if (l_setupId == tsunami_lab::setups::TSUNAMI_EVENT){
 
@@ -123,6 +131,24 @@ int main( int   i_argc,
     l_dxy = 0.1;
     l_nx /=l_dxy;
   }
+  else if(l_setupId == tsunami_lab::setups::DAM_BREAK_2D){
+    constexpr int l_cellsX = 100;
+    constexpr int l_cellsY = 100;
+    tsunami_lab::t_real l_bathymetry[l_cellsX*l_cellsY];
+    for (int i = 0; i < l_cellsY; i++){
+      for (int j = 0; j < l_cellsX; j++){
+        l_bathymetry[j + l_cellsX*i] = - ( (i-l_cellsY/2)*(i-l_cellsY/2) + (j-l_cellsX/2)*(j-l_cellsX/2) ) * 0.01;
+        //l_bathymetry[j+ l_cellsX*i] = std::sin(j*0.1);
+        l_bathymetry[j + l_cellsX*i] -= 30;
+      }
+    }
+    l_setup = new tsunami_lab::setups::CircularDamBreak2d(20,
+                                                          l_bathymetry,
+                                                          10,
+                                                          l_nx,
+                                                          l_ny,
+                                                          1);
+  }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 10,
                                                  5,
@@ -131,7 +157,14 @@ int main( int   i_argc,
   
   // construct solver
   tsunami_lab::patches::WavePropagation *l_waveProp;
-  l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId, l_outflowTypeL, l_outflowTypeR );
+  if (l_setupId == tsunami_lab::setups::DAM_BREAK_2D){
+    l_waveProp = new tsunami_lab::patches::WavePropagation2d( l_nx,
+                                                              l_ny,
+                                                              l_solverId);
+  } 
+  else {
+    l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId, l_outflowTypeL, l_outflowTypeR );
+  }
 
   // maximum observed height in the setup
   tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
@@ -202,11 +235,11 @@ int main( int   i_argc,
 
       tsunami_lab::io::Csv::write( l_dxy,
                                    l_nx,
-                                   1,
-                                   1,
+                                   l_ny,
+                                   l_nx + 2,
                                    l_waveProp->getHeight(),
                                    l_waveProp->getMomentumX(),
-                                   nullptr,
+                                   l_waveProp->getMomentumY(),
                                    l_waveProp->getBathymetry(),
                                    l_file );
       l_file.close();

@@ -22,8 +22,8 @@ tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_id
 
   // init to zero
   for( unsigned short l_st = 0; l_st < 2; l_st++ ) {
-    for( t_idx l_cey = 0; l_cey < m_yCells; l_cey++ ) {
-      for ( t_idx l_cex = 0; l_cex < m_xCells; l_cex++ ){
+    for( t_idx l_cey = 0; l_cey < m_yCells + 2; l_cey++ ) {
+      for ( t_idx l_cex = 0; l_cex < m_xCells + 2; l_cex++ ){
         m_h[l_st][l_cex + l_cey * getStride()] = 0;
         m_hu[l_st][l_cex + l_cey * getStride()] = 0;
         m_hv[l_st][l_cex + l_cey * getStride()] = 0;
@@ -31,8 +31,8 @@ tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_id
     }
   }
   // init bathymetry to 0
-  for( t_idx l_cey = 0; l_cey < m_yCells; l_cey++ ) {
-    for ( t_idx l_cex = 0; l_cex < m_xCells; l_cex++ ){
+  for( t_idx l_cey = 0; l_cey < m_yCells + 2; l_cey++ ) {
+    for ( t_idx l_cex = 0; l_cex < m_xCells + 2; l_cex++ ){
       m_bathymetry[l_cex + l_cey * getStride()] = 0;
     }
   }
@@ -44,6 +44,7 @@ tsunami_lab::patches::WavePropagation2d::~WavePropagation2d() {
   for( unsigned short l_st = 0; l_st < 2; l_st++ ) {
     delete[] m_h[l_st];
     delete[] m_hu[l_st];
+    delete[] m_hv[l_st];
   }
 }
 
@@ -59,8 +60,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   t_real * l_hvNew = m_hv[m_step];
 
   // init new cell quantities
-  for( t_idx l_cey = 0; l_cey < m_yCells; l_cey++ ) {
-    for ( t_idx l_cex = 0; l_cex < m_xCells; l_cex++ ){
+  for( t_idx l_cey = 0; l_cey < m_yCells + 2; l_cey++ ) {
+    for ( t_idx l_cex = 0; l_cex < m_xCells + 2; l_cex++ ){
       l_hNew[l_cex + l_cey * getStride()] = l_hOld[l_cex + l_cey * getStride()];
       l_huNew[l_cex + l_cey * getStride()] = l_huOld[l_cex + l_cey * getStride()];
       l_hvNew[l_cex + l_cey * getStride()] = l_hvOld[l_cex + l_cey * getStride()];
@@ -68,14 +69,12 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   }
   
   // iterate over edges and update with Riemann solutions
-  for (t_idx l_yed = 0; l_yed < m_yCells+1; l_yed++){
+  // X
+  for (t_idx l_yed = 0; l_yed < m_yCells+2; l_yed++){
     for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
       // determine left and right cell-id
       t_idx l_ceL = l_xed + getStride() * l_yed;
       t_idx l_ceR = l_xed + 1 + getStride() * l_yed;
-
-      t_idx l_ceU = l_xed + getStride() * l_yed;
-      t_idx l_ceB = l_xed + getStride() * (l_yed + 1);
   
       // extract cell data
       t_real l_hL = l_hOld[l_ceL];
@@ -84,21 +83,12 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       t_real l_huR = l_huOld[l_ceR];
       t_real l_bL = m_bathymetry[l_ceL];
       t_real l_bR = m_bathymetry[l_ceR];
-
-      t_real l_hU = l_hOld[l_ceU];
-      t_real l_hB = l_hOld[l_ceB];
-      t_real l_hvU = l_hvOld[l_ceU];
-      t_real l_hvB = l_hvOld[l_ceB];
-      t_real l_bU = m_bathymetry[l_ceU];
-      t_real l_bB = m_bathymetry[l_ceB];
       
       // compute net-updates
       t_real l_netUpdatesX[2][2];
-      t_real l_netUpdatesY[2][2];
-      
+
       // check for dry cells
       bool l_dryL = false, l_dryR = false;
-      bool l_dryU = false, l_dryB = false;
       if (l_hL <= 1e-6f && l_hR <= 1e-6f) { // both cells dry
         // skip evaluation
         continue;
@@ -117,6 +107,68 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         l_huR = -l_huL;
         l_bR  = l_bL;
       }
+      
+      // select roe solver 
+      if (m_solverId == tsunami_lab::solvers::ROE){
+        solvers::Roe::netUpdates( l_hL,
+                                  l_hR,
+                                  l_huL,
+                                  l_huR,
+                                  l_netUpdatesX[0],
+                                  l_netUpdatesX[1] );
+      }
+      // select fwave solver
+      else{
+        solvers::Fwave::netUpdates( l_hL,
+                                    l_hR,
+                                    l_huL,
+                                    l_huR,
+                                    l_bL,
+                                    l_bR,
+                                    l_netUpdatesX[0],
+                                    l_netUpdatesX[1] );
+      }
+  
+      // update the cells' quantities
+      if (!l_dryL){
+        l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
+        if (l_hNew[l_ceL] <= 1e-6f ){
+          l_hNew[l_ceL] = 1e-6f;
+          l_huNew[l_ceL] = 0;
+        }
+        l_huNew[l_ceL] -= i_scaling * l_netUpdatesX[0][1];
+      }
+      if (!l_dryR){
+        l_hNew[l_ceR]  -= i_scaling * l_netUpdatesX[1][0];
+        if (l_hNew[l_ceR] <= 1e-6f ){
+          l_hNew[l_ceR] = 1e-6f;
+          l_huNew[l_ceR] = 0;
+        }
+        l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
+      }
+    }
+  }
+  // Y
+  for (t_idx l_yed = 0; l_yed < m_yCells+1; l_yed++){
+    for( t_idx l_xed = 0; l_xed < m_xCells+2; l_xed++ ) {
+      // determine left and right cell-id
+
+      t_idx l_ceU = l_xed + getStride() * l_yed;
+      t_idx l_ceB = l_xed + getStride() * (l_yed + 1);
+  
+      // extract cell data
+      t_real l_hU = l_hOld[l_ceU];
+      t_real l_hB = l_hOld[l_ceB];
+      t_real l_hvU = l_hvOld[l_ceU];
+      t_real l_hvB = l_hvOld[l_ceB];
+      t_real l_bU = m_bathymetry[l_ceU];
+      t_real l_bB = m_bathymetry[l_ceB];
+      
+      // compute net-updates
+      t_real l_netUpdatesY[2][2];
+      
+      // check for dry cells
+      bool l_dryU = false, l_dryB = false;
 
       if (l_hU <= 1e-6f && l_hB <= 1e-6f) { // both cells dry
         // skip evaluation
@@ -136,29 +188,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         l_hvB = -l_hvU;
         l_bB  = l_bU;
       }
-   
       // select roe solver 
-      if (m_solverId == tsunami_lab::solvers::ROE){
-        solvers::Roe::netUpdates( l_hL,
-                                  l_hR,
-                                  l_huL,
-                                  l_huR,
-                                  l_netUpdatesX[0],
-                                  l_netUpdatesX[1] );
-      
-      }
-      // select fwave solver
-      else{
-        solvers::Fwave::netUpdates( l_hL,
-                                    l_hR,
-                                    l_huL,
-                                    l_huR,
-                                    l_bL,
-                                    l_bR,
-                                    l_netUpdatesX[0],
-                                    l_netUpdatesX[1] );
-      }
-
       if (m_solverId == tsunami_lab::solvers::ROE){
         solvers::Roe::netUpdates( l_hU,
                                   l_hB,
@@ -181,22 +211,21 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       }
   
       // update the cells' quantities
-      if (!l_dryL){
-        l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
-        l_huNew[l_ceL] -= i_scaling * l_netUpdatesX[0][1];
-      }
-      if (!l_dryR){
-        l_hNew[l_ceR]  -= i_scaling * l_netUpdatesX[1][0];
-        l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
-      }
-
       if (!l_dryU){
         l_hNew[l_ceU]  -= i_scaling * l_netUpdatesY[0][0];
-        l_huNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
+        if (l_hNew[l_ceU] <= 1e-6f ){
+          l_hNew[l_ceU] = 1e-6f;
+          l_huNew[l_ceU] = 0;
+        }
+        l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
       }
       if (!l_dryB){
         l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
-        l_huNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
+        if (l_hNew[l_ceB] <= 1e-6f ){
+          l_hNew[l_ceB] = 1e-6f;
+          l_huNew[l_ceB] = 0;
+        }
+        l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
       }
     }
   }

@@ -10,6 +10,7 @@ Import('env')
 l_sources = [ 'solvers/Roe.cpp',
               'solvers/F_wave.cpp',
               'patches/WavePropagation1d.cpp',
+              'patches/WavePropagation2d.cpp',
               'setups/DamBreak1d.cpp',
               'io/Csv.cpp',
               'io/Parser.cpp',
@@ -17,7 +18,9 @@ l_sources = [ 'solvers/Roe.cpp',
               'setups/TsunamiEvent1d.cpp',
               'setups/RareRare1d.cpp',
               'setups/SubcriticalFlow1d.cpp',
-              'setups/SupercriticalFlow1d.cpp' ]
+              'setups/SupercriticalFlow1d.cpp',
+              'setups/CircularDamBreak2d.cpp'
+               ]
 
 for l_so in l_sources:
   env.sources.append( env.Object( l_so ) )

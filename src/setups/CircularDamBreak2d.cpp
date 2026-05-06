@@ -6,6 +6,7 @@
  **/
 #include "CircularDamBreak2d.h"
 #include <cmath>
+#include <stdio.h>
 
 tsunami_lab::setups::CircularDamBreak2d::CircularDamBreak2d(  t_real i_heightCircle,
                                                               t_real * i_bathymetry,
@@ -20,8 +21,8 @@ tsunami_lab::setups::CircularDamBreak2d::CircularDamBreak2d(  t_real i_heightCir
   m_dxy = i_dxy;
 
   m_bathymetry = new tsunami_lab::t_real[m_cellX * m_cellY];
-  for (t_idx l_y; l_y < m_cellY; l_y++){
-    for (t_idx l_x; l_x < m_cellX; l_x++){
+  for (t_idx l_y = 0; l_y < m_cellY; l_y++){
+    for (t_idx l_x = 0; l_x < m_cellX; l_x++){
       m_bathymetry[l_x + l_y * m_cellX] = i_bathymetry[l_x + l_y * m_cellX];
     }
   }
@@ -35,14 +36,15 @@ tsunami_lab::t_real tsunami_lab::setups::CircularDamBreak2d::getHeight( t_real i
                                                                         t_real i_y     ) const {
   t_real l_cx = m_dxy * m_cellX / 2 - i_x;
   t_real l_cy = m_dxy * m_cellY / 2 - i_y;
-
   t_real l_r = std::sqrt(l_cx * l_cx + l_cy * l_cy);
+  
+  t_idx l_ix = i_x / m_dxy;
+  t_idx l_iy = i_y / m_dxy;
   if (l_r <= m_radius){
-    return m_heightCircle;
+    return m_heightCircle -m_bathymetry[l_ix + l_iy * m_cellX];
   }
   else{
-    t_idx l_ix = i_x / m_dxy;
-    t_idx l_iy = i_y / m_dxy;
+    
     return -m_bathymetry[l_ix + l_iy * m_cellX];
   }
 
