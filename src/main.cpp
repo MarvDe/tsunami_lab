@@ -44,7 +44,7 @@ int main( int   i_argc,
 
   // bathymetry file path
   std::string l_bathymetryFilePath = "profile_commas.csv";
-  std::string l_stationsFilePath = "utilities/stations.yml";
+  
 
   std::cout << "####################################" << std::endl;
   std::cout << "### Tsunami Lab                  ###" << std::endl;
@@ -83,6 +83,8 @@ int main( int   i_argc,
   // select number of cells in x direction
   tsunami_lab::t_real l_endTime = l_parser.get("endtime", (tsunami_lab::t_real)3.0);
   if (l_endTime < 0.0) l_endTime = 3.0;
+  // set stations yaml file;
+  std::string l_stationsFilePath = l_parser.get("stations", "");
 
   std::cout << "runtime configuration" << std::endl;
   std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
@@ -149,6 +151,8 @@ int main( int   i_argc,
         if (j > 20 && j < 25 && (i < 40 || i > 60)){
           l_bathymetry[j + l_cellsX*i] = 10;
         }
+
+        l_bathymetry[j + l_cellsX * i] = -50;
       }
     }
     l_setup = new tsunami_lab::setups::CircularDamBreak2d(50,
@@ -159,9 +163,9 @@ int main( int   i_argc,
                                                           1);
   }
   else{
-    l_setup = new tsunami_lab::setups::DamBreak1d( 10,
-                                                 5,
-                                                 20 );
+    l_setup = new tsunami_lab::setups::DamBreak1d( 50,
+                                                 100,
+                                                 60 );
   }
   
   // construct solver
