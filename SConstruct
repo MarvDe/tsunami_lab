@@ -67,6 +67,7 @@ else:
 env.Append( CXXFLAGS = [ '-isystem', 'submodules/Catch2/single_include' ] )
 
 # add yaml-cpp
+env.Append( CXXFLAGS = [ '-isystem', 'submodules/yaml-cpp/include' ] )
 env.Append(CPPPATH=['submodules/yaml-cpp/include'])
 env.Append(LIBPATH=['submodules/yaml-cpp/build'])
 env.Append(LIBS=['yaml-cpp'])
