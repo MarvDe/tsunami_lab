@@ -9,7 +9,7 @@ tsunami_lab::io::Stations::~Stations(){
 }
 
 void tsunami_lab::io::Stations::addStation(const std::string &i_name, t_real i_posX, t_real i_posY, std::ostream &io_stream) {
-   m_stations.push_back(Station{i_name, i_posX, i_posY, io_stream});
+   m_stations.push_back(Station{i_name, i_posX, i_posY, &io_stream});
 }
 
 void tsunami_lab::io::Stations::write( t_real i_simTime, const t_real * i_height, const t_real * i_momentumX, const t_real * i_momentumY, const t_real * i_bathymetry, t_idx i_stride ) const{
@@ -17,7 +17,7 @@ void tsunami_lab::io::Stations::write( t_real i_simTime, const t_real * i_height
 
     for (const auto &l_station: m_stations){
 
-        std::ostream &l_stream = l_station.m_stream;
+        std::ostream &l_stream = *l_station.m_stream;
 
         // write CSV header
         if (i_simTime == 0){
@@ -44,5 +44,25 @@ void tsunami_lab::io::Stations::write( t_real i_simTime, const t_real * i_height
         }
         l_stream << std::endl;
     }
+}
 
+void tsunami_lab::io::Stations::readFile(std::string i_filePath){
+    YAML::Node blub2;
+    try {
+        blub2 = YAML::LoadFile(i_filePath);
+    } catch (YAML::ParserException& e){
+        std::cerr << "YAML Error: " << e.what() << "\n";
+        return;
+    }
+
+    auto stations = blub2["stations"];
+
+    for (const auto& station : stations){
+        std::cout << "stationName: " << station["name"].as<std::string>() << std::endl;
+        m_streams.push_back(std::unique_ptr<std::ofstream>(new std::ofstream(station["name"].as<std::string>() + ".csv")));
+        addStation( station["name"].as<std::string>(),
+                    station["locX"].as<t_real>(),
+                    station["locY"].as<t_real>(),
+                    *m_streams.back());
+    }
 }

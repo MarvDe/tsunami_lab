@@ -44,6 +44,7 @@ int main( int   i_argc,
 
   // bathymetry file path
   std::string l_bathymetryFilePath = "profile_commas.csv";
+  std::string l_stationsFilePath = "utilities/stations.yml";
 
   std::cout << "####################################" << std::endl;
   std::cout << "### Tsunami Lab                  ###" << std::endl;
@@ -215,17 +216,10 @@ int main( int   i_argc,
 
   // setup stations for measurement
   tsunami_lab::io::Stations l_stations(l_nx, l_ny, l_dxy);
-  std::ofstream l_zeroFile;
-  l_zeroFile.open( "station_zero.csv" );
-  std::ofstream l_middleFile;
-  l_middleFile.open( "station_middle.csv" );
-  std::ofstream l_lastFile;
-  l_lastFile.open( "station_last.csv" );
-
-  l_stations.addStation("Zero", 0, 0, l_zeroFile);
-  l_stations.addStation("Middle", (l_nx - 1) / 2, (l_ny - 1) / 2, l_middleFile);
-  l_stations.addStation("Last", l_nx - 1, l_ny - 1, l_lastFile);
   
+  l_stations.readFile(l_stationsFilePath);
+  
+   
 
   // derive maximum wave speed in setup; the momentum is ignored
   tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );

@@ -1,0 +1,7 @@
+stations:
+  - name: "station1"
+    locX: 10
+    locY: 100
+  - name: "station2"
+    locX: 100
+    locY: 15
