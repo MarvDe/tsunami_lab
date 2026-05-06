@@ -66,6 +66,11 @@ else:
 # add Catch2
 env.Append( CXXFLAGS = [ '-isystem', 'submodules/Catch2/single_include' ] )
 
+# add yaml-cpp
+env.Append(CPPPATH=['submodules/yaml-cpp/include'])
+env.Append(LIBPATH=['submodules/yaml-cpp/build'])
+env.Append(LIBS=['yaml-cpp'])
+
 # get source files
 VariantDir( variant_dir = 'build/src',
             src_dir     = 'src' )
