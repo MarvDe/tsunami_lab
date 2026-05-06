@@ -1,0 +1,10 @@
+stations:
+  - name: "station1_2d"
+    locX: 30
+    locY: 50
+  - name: "station2_2d"
+    locX: 10
+    locY: 50
+  - name: "station3_2d"
+    locX: 60
+    locY: 50

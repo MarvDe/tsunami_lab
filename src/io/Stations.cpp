@@ -50,7 +50,7 @@ void tsunami_lab::io::Stations::readFile(std::string i_filePath){
     YAML::Node blub2;
     try {
         blub2 = YAML::LoadFile(i_filePath);
-    } catch (YAML::ParserException& e){
+    } catch (YAML::Exception& e){
         std::cerr << "YAML Error: " << e.what() << "\n";
         return;
     }
@@ -58,7 +58,6 @@ void tsunami_lab::io::Stations::readFile(std::string i_filePath){
     auto stations = blub2["stations"];
 
     for (const auto& station : stations){
-        std::cout << "stationName: " << station["name"].as<std::string>() << std::endl;
         m_streams.push_back(std::unique_ptr<std::ofstream>(new std::ofstream(station["name"].as<std::string>() + ".csv")));
         addStation( station["name"].as<std::string>(),
                     station["locX"].as<t_real>(),
