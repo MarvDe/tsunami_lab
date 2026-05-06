@@ -141,15 +141,15 @@ int main( int   i_argc,
     tsunami_lab::t_real l_bathymetry[l_cellsX*l_cellsY];
     for (int i = 0; i < l_cellsY; i++){
       for (int j = 0; j < l_cellsX; j++){
-        l_bathymetry[j + l_cellsX*i] = - ( (i-l_cellsY/2)*(i-l_cellsY/2) + (j-l_cellsX/2)*(j-l_cellsX/2) ) * 0.01;
+        //l_bathymetry[j + l_cellsX*i] = - ( (i-l_cellsY/2)*(i-l_cellsY/2) + (j-l_cellsX/2)*(j-l_cellsX/2) ) * 0.01;
         //l_bathymetry[j+ l_cellsX*i] = std::sin(j*0.1);
-        l_bathymetry[j + l_cellsX*i] -= 30;
+        //l_bathymetry[j + l_cellsX*i] -= 30;
         //tsunami_lab::t_real l_cx = l_cellsX / 2 - j + 30;
         //tsunami_lab::t_real l_cy = l_cellsY / 2 - i + 30;
         //tsunami_lab::t_real l_r = std::sqrt(l_cx * l_cx + l_cy * l_cy);
         //l_r <= 20 && l_cx < 10 && l_cy < 10
         if (j > 20 && j < 25 && (i < 40 || i > 60)){
-          l_bathymetry[j + l_cellsX*i] = 10;
+          //l_bathymetry[j + l_cellsX*i] = 10;
         }
 
         l_bathymetry[j + l_cellsX * i] = -50;

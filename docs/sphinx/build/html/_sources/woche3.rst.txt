@@ -220,17 +220,7 @@ Hydraulic Jump – Momentum Profile
 
 .. _plot_momentum_distribution:
 
-.. plot::
-
-    import pandas as pd
-    import matplotlib.pyplot as plt
-
-    df = pd.read_csv("../assets/momentum_hydraulic_jump.csv")
-
-    plt.plot(df.iloc[:, 0], df.iloc[:, 3])
-    plt.xlabel("X-Position")
-    plt.ylabel("Momentum hu")
-    plt.title("Momentum distribution")
+.. image:: ../images/momentum_hydraulic_jump.png
 
 
 
