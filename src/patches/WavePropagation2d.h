@@ -2,7 +2,7 @@
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
  * @section DESCRIPTION
- * One-dimensional wave propagation patch.
+ * Two-dimensional wave propagation patch.
  **/
 #ifndef TSUNAMI_LAB_PATCHES_WAVE_PROPAGATION_2D
 #define TSUNAMI_LAB_PATCHES_WAVE_PROPAGATION_2D
@@ -42,7 +42,7 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
     
     public:
     /**
-     * Constructs the 1d wave propagation solver.
+     * Constructs the 2d wave propagation solver.
      *
      * @param i_xCells number of cells.
      * @param i_yCells number of cells.

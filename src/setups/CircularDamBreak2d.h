@@ -16,7 +16,7 @@ namespace tsunami_lab {
 }
 
 /**
- * 1d dam break setup.
+ * 2d dam break setup.
  **/
 class tsunami_lab::setups::CircularDamBreak2d: public Setup {
   private:
@@ -34,7 +34,7 @@ class tsunami_lab::setups::CircularDamBreak2d: public Setup {
     //! radius of circle
     t_real m_radius = 0;
 
-    //! 
+    //! bathymetry
     t_real * m_bathymetry = nullptr;
 
   public:
