@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <yaml-cpp/yaml.h>
 
 namespace tsunami_lab {
   namespace io {
@@ -18,13 +19,16 @@ struct tsunami_lab::io::Station{
     const std::string m_name;
     t_real m_posX;
     t_real m_posY;
-    std::ostream &m_stream;
+    std::ostream *m_stream;
 };
 
 class tsunami_lab::io::Stations{
     private:
         //! array of stations
         std::vector<tsunami_lab::io::Station> m_stations;
+
+        //! array of streams
+        std::vector<std::unique_ptr<std::ofstream>> m_streams;
 
         //! number of cells
         t_idx m_cellX = 0;
@@ -71,6 +75,13 @@ class tsunami_lab::io::Stations{
          * @param i_stride stride of data arrays.
          **/
         void write( t_real i_simTime, const t_real * i_height, const t_real * i_momentumX, const t_real * i_momentumY, const t_real * i_bathymetry, t_idx i_stride ) const;
+
+        /**
+         * Reads station from yaml file
+         * 
+         * @param i_filePath path of the stations yaml file.
+         **/
+        void readFile(std::string i_filePath);
 };
 
 
