@@ -44,8 +44,8 @@ tsunami_lab::t_real tsunami_lab::setups::CircularDamBreak2d::getHeight( t_real i
     return m_heightCircle -m_bathymetry[l_ix + l_iy * m_cellX];
   }
   else{
-    
-    return -m_bathymetry[l_ix + l_iy * m_cellX];
+    t_real l_bat = -m_bathymetry[l_ix + l_iy * m_cellX];
+    return l_bat < 0 ? 0 : l_bat;
   }
 
 }
