@@ -23,12 +23,21 @@ jobs:
       - name: Dependencies
         run: |
           sudo apt-get update
+          sudo apt-get install cmake
           sudo apt-get install scons
           sudo apt-get install valgrind
           sudo apt-get install cppcheck
           git submodule init
           git submodule update
 
+          # build yaml-cpp
+          cd submodules/yaml-cpp
+          mkdir -p build
+          cd build
+          cmake ..
+          cmake --build .
+
+          cd ../../..
       - name: Static Code Analysis
         run:
           cppcheck src/ --template=gcc --force --error-exitcode=1
