@@ -72,6 +72,12 @@ env.Append(CPPPATH=['submodules/yaml-cpp/include'])
 env.Append(LIBPATH=['submodules/yaml-cpp/build'])
 env.Append(LIBS=['yaml-cpp'])
 
+# add netcdp-cxx4
+env.Append( CXXFLAGS = [ '-isystem', 'submodules/netcdf-cxx4/cxx4' ] )
+env.Append(CPPPATH=['submodules/netcdf-cxx4/cxx4'])
+env.Append(LIBPATH=['submodules/netcdf-cxx4/build/cxx4'])
+env.Append(LIBS=['netcdf-cxx4'])
+
 # get source files
 VariantDir( variant_dir = 'build/src',
             src_dir     = 'src' )
