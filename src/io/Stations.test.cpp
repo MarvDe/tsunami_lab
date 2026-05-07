@@ -29,14 +29,14 @@ TEST_CASE( "Test stations.", "[Stations]" ){
     tsunami_lab::io::Stations l_stations(l_cellX, l_cellY, l_dxy);
 
     // station at beginning
-    l_stations.addStation("station1", 0, 0, l_stream1);
+    l_stations.addStation("station1", 0, 0, &l_stream1);
     // station at center
-    l_stations.addStation("station2", (l_cellX - 1) / 2, (l_cellY - 1) / 2, l_stream2);
+    l_stations.addStation("station2", (l_cellX - 1) / 2, (l_cellY - 1) / 2, &l_stream2);
     // station at last index
-    l_stations.addStation("station3", l_cellX - 1, l_cellY - 1, l_stream3);
+    l_stations.addStation("station3", l_cellX - 1, l_cellY - 1, &l_stream3);
     // stations out of bounds
-    l_stations.addStation("station4", l_cellX, l_cellY - 1, l_stream4);
-    l_stations.addStation("station5", l_cellX - 1, l_cellY, l_stream5);
+    l_stations.addStation("station4", l_cellX, l_cellY - 1, &l_stream4);
+    l_stations.addStation("station5", l_cellX - 1, l_cellY, &l_stream5);
 
     for (tsunami_lab::t_idx l_i = 0; l_i < 3; l_i++){
         

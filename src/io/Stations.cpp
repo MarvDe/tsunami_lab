@@ -5,11 +5,15 @@ tsunami_lab::io::Stations::Stations( t_idx i_cellX, t_idx i_cellY, t_real i_dxy)
 }
 
 tsunami_lab::io::Stations::~Stations(){
-
+    for (const auto& l_station : m_stations){
+        if (l_station.m_ownsStream){
+            delete l_station.m_stream;
+        }
+    }
 }
 
-void tsunami_lab::io::Stations::addStation(const std::string &i_name, t_real i_posX, t_real i_posY, std::ostream &io_stream) {
-   m_stations.push_back(Station{i_name, i_posX, i_posY, &io_stream});
+void tsunami_lab::io::Stations::addStation(const std::string &i_name, t_real i_posX, t_real i_posY, std::ostream *io_stream, bool i_ownsStream) {
+   m_stations.push_back(Station{i_name, i_posX, i_posY, io_stream, i_ownsStream});
 }
 
 void tsunami_lab::io::Stations::write( t_real i_simTime, const t_real * i_height, const t_real * i_momentumX, const t_real * i_momentumY, const t_real * i_bathymetry, t_idx i_stride ) const{
@@ -58,10 +62,11 @@ void tsunami_lab::io::Stations::readFile(std::string i_filePath){
     auto stations = blub2["stations"];
 
     for (const auto& station : stations){
-        m_streams.push_back(std::unique_ptr<std::ofstream>(new std::ofstream(station["name"].as<std::string>() + ".csv")));
+        auto l_stream = new std::ofstream(station["name"].as<std::string>() + ".csv");
         addStation( station["name"].as<std::string>(),
                     station["locX"].as<t_real>(),
                     station["locY"].as<t_real>(),
-                    *m_streams.back());
+                    l_stream, 
+                    true);
     }
 }
