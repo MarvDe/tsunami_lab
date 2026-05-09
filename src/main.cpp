@@ -22,7 +22,7 @@
 #include <fstream>
 #include <limits>
 #include <string>
-#include <netcdf>
+#include <netcdf.h>
 
 int main( int   i_argc,
           char *i_argv[] ) {
