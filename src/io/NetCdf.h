@@ -11,7 +11,7 @@
 #include <cstring>
 #include <iostream>
 #include <fstream>
-#include <netcdf>
+#include <netcdf.h>
 
 namespace tsunami_lab {
   namespace io {

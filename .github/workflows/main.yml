@@ -41,14 +41,6 @@ jobs:
 
           cd ../../..
 
-          # build netcdf-cxx4
-          cd submodules/netcdf-cxx4
-          mkdir -p build
-          cd build
-          cmake ..
-          cmake --build .
-
-          cd ../../..
       - name: Static Code Analysis
         run:
           cppcheck src/ --template=gcc --force --error-exitcode=1
