@@ -5,8 +5,9 @@
  * IO-routines handling netcdf files.
  **/
 #include "NetCdf.h"
+using namespace tsunami_lab;
 
-tsunami_lab::io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std::string & i_filePath ){
+io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std::string & i_filePath ){
     m_dxy = i_dxy;
     m_dt = i_dt;
     // Opening new netcdf file
@@ -67,24 +68,28 @@ tsunami_lab::io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_
     }
 }
 
-tsunami_lab::io::NetCdf::~NetCdf(){
+io::NetCdf::~NetCdf(){
     errorChecking( nc_close(m_fileId) );
 }
 
-void tsunami_lab::io::NetCdf::errorChecking(int i_errId){
+int io::NetCdf::errorChecking(int i_errId, bool i_printErr){
     if (i_errId != NC_NOERR){
-        std::cerr << nc_strerror(i_errId) << std::endl;
+        if (i_printErr){
+            std::cerr << nc_strerror(i_errId) << std::endl;
+        }
+        return -1;
     }
+    return 0;
 }
 
-void tsunami_lab::io::NetCdf::write(t_idx                i_nx,
-                                    t_idx                i_ny,
-                                    t_idx                i_timeStep,
-                                    t_idx                i_stride,
-                                    t_real       const * i_h,
-                                    t_real       const * i_hu,
-                                    t_real       const * i_hv,
-                                    t_real       const * i_bathymetry ){
+void io::NetCdf::write( t_idx                i_nx,
+                        t_idx                i_ny,
+                        t_idx                i_timeStep,
+                        t_idx                i_stride,
+                        t_real       const * i_h,
+                        t_real       const * i_hu,
+                        t_real       const * i_hv,
+                        t_real       const * i_bathymetry ){
     
     // write data to file
     tsunami_lab::t_real l_timeStep = i_timeStep;
@@ -108,3 +113,78 @@ void tsunami_lab::io::NetCdf::write(t_idx                i_nx,
     }
 }
 
+int io::NetCdf::readDisplacement(  t_idx i_cellX,
+                                    t_idx i_cellY,
+                                    std::string i_filePath,
+                                    t_real * o_displacement,
+                                    bool printErr){
+    int l_ncid;
+    int l_varidZ;
+    int l_status = 0;
+    int ndims;
+    int dimids[NC_MAX_VAR_DIMS];
+    size_t dim_sizes[NC_MAX_VAR_DIMS];
+                                    
+    l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid) );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_varid(l_ncid, "z", &l_varidZ) );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_var(l_ncid, l_varidZ, nullptr, nullptr, &ndims, dimids, nullptr) );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[0], &dim_sizes[0]) );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[1], &dim_sizes[1]) );
+    if (l_status) return -1;
+    size_t nx = dim_sizes[1];
+    size_t ny = dim_sizes[0];
+
+    if (dim_sizes[2] != 0 || nx != i_cellX || ny != i_cellY){
+        if (printErr){
+            printf("Error: NetCdf dimension mismatch.\n");
+        }
+        return -1;
+    }
+
+    l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, o_displacement) );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_close(l_ncid) );
+    return l_status;
+}
+
+int io::NetCdf::readBathymetry(t_idx i_cellX,
+                                t_idx i_cellY,
+                                std::string i_filePath,
+                                t_real * o_bathymetry,
+                                bool printErr){
+    int l_ncid;
+    int l_varidZ;
+    int l_status = 0;
+    int ndims;
+    int dimids[NC_MAX_VAR_DIMS];
+    size_t dim_sizes[NC_MAX_VAR_DIMS];
+                                    
+    l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid) );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_varid(l_ncid, "z", &l_varidZ) );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_var(l_ncid, l_varidZ, nullptr, nullptr, &ndims, dimids, nullptr) );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[0], &dim_sizes[0]) );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[1], &dim_sizes[1]) );
+    if (l_status) return -1;
+    size_t nx = dim_sizes[1];
+    size_t ny = dim_sizes[0];
+
+    if (dim_sizes[2] != 0 || nx != i_cellX || ny != i_cellY){
+        if(printErr){
+            printf("Error: NetCdf dimension mismatch.\n");
+        }
+        return -1;
+    }
+
+    l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, o_bathymetry) );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_close(l_ncid) );
+    return l_status;
+}
