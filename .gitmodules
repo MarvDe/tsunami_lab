@@ -4,6 +4,3 @@
 [submodule "submodules/yaml-cpp"]
 	path = submodules/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
-[submodule "submodules/netcdf-cxx4"]
-	path = submodules/netcdf-cxx4
-	url = https://github.com/Unidata/netcdf-cxx4.git
