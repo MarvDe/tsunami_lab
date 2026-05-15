@@ -52,10 +52,11 @@ class tsunami_lab::io::NetCdf {
      * @param i_filePath path to file.
      * @param o_bathymetry bathymetry data.
      */
-    static void readBathymetry( t_idx             i_cellX,
+    static int readBathymetry( t_idx             i_cellX,
                                 t_idx             i_cellY,
                                 std::string       i_filePath,
-                                t_real       *    o_bathymetry);
+                                t_real       *    o_bathymetry,
+                                t_idx printErr = 1);
     
     /**
      * Reads displacement data.
@@ -64,11 +65,14 @@ class tsunami_lab::io::NetCdf {
      * @param i_cellY number of cells to read in y direction.
      * @param i_filePath path to file.
      * @param o_displacement displacement data.
+     *
+     * @return success.
      */
-    static void readDisplacement( t_idx         i_cellX,
+    static int readDisplacement( t_idx         i_cellX,
                                   t_idx         i_cellY,
                                   std::string   i_filePath,
-                                  t_real     *  o_displacement
+                                  t_real     *  o_displacement,
+                                  t_idx printErr = 1
                                     );
 };
 
