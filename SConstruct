@@ -72,11 +72,12 @@ env.Append(CPPPATH=['submodules/yaml-cpp/include'])
 env.Append(LIBPATH=['submodules/yaml-cpp/build'])
 env.Append(LIBS=['yaml-cpp'])
 
-# add netcdp-cxx4
-env.Append( CXXFLAGS = [ '-isystem', 'submodules/netcdf-cxx4/cxx4' ] )
-env.Append(CPPPATH=['submodules/netcdf-cxx4/cxx4'])
-env.Append(LIBPATH=['submodules/netcdf-cxx4/build/cxx4'])
-env.Append(LIBS=['netcdf-cxx4'])
+# add netcdf
+conf = Configure(env)
+if not conf.CheckLib('netcdf'):
+    print ("Did not find libnetcdf.a or libnetcdf.lib, exiting!")
+    Exit(1)
+env.Append(LIBS=['netcdf'])
 
 # get source files
 VariantDir( variant_dir = 'build/src',
