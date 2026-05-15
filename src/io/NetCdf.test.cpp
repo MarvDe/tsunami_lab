@@ -18,3 +18,19 @@ TEST_CASE( "test the NetCdf displacement reader.", "[NetCdf]"){
         }
     }
 }
+
+TEST_CASE( "test the NetCdf bathymetry reader.", "[NetCd2f]"){
+    t_real l_bathy[1000*1000];
+    for (int l_y = 0; l_y < 1000; l_y++){
+        for (int l_x = 0; l_x < 1000; l_x++){
+            l_bathy[l_x + l_y * 1000] = 0;
+        }
+    }
+
+    io::NetCdf::readBathymetry(0,0,"utilities/artificialtsunami_bathymetry_1000.nc", l_bathy);
+    for (int l_y = 20; l_y < 1000; l_y+=500){
+        for (int l_x = 0; l_x < 1000; l_x+=500){
+            REQUIRE( l_bathy[l_y * 1000 + l_x] != 0);
+        }
+    }
+}
