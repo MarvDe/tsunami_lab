@@ -43,7 +43,7 @@ class tsunami_lab::io::NetCdf {
     //! time step size
     tsunami_lab::t_idx m_dt;
 
-    static void errorChecking(int i_errId);
+    static int errorChecking(int i_errId, bool i_printErr = true);
 
   public:
 
@@ -84,7 +84,7 @@ class tsunami_lab::io::NetCdf {
                                 t_idx             i_cellY,
                                 std::string       i_filePath,
                                 t_real       *    o_bathymetry,
-                                t_idx printErr = 1);
+                                bool printErr = true);
     
     /**
      * Reads displacement data.
@@ -100,7 +100,7 @@ class tsunami_lab::io::NetCdf {
                                   t_idx         i_cellY,
                                   std::string   i_filePath,
                                   t_real     *  o_displacement,
-                                  t_idx printErr = 1
+                                  bool printErr = true
                                     );
 
 };
