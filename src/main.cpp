@@ -13,6 +13,7 @@
 #include "setups/SubcriticalFlow1d.h"
 #include "setups/SupercriticalFlow1d.h"
 #include "setups/CircularDamBreak2d.h"
+#include "setups/ArtificialTsunami2d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include "io/Stations.h"
@@ -72,6 +73,7 @@ int main( int   i_argc,
   else if (l_setupName.compare("supercriticalFlow") == 0) l_setupId = tsunami_lab::setups::SUPERCRITICAL_FLOW;
   else if (l_setupName.compare("subcriticalFlow") == 0) l_setupId = tsunami_lab::setups::SUBCRITICAL_FLOW;
   else if (l_setupName.compare("damBreak2d") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK_2D;
+  else if (l_setupName.compare("artificialTsunami") == 0) l_setupId = tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D;
   else l_setupName = "damBreak";
 
   // select number of cells in x direction
@@ -163,6 +165,12 @@ int main( int   i_argc,
                                                           l_ny,
                                                           1);
   }
+  else if (l_setupId == tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D){
+    l_setup = new tsunami_lab::setups::ArtificialTsunami2d;
+    l_dxy = 1;
+    l_nx = 1000;
+    l_ny = 1000;
+  }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 50,
                                                  100,
@@ -171,7 +179,8 @@ int main( int   i_argc,
   
   // construct solver
   tsunami_lab::patches::WavePropagation *l_waveProp;
-  if (l_setupId == tsunami_lab::setups::DAM_BREAK_2D){
+  if (l_setupId == tsunami_lab::setups::DAM_BREAK_2D ||
+      l_setupId == tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D){
     l_waveProp = new tsunami_lab::patches::WavePropagation2d( l_nx,
                                                               l_ny,
                                                               l_solverId);
