@@ -5,7 +5,7 @@ using namespace tsunami_lab;
 
 t_real setups::ArtificialTsunami2d::getHeight(  t_real i_x,
                                                 t_real i_y) const {
-    t_real l_out = -getBathymetry(i_x,i_y);
+    t_real l_out = -getBathymetry(i_x,i_y) + getDisplacement(i_x, i_y);
     if (l_out < 0){
         return 0;
     }
@@ -15,9 +15,9 @@ t_real setups::ArtificialTsunami2d::getHeight(  t_real i_x,
     return l_out;
 }
 
-t_real setups::ArtificialTsunami2d::getBathymetry(  t_real i_x,
-                                                    t_real i_y) const {
-    return -100 + getDisplacement(i_x, i_y);
+t_real setups::ArtificialTsunami2d::getBathymetry(  t_real,
+                                                    t_real) const {
+    return -100;
 }
 
 t_real setups::ArtificialTsunami2d::getDisplacement(t_real i_x,
