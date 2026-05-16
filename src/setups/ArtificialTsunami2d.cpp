@@ -17,24 +17,19 @@ t_real setups::ArtificialTsunami2d::getHeight(  t_real i_x,
 
 t_real setups::ArtificialTsunami2d::getBathymetry(  t_real i_x,
                                                     t_real i_y) const {
-    t_real l_bIn = 0;
-    if (l_bIn < 0){
-        if (l_bIn > -1e-6){
-            return 1e-6 + getDisplacement(i_x, i_y);
-        }
-        return l_bIn + getDisplacement(i_x, i_y);
-    }
-    else {
-        if (l_bIn < 1e-6){
-            return 1e-6 + getDisplacement(i_x, i_y);
-        }
-        return l_bIn + getDisplacement(i_x, i_y);
-    }
+    return -100 + getDisplacement(i_x, i_y);
 }
 
 t_real setups::ArtificialTsunami2d::getDisplacement(t_real i_x,
                                                     t_real i_y) const {
-    t_real l_f = std::sin(((i_x / (static_cast<t_real>(m_cellsX)/2) ) + 1) * setups::PI);
-    t_real l_g = -((i_y / (static_cast<t_real>(m_cellsY)/ 2)) * (i_y / (static_cast<t_real>(m_cellsY)/ 2))) + 1;
+    // shift coordinates to [-500, 500]
+    t_real l_x = i_x - 500.0;
+    t_real l_y = i_y - 500.0;
+
+    if( std::abs(l_x) > 500 || std::abs(l_y) > 500 ){
+        return 0;
+    }
+    t_real l_f = std::sin(((l_x / (static_cast<t_real>(m_cellsX)/2) ) + 1) * setups::PI);
+    t_real l_g = -((l_y / (static_cast<t_real>(m_cellsY)/ 2)) * (l_y / (static_cast<t_real>(m_cellsY)/ 2))) + 1;
     return 5 * l_f * l_g;
 }

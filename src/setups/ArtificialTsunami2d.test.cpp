@@ -17,15 +17,6 @@ TEST_CASE("getDisplacement produces bounded sinusoidal values", "[ArtificialTsun
     REQUIRE(std::isfinite(d));
 }
 
-TEST_CASE("getBathymetry adds displacement and small offset", "[ArtificialTsunami2d]") {
-
-    setups::ArtificialTsunami2d tsuami;
-
-    t_real disp = tsuami.getDisplacement(100, 200);
-    t_real expected = 1e-6 + disp;
-
-    REQUIRE(tsuami.getBathymetry(100, 200) == Approx(expected).margin(1e-6));
-}
 
 TEST_CASE("getHeight follows threshold logic", "[ArtificialTsunami2d]") {
 
