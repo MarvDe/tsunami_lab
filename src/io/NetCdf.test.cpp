@@ -85,6 +85,8 @@ TEST_CASE( "Test netcdf.", "[NetCdf]" ){
     remove(l_fileName.c_str());
 }
 
+//TBD: implement tests for NetCDF with ghost cells (l_nx + 2 == l_stride)
+
 TEST_CASE( "test the NetCdf displacement reader.", "[NetCdf]"){
     t_real l_dis[100*100];
     for (int l_y = 0; l_y < 100; l_y++){
