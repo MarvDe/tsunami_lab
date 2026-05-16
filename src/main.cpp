@@ -17,13 +17,13 @@
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include "io/Stations.h"
+#include "io/NetCdf.h"
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
 #include <fstream>
 #include <limits>
 #include <string>
-#include <netcdf.h>
 
 int main( int   i_argc,
           char *i_argv[] ) {
