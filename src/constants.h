@@ -24,6 +24,7 @@ namespace tsunami_lab {
 
   namespace io{
     //! format ids
+    const t_idx NONE = -1;
     const t_idx CSV = 0;
     const t_idx NC = 1;
   }
