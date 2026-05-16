@@ -144,3 +144,20 @@ TEST_CASE( "test the NetCdf bathymetry reader.", "[NetCd2f]"){
         REQUIRE(ret == -1);
     }
 }
+
+TEST_CASE( "test the dynamic read method", "[NetCdf]"){
+    t_real * l_data = nullptr;
+
+    t_idx l_x = 0;
+    t_idx l_y = 0;
+
+    io::NetCdf::read("utilities/artificialtsunami_bathymetry_1000.nc", l_x, l_y, &l_data);
+
+    REQUIRE( l_x == 1000 );
+    REQUIRE( l_y == 1000 );
+
+    REQUIRE( l_data[0] == -100 );
+    REQUIRE( l_data[l_x * l_y - 1] == -100 );
+
+    delete[] l_data;
+}
