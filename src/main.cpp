@@ -37,6 +37,9 @@ int main( int   i_argc,
   // id of setup
   tsunami_lab::t_idx l_setupId = tsunami_lab::setups::TSUNAMI_EVENT;
 
+  // id of output format
+  tsunami_lab::t_idx l_formatId = tsunami_lab::io::CSV;
+
   // set cell size
   tsunami_lab::t_real l_dxy = 1;
 
@@ -75,6 +78,12 @@ int main( int   i_argc,
   else if (l_setupName.compare("damBreak2d") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK_2D;
   else if (l_setupName.compare("artificialTsunami") == 0) l_setupId = tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D;
   else l_setupName = "damBreak";
+
+  // choose ouput format
+  std::string l_formatName = l_parser.get("format", "csv");
+  if (l_formatName.compare("nc") == 0) l_formatId = tsunami_lab::io::NC;
+  else if (l_formatName.compare("csv")) l_formatId = tsunami_lab::io::CSV;
+  else l_formatId = tsunami_lab::io::CSV;
 
   // select number of cells in x direction
   l_nx = l_parser.get("cellx", (tsunami_lab::t_idx)1);
@@ -141,6 +150,9 @@ int main( int   i_argc,
   else if(l_setupId == tsunami_lab::setups::DAM_BREAK_2D){
     constexpr int l_cellsX = 100;
     constexpr int l_cellsY = 100;
+    l_dxy = 1;
+    l_nx = l_cellsX;
+    l_ny = l_cellsY;
     tsunami_lab::t_real l_bathymetry[l_cellsX*l_cellsY];
     for (int i = 0; i < l_cellsY; i++){
       for (int j = 0; j < l_cellsX; j++){
@@ -251,29 +263,49 @@ int main( int   i_argc,
 
   std::cout << "entering time loop" << std::endl;
 
+  //setup NetCdf
+  tsunami_lab::io::NetCdf* l_netCdf = new tsunami_lab::io::NetCdf(  l_nx,
+                                                                    l_ny,
+                                                                    l_dxy,
+                                                                    l_dt,
+                                                                    "solution.nc");
+
   // iterate over time
   while( l_simTime < l_endTime ){
     if( l_timeStep % 25 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
-
-      std::string l_path = "solution_" + std::to_string(l_nOut) + ".csv";
-      std::cout << "  writing wave field to " << l_path << std::endl;
-
-      std::ofstream l_file;
-      l_file.open( l_path  );
-
-      tsunami_lab::io::Csv::write( l_dxy,
-                                   l_nx,
-                                   l_ny,
-                                   l_waveProp->getStride(),
-                                   l_waveProp->getHeight(),
-                                   l_waveProp->getMomentumX(),
-                                   l_waveProp->getMomentumY(),
-                                   l_waveProp->getBathymetry(),
-                                   l_file );
-      l_file.close();
-      l_nOut++;
+      if (l_formatId == tsunami_lab::io::CSV){
+        std::string l_path = "solution_" + std::to_string(l_nOut) + ".csv";
+        std::cout << "  writing wave field to " << l_path << std::endl;
+  
+        std::ofstream l_file;
+        l_file.open( l_path  );
+  
+        tsunami_lab::io::Csv::write( l_dxy,
+                                      l_nx,
+                                      l_ny,
+                                      l_waveProp->getStride(),
+                                      l_waveProp->getHeight(),
+                                      l_waveProp->getMomentumX(),
+                                      l_waveProp->getMomentumY(),
+                                      l_waveProp->getBathymetry(),
+                                      l_file );
+      
+        l_file.close();
+        l_nOut++;
+      }
+      else if (l_formatId == tsunami_lab::io::NC){
+        l_netCdf->write( l_nx,
+                        l_ny,
+                        l_nOut,
+                        l_waveProp->getStride(),
+                        l_waveProp->getHeight(),
+                        l_waveProp->getMomentumX(),
+                        l_waveProp->getMomentumY(),
+                        l_waveProp->getBathymetry());
+        l_nOut++;
+      }
     }
 
     l_stations.write(
@@ -298,6 +330,7 @@ int main( int   i_argc,
   std::cout << "freeing memory" << std::endl;
   delete l_setup;
   delete l_waveProp;
+  delete l_netCdf;
 
   std::cout << "finished, exiting" << std::endl;
   return EXIT_SUCCESS;

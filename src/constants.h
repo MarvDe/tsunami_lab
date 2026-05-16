@@ -22,6 +22,12 @@ namespace tsunami_lab {
     const t_idx FWAVE = 1;
   }
 
+  namespace io{
+    //! format ids
+    const t_idx CSV = 0;
+    const t_idx NC = 1;
+  }
+
   namespace setups{
     //! solver ids
     const t_idx DAM_BREAK = 0;
