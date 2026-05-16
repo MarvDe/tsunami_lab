@@ -31,6 +31,7 @@ namespace tsunami_lab {
     const t_idx SUBCRITICAL_FLOW = 4;
     const t_idx SUPERCRITICAL_FLOW = 5;
     const t_idx DAM_BREAK_2D = 6;
+    const t_idx ARTIFICIAL_TSUNAMI_2D = 7;
   }
 
 }
