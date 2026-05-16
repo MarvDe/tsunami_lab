@@ -25,7 +25,7 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std
     // creating dimensions
     errorChecking( nc_def_dim(m_fileId, "x", i_nx, &m_xDimId) );
     errorChecking( nc_def_dim(m_fileId, "y", i_ny, &m_yDimId) );
-    errorChecking( nc_def_dim(m_fileId, "t", NC_UNLIMITED, &m_tDimId) );
+    errorChecking( nc_def_dim(m_fileId, "time", NC_UNLIMITED, &m_tDimId) );
 
     // creating variables
     int l_dimIds[3] = {m_tDimId, m_yDimId, m_xDimId};
@@ -36,8 +36,9 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std
     errorChecking( nc_def_var(m_fileId, "y", NC_FLOAT, 1, &m_yDimId, &m_yVarId) );
     errorChecking( nc_put_att_text(m_fileId, m_yVarId, "units", 1, "m") );
 
-    errorChecking( nc_def_var(m_fileId, "t", NC_FLOAT, 1, &m_tDimId, &m_tVarId) );
-    errorChecking( nc_put_att_text(m_fileId, m_tVarId, "units", 1, "s") );
+    errorChecking( nc_def_var(m_fileId, "time", NC_FLOAT, 1, &m_tDimId, &m_tVarId) );
+    const std::string l_timeUnit = "seconds since start";
+    errorChecking( nc_put_att_text(m_fileId, m_tVarId, "units", l_timeUnit.size(), l_timeUnit.c_str()) );
     
     errorChecking( nc_def_var(m_fileId, "h", NC_FLOAT, 3, l_dimIds, &m_hVarId) );
     errorChecking( nc_put_att_text(m_fileId, m_hVarId, "units", 1, "m") );
@@ -96,7 +97,7 @@ void io::NetCdf::write( t_idx                i_nx,
     errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep) );
     for (t_idx l_cy = 0; l_cy < i_ny; l_cy++){
         for (t_idx l_cx = 0; l_cx < i_nx; l_cx++){
-            t_idx l_index[3] = {i_timeStep * m_dt, l_cy * m_dxy, l_cx * m_dxy};
+            t_idx l_index[3] = {i_timeStep, l_cy, l_cx};
             if (i_h != nullptr){
                 errorChecking( nc_put_var1_float( m_fileId, m_hVarId, l_index, &i_h[l_cy * i_stride + l_cx] ) );
             }
