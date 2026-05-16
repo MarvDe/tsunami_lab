@@ -18,26 +18,33 @@ namespace tsunami_lab {
 
   namespace solvers{
     //! solver ids
-    const t_idx ROE = 0;
-    const t_idx FWAVE = 1;
+    enum Ids{
+      ROE,
+      FWAVE
+    };
   }
 
   namespace io{
     //! format ids
-    const t_idx CSV = 0;
-    const t_idx NC = 1;
+    enum Ids{
+      CSV,
+      NC
+    };
   }
 
   namespace setups{
-    //! solver ids
-    const t_idx DAM_BREAK = 0;
-    const t_idx RARE_RARE = 1;
-    const t_idx SHOCK_SHOCK = 2;
-    const t_idx TSUNAMI_EVENT = 3;
-    const t_idx SUBCRITICAL_FLOW = 4;
-    const t_idx SUPERCRITICAL_FLOW = 5;
-    const t_idx DAM_BREAK_2D = 6;
-    const t_idx ARTIFICIAL_TSUNAMI_2D = 7;
+    //! setup ids
+    enum Ids{
+      DAM_BREAK,
+      RARE_RARE,
+      SHOCK_SHOCK,
+      TSUNAMI_EVENT,
+      SUBCRITICAL_FLOW,
+      SUPERCRITICAL_FLOW,
+      DAM_BREAK_2D,
+      ARTIFICIAL_TSUNAMI_2D,
+      TSUNAMI_EVENT_2D
+    };
   }
 
 }

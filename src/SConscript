@@ -22,7 +22,8 @@ l_sources = [ 'solvers/Roe.cpp',
               'setups/SubcriticalFlow1d.cpp',
               'setups/SupercriticalFlow1d.cpp',
               'setups/CircularDamBreak2d.cpp',
-              'setups/ArtificialTsunami2d.cpp'
+              'setups/ArtificialTsunami2d.cpp',
+              'setups/TsunamiEvent2d.cpp',
                ]
 
 for l_so in l_sources:
@@ -47,7 +48,8 @@ l_tests = [ 'tests.cpp',
             'setups/SubcriticalFlow1d.test.cpp',
             'setups/SupercriticalFlow1d.test.cpp',
             'setups/CircularDamBreak2d.test.cpp',
-            'setups/ArtificialTsunami2d.test.cpp' ]
+            'setups/ArtificialTsunami2d.test.cpp',
+            'setups/TsunamiEvent2d.test.cpp']
 
 for l_te in l_tests:
   env.tests.append( env.Object( l_te ) )

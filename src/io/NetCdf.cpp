@@ -76,7 +76,7 @@ io::NetCdf::~NetCdf(){
 int io::NetCdf::errorChecking(int i_errId, bool i_printErr){
     if (i_errId != NC_NOERR){
         if (i_printErr){
-            std::cerr << nc_strerror(i_errId) << std::endl;
+            std::cerr << "NC Error: " << nc_strerror(i_errId) << std::endl;
         }
         return -1;
     }
@@ -116,7 +116,7 @@ void io::NetCdf::write( t_idx                i_nx,
 
 int io::NetCdf::readDisplacement(  t_idx i_cellX,
                                     t_idx i_cellY,
-                                    std::string i_filePath,
+                                    const std::string & i_filePath,
                                     t_real * o_displacement,
                                     bool printErr){
     int l_ncid;
@@ -126,15 +126,15 @@ int io::NetCdf::readDisplacement(  t_idx i_cellX,
     int dimids[NC_MAX_VAR_DIMS];
     size_t dim_sizes[NC_MAX_VAR_DIMS];
                                     
-    l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid) );
+    l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid), printErr);
     if (l_status) return -1;
-    l_status = errorChecking( nc_inq_varid(l_ncid, "z", &l_varidZ) );
+    l_status = errorChecking( nc_inq_varid(l_ncid, "z", &l_varidZ), printErr );
     if (l_status) return -1;
-    l_status = errorChecking( nc_inq_var(l_ncid, l_varidZ, nullptr, nullptr, &ndims, dimids, nullptr) );
+    l_status = errorChecking( nc_inq_var(l_ncid, l_varidZ, nullptr, nullptr, &ndims, dimids, nullptr), printErr );
     if (l_status) return -1;
-    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[0], &dim_sizes[0]) );
+    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[0], &dim_sizes[0]), printErr );
     if (l_status) return -1;
-    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[1], &dim_sizes[1]) );
+    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[1], &dim_sizes[1]), printErr );
     if (l_status) return -1;
     size_t nx = dim_sizes[1];
     size_t ny = dim_sizes[0];
@@ -146,15 +146,15 @@ int io::NetCdf::readDisplacement(  t_idx i_cellX,
         return -1;
     }
 
-    l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, o_displacement) );
+    l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, o_displacement), printErr );
     if (l_status) return -1;
-    l_status = errorChecking( nc_close(l_ncid) );
+    l_status = errorChecking( nc_close(l_ncid), printErr );
     return l_status;
 }
 
 int io::NetCdf::readBathymetry(t_idx i_cellX,
                                 t_idx i_cellY,
-                                std::string i_filePath,
+                                const std::string & i_filePath,
                                 t_real * o_bathymetry,
                                 bool printErr){
     int l_ncid;
@@ -164,15 +164,15 @@ int io::NetCdf::readBathymetry(t_idx i_cellX,
     int dimids[NC_MAX_VAR_DIMS];
     size_t dim_sizes[NC_MAX_VAR_DIMS];
                                     
-    l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid) );
+    l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid), printErr );
     if (l_status) return -1;
-    l_status = errorChecking( nc_inq_varid(l_ncid, "z", &l_varidZ) );
+    l_status = errorChecking( nc_inq_varid(l_ncid, "z", &l_varidZ), printErr );
     if (l_status) return -1;
-    l_status = errorChecking( nc_inq_var(l_ncid, l_varidZ, nullptr, nullptr, &ndims, dimids, nullptr) );
+    l_status = errorChecking( nc_inq_var(l_ncid, l_varidZ, nullptr, nullptr, &ndims, dimids, nullptr), printErr );
     if (l_status) return -1;
-    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[0], &dim_sizes[0]) );
+    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[0], &dim_sizes[0]), printErr );
     if (l_status) return -1;
-    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[1], &dim_sizes[1]) );
+    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[1], &dim_sizes[1]), printErr );
     if (l_status) return -1;
     size_t nx = dim_sizes[1];
     size_t ny = dim_sizes[0];
@@ -184,8 +184,42 @@ int io::NetCdf::readBathymetry(t_idx i_cellX,
         return -1;
     }
 
-    l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, o_bathymetry) );
+    l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, o_bathymetry), printErr );
     if (l_status) return -1;
-    l_status = errorChecking( nc_close(l_ncid) );
+    l_status = errorChecking( nc_close(l_ncid), printErr );
     return l_status;
 }
+
+int io::NetCdf::read( const std::string  & i_filePath,
+                      t_idx      &  o_cellX,
+                      t_idx      &  o_cellY,
+                      t_real    **  o_data,
+                      bool printErr ){
+
+    int l_ncid;
+    int l_varidZ;
+    int l_status = 0;
+    int ndims;
+    int dimids[NC_MAX_VAR_DIMS];
+    size_t dim_sizes[NC_MAX_VAR_DIMS];
+                                    
+    l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid), printErr );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_varid(l_ncid, "z", &l_varidZ), printErr );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_var(l_ncid, l_varidZ, nullptr, nullptr, &ndims, dimids, nullptr), printErr );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[0], &dim_sizes[0]), printErr );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[1], &dim_sizes[1]), printErr );
+    if (l_status) return -1;
+
+    o_cellX = dim_sizes[1];
+    o_cellY = dim_sizes[0];
+    *o_data = new t_real[o_cellX * o_cellY];
+
+    l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, *o_data), printErr );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_close(l_ncid), printErr );
+    return l_status;
+}  

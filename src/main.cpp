@@ -14,6 +14,7 @@
 #include "setups/SupercriticalFlow1d.h"
 #include "setups/CircularDamBreak2d.h"
 #include "setups/ArtificialTsunami2d.h"
+#include "setups/TsunamiEvent2d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include "io/Stations.h"
@@ -50,6 +51,12 @@ int main( int   i_argc,
   // bathymetry file path
   std::string l_bathymetryFilePath = "profile_commas.csv";
   
+  // bathymetry nc file path
+  std::string l_bathymetryNCFilePath = "utilities/artificialtsunami_bathymetry_1000.nc";
+
+  // displacement nc file path
+  std::string l_displacementNCFilePath = "utilities/artificialtsunami_displ_1000.nc";
+  
 
   std::cout << "####################################" << std::endl;
   std::cout << "### Tsunami Lab                  ###" << std::endl;
@@ -77,6 +84,7 @@ int main( int   i_argc,
   else if (l_setupName.compare("subcriticalFlow") == 0) l_setupId = tsunami_lab::setups::SUBCRITICAL_FLOW;
   else if (l_setupName.compare("damBreak2d") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK_2D;
   else if (l_setupName.compare("artificialTsunami") == 0) l_setupId = tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D;
+  else if (l_setupName.compare("tsunamiEvent2d") == 0) l_setupId = tsunami_lab::setups::TSUNAMI_EVENT_2D;
   else l_setupName = "damBreak";
 
   // choose ouput format
@@ -95,6 +103,7 @@ int main( int   i_argc,
   // select number of cells in x direction
   tsunami_lab::t_real l_endTime = l_parser.get("endtime", (tsunami_lab::t_real)3.0);
   if (l_endTime < 0.0) l_endTime = 3.0;
+
   // set stations yaml file;
   std::string l_stationsFilePath = l_parser.get("stations", "");
 
@@ -105,7 +114,6 @@ int main( int   i_argc,
   std::cout << "  solver:                         " << l_solverName << std::endl;
   std::cout << "  setup:                          " << l_setupName << std::endl;
   std::cout << "  end time:                       " << l_endTime << std::endl;
-
 
   // construct setup
   tsunami_lab::setups::Setup *l_setup;
@@ -183,6 +191,23 @@ int main( int   i_argc,
     l_nx = 1000;
     l_ny = 1000;
   }
+  else if (l_setupId == tsunami_lab::setups::TSUNAMI_EVENT_2D){
+    tsunami_lab::t_idx l_bX = 0;
+    tsunami_lab::t_idx l_bY = 0;
+    tsunami_lab::t_idx l_dX = 0;
+    tsunami_lab::t_idx l_dY = 0;
+  
+    tsunami_lab::t_real * l_bathymetry = nullptr;
+    tsunami_lab::t_real * l_displacement = nullptr;
+
+    tsunami_lab::io::NetCdf::read(l_bathymetryNCFilePath, l_bX, l_bY, &l_bathymetry);
+    tsunami_lab::io::NetCdf::read(l_displacementNCFilePath, l_dX, l_dY, &l_displacement);
+
+    l_setup = new tsunami_lab::setups::TsunamiEvent2d(l_nx, l_ny, l_dxy, l_bX, l_bY, l_dX, l_dY, l_bathymetry, l_displacement);
+  
+    delete[] l_bathymetry;
+    delete[] l_displacement;
+  }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 50,
                                                  100,
@@ -241,9 +266,12 @@ int main( int   i_argc,
   }
 
   // setup stations for measurement
-  tsunami_lab::io::Stations l_stations(l_nx, l_ny, l_dxy);
   
-  l_stations.readFile(l_stationsFilePath);
+  tsunami_lab::io::Stations l_stations(l_nx, l_ny, l_dxy);
+  if (l_stationsFilePath.compare("") != 0){
+    l_stations.readFile(l_stationsFilePath);
+  }
+  
   
    
 
@@ -307,15 +335,16 @@ int main( int   i_argc,
         l_nOut++;
       }
     }
-
-    l_stations.write(
-      l_simTime,
-      l_waveProp->getHeight(),
-      l_waveProp->getMomentumX(),
-      l_waveProp->getMomentumY(),
-      l_waveProp->getBathymetry(),
-      l_waveProp->getStride()
-    );
+    if (l_stationsFilePath.compare("") != 0){
+      l_stations.write(
+        l_simTime,
+        l_waveProp->getHeight(),
+        l_waveProp->getMomentumX(),
+        l_waveProp->getMomentumY(),
+        l_waveProp->getBathymetry(),
+        l_waveProp->getStride()
+      );
+    }
 
     l_waveProp->setGhostOutflow();
     l_waveProp->timeStep( l_scaling );
