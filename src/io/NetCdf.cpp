@@ -5,6 +5,8 @@
  * IO-routines handling netcdf files.
  **/
 #include "NetCdf.h"
+#include <vector>
+#include <cstring>
 using namespace tsunami_lab;
 
 io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std::string & i_filePath ){
@@ -91,22 +93,52 @@ void io::NetCdf::write( t_idx                i_nx,
                         t_real       const * i_hu,
                         t_real       const * i_hv,
                         t_real       const * i_bathymetry ){
-    if (i_nx + 2 == i_stride){ // if ghost cells are passed
-        tsunami_lab::t_real l_timeStep = i_timeStep;
+    if (i_nx + 2 == i_stride ){ // if ghost cells are passed
+        const float l_timeStep = i_timeStep;
         errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep));
-        size_t start[3] = {i_timeStep, 1, 1};
-        size_t end[3] = {1, i_ny + 1, i_nx + 1};
+        size_t start[3] = {i_timeStep, 0, 0};
+        size_t count[3] = {1, i_ny, i_nx};
+        std::vector<float> buffer(i_nx * i_ny);
         if (i_h != nullptr){
-            errorChecking( nc_put_vara_float(m_fileId, m_hVarId, start, end, i_h));
+            for (size_t y = 0; y < i_ny; y++) {
+                //if (i_h[y * i_stride + i_nx - 1] == 0) std::cout << "last value row " << y << " = " << 0 << std::endl;
+                std::memcpy(
+                    &buffer[y * i_nx],
+                    &i_h[y * i_stride],
+                    i_nx * sizeof(float)
+                );
+            }
+            errorChecking( nc_put_vara_float(m_fileId, m_hVarId, start, count, buffer.data()));
         }
         if (i_hu != nullptr){
-            errorChecking( nc_put_vara_float(m_fileId, m_huVarId, start, end, i_hu));
+            for (size_t y = 0; y < i_ny; y++) {
+                std::memcpy(
+                    &buffer[y * i_nx],
+                    &i_h[y * i_stride],
+                    i_nx * sizeof(float)
+                );
+            }
+            errorChecking( nc_put_vara_float(m_fileId, m_huVarId, start, count, buffer.data()));
         }
         if (i_hv != nullptr){
-            errorChecking( nc_put_vara_float(m_fileId, m_hvVarId, start, end, i_hv));
+            for (size_t y = 0; y < i_ny; y++) {
+                std::memcpy(
+                    &buffer[y * i_nx],
+                    &i_h[y * i_stride],
+                    i_nx * sizeof(float)
+                );
+            }
+            errorChecking( nc_put_vara_float(m_fileId, m_hvVarId, start, count, buffer.data()));
         }
         if (i_bathymetry != nullptr){
-            errorChecking( nc_put_vara_float(m_fileId, m_bVarId, start, end, i_bathymetry));
+            for (size_t y = 0; y < i_ny; y++) {
+                std::memcpy(
+                    &buffer[y * i_nx],
+                    &i_h[y * i_stride],
+                    i_nx * sizeof(float)
+                );
+            }
+            errorChecking( nc_put_vara_float(m_fileId, m_bVarId, start, count, buffer.data()));
         }
     
     }
