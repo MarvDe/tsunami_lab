@@ -37,24 +37,26 @@ setups::TsunamiEvent2d::~TsunamiEvent2d(){
 }
 
 t_real setups::TsunamiEvent2d::getHeight( t_real i_x, t_real i_y ) const {
-    t_idx i_bIx = std::round(i_x / ( m_dxy * (t_real) m_cellsX ) * (t_real) m_bCellsX);
-    t_idx i_bIy = std::round(i_y / ( m_dxy * (t_real) m_cellsY ) * (t_real) m_bCellsY);
-    
-    if (m_bathymetry[i_bIy * m_cellsX + i_bIx] < 0){
-        return std::max(-m_bathymetry[i_bIy * m_cellsX + i_bIx], m_delta);
+    t_idx i_bIx = (t_idx) (i_x / ( m_dxy * (t_real) m_cellsX ) * (t_real) m_bCellsX + 0.5);
+    t_idx i_bIy = (t_idx) (i_y / ( m_dxy * (t_real) m_cellsY ) * (t_real) m_bCellsY + 0.5);
+
+    t_idx i_dIx = (t_idx) (i_x / ( m_dxy * (t_real) m_cellsX ) * (t_real) m_dCellsX + 0.5);
+    t_idx i_dIy = (t_idx) (i_y / ( m_dxy * (t_real) m_cellsY ) * (t_real) m_dCellsY + 0.5);
+
+    if (m_bathymetry[i_bIy * m_bCellsX + i_bIx] < 0){
+
+        return std::max(-m_bathymetry[i_bIy * m_bCellsX + i_bIx], m_delta) + m_displacement[i_dIy * m_dCellsX + i_dIx];
     }
     return 0;
 }
 
 t_real setups::TsunamiEvent2d::getBathymetry( t_real i_x, t_real i_y ) const {
-    t_idx i_bIx = std::round(i_x / ( m_dxy * m_cellsX ) * (t_real) m_bCellsX);
-    t_idx i_bIy = std::round(i_y / ( m_dxy * m_cellsY ) * (t_real) m_bCellsY);
 
-    t_idx i_dIx = std::round(i_x / ( m_dxy * m_cellsX ) * (t_real) m_dCellsX);
-    t_idx i_dIy = std::round(i_y / ( m_dxy * m_cellsY ) * (t_real) m_dCellsY);
+    t_idx i_bIx = (t_idx) (i_x / ( m_dxy * (t_real) m_cellsX ) * (t_real) m_bCellsX + 0.5);
+    t_idx i_bIy = (t_idx) (i_y / ( m_dxy * (t_real) m_cellsY ) * (t_real) m_bCellsY + 0.5);
 
-    if (m_bathymetry[i_bIy * m_cellsX + i_bIx] < 0){
-        return std::min(m_bathymetry[i_bIy * m_bCellsX + i_bIx], -m_delta) + m_displacement[i_dIy * m_dCellsX + i_dIx];
+    if (m_bathymetry[i_bIy * m_bCellsX + i_bIx] < 0){
+        return std::min(m_bathymetry[i_bIy * m_bCellsX + i_bIx], -m_delta);
     }
-    return std::max(m_bathymetry[i_bIy * m_bCellsX + i_bIx], m_delta) + m_displacement[i_dIy * m_dCellsX + i_dIx];
+    return std::max(m_bathymetry[i_bIy * m_bCellsX + i_bIx], m_delta);
 }
