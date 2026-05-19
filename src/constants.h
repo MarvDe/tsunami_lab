@@ -28,7 +28,8 @@ namespace tsunami_lab {
     //! format ids
     enum Ids{
       CSV,
-      NC
+      NC,
+      NONE
     };
   }
 
