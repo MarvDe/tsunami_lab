@@ -90,6 +90,7 @@ int main( int   i_argc,
   // choose ouput format
   std::string l_formatName = l_parser.get("format", "csv");
   if (l_formatName.compare("nc") == 0) l_formatId = tsunami_lab::io::NC;
+  else if (l_formatName.compare("NONE") == 0) l_formatId = tsunami_lab::io::NONE;
   else if (l_formatName.compare("csv")) l_formatId = tsunami_lab::io::CSV;
   else l_formatId = tsunami_lab::io::CSV;
 
@@ -113,6 +114,7 @@ int main( int   i_argc,
   std::cout << "  cell size:                      " << l_dxy << std::endl;
   std::cout << "  solver:                         " << l_solverName << std::endl;
   std::cout << "  setup:                          " << l_setupName << std::endl;
+  std::cout << "  format:                         " << l_formatName << std::endl;
   std::cout << "  end time:                       " << l_endTime << std::endl;
 
   // construct setup

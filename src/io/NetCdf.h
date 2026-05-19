@@ -71,52 +71,21 @@ class tsunami_lab::io::NetCdf {
                 t_real       const * i_hu,
                 t_real       const * i_hv,
                 t_real       const * i_bathymetry );
-    
-    /**
-     * Reads bathymetry data.
-     * 
-     * @param i_cellX number of cells to read in x direction.
-     * @param i_cellY number of cells to read in y direction.
-     * @param i_filePath path to file.
-     * @param o_bathymetry bathymetry data.
-     */
-    static int readBathymetry( t_idx             i_cellX,
-                                t_idx             i_cellY,
-                                const std::string & i_filePath,
-                                t_real       *    o_bathymetry,
-                                bool printErr = true);
-    
-    /**
-     * Reads displacement data.
-     * 
-     * @param i_cellX number of cells to read in x direction.
-     * @param i_cellY number of cells to read in y direction.
-     * @param i_filePath path to file.
-     * @param o_displacement displacement data.
-     *
-     * @return success.
-     */
-    static int readDisplacement( t_idx         i_cellX,
-                                  t_idx         i_cellY,
-                                  const std::string & i_filePath,
-                                  t_real     *  o_displacement,
-                                  bool printErr = true
-                                    );
 
     /**
-     * Reads displacement data.
+     * Reads data.
      * 
      * @param i_filePath path to file.
      * @param o_cellX number of cells in x direction.
      * @param o_cellY number of cells in y direction.
-     * @param o_displacement displacement data.
+     * @param o_data data.
      *
      * @return success.
      */
     static int read(  const std::string  & i_filePath,
                       t_idx      &  o_cellX,
                       t_idx      &  o_cellY,
-                      t_real     ** o_displacement,
+                      t_real     ** o_data,
                       bool printErr = true );                                
 
 };

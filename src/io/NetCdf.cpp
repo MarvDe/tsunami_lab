@@ -5,6 +5,8 @@
  * IO-routines handling netcdf files.
  **/
 #include "NetCdf.h"
+#include <vector>
+#include <cstring>
 using namespace tsunami_lab;
 
 io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std::string & i_filePath ){
@@ -91,103 +93,77 @@ void io::NetCdf::write( t_idx                i_nx,
                         t_real       const * i_hu,
                         t_real       const * i_hv,
                         t_real       const * i_bathymetry ){
+    if (i_nx + 2 == i_stride ){ // if ghost cells are passed
+        const float l_timeStep = i_timeStep;
+        errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep));
+        size_t start[3] = {i_timeStep, 0, 0};
+        size_t count[3] = {1, i_ny, i_nx};
+        std::vector<float> buffer(i_nx * i_ny);
+        if (i_h != nullptr){
+            for (size_t y = 0; y < i_ny; y++) {
+                //if (i_h[y * i_stride + i_nx - 1] == 0) std::cout << "last value row " << y << " = " << 0 << std::endl;
+                std::memcpy(
+                    &buffer[y * i_nx],
+                    &i_h[y * i_stride],
+                    i_nx * sizeof(float)
+                );
+            }
+            errorChecking( nc_put_vara_float(m_fileId, m_hVarId, start, count, buffer.data()));
+        }
+        if (i_hu != nullptr){
+            for (size_t y = 0; y < i_ny; y++) {
+                std::memcpy(
+                    &buffer[y * i_nx],
+                    &i_h[y * i_stride],
+                    i_nx * sizeof(float)
+                );
+            }
+            errorChecking( nc_put_vara_float(m_fileId, m_huVarId, start, count, buffer.data()));
+        }
+        if (i_hv != nullptr){
+            for (size_t y = 0; y < i_ny; y++) {
+                std::memcpy(
+                    &buffer[y * i_nx],
+                    &i_h[y * i_stride],
+                    i_nx * sizeof(float)
+                );
+            }
+            errorChecking( nc_put_vara_float(m_fileId, m_hvVarId, start, count, buffer.data()));
+        }
+        if (i_bathymetry != nullptr){
+            for (size_t y = 0; y < i_ny; y++) {
+                std::memcpy(
+                    &buffer[y * i_nx],
+                    &i_h[y * i_stride],
+                    i_nx * sizeof(float)
+                );
+            }
+            errorChecking( nc_put_vara_float(m_fileId, m_bVarId, start, count, buffer.data()));
+        }
     
-    // write data to file
-    tsunami_lab::t_real l_timeStep = i_timeStep;
-    errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep) );
-    for (t_idx l_cy = 0; l_cy < i_ny; l_cy++){
-        for (t_idx l_cx = 0; l_cx < i_nx; l_cx++){
-            t_idx l_index[3] = {i_timeStep, l_cy, l_cx};
-            if (i_h != nullptr){
-                errorChecking( nc_put_var1_float( m_fileId, m_hVarId, l_index, &i_h[l_cy * i_stride + l_cx] ) );
-            }
-            if (i_hu != nullptr){
-                errorChecking( nc_put_var1_float( m_fileId, m_huVarId, l_index, &i_hu[l_cy * i_stride + l_cx] ) );
-            }
-            if (i_hv != nullptr){
-                errorChecking( nc_put_var1_float( m_fileId, m_hvVarId, l_index, &i_hv[l_cy * i_stride + l_cx] ) );
-            }
-            if (i_bathymetry != nullptr){
-                errorChecking( nc_put_var1_float( m_fileId, m_bVarId, l_index, &i_bathymetry[l_cy * i_stride + l_cx] ) );
+    }
+    else {
+        // write data to file
+        tsunami_lab::t_real l_timeStep = i_timeStep;
+        errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep) );
+        for (t_idx l_cy = 0; l_cy < i_ny; l_cy++){
+            for (t_idx l_cx = 0; l_cx < i_nx; l_cx++){
+                t_idx l_index[3] = {i_timeStep, l_cy, l_cx};
+                if (i_h != nullptr){
+                    errorChecking( nc_put_var1_float( m_fileId, m_hVarId, l_index, &i_h[l_cy * i_stride + l_cx] ) );
+                }
+                if (i_hu != nullptr){
+                    errorChecking( nc_put_var1_float( m_fileId, m_huVarId, l_index, &i_hu[l_cy * i_stride + l_cx] ) );
+                }
+                if (i_hv != nullptr){
+                    errorChecking( nc_put_var1_float( m_fileId, m_hvVarId, l_index, &i_hv[l_cy * i_stride + l_cx] ) );
+                }
+                if (i_bathymetry != nullptr){
+                    errorChecking( nc_put_var1_float( m_fileId, m_bVarId, l_index, &i_bathymetry[l_cy * i_stride + l_cx] ) );
+                }
             }
         }
     }
-}
-
-int io::NetCdf::readDisplacement(  t_idx i_cellX,
-                                    t_idx i_cellY,
-                                    const std::string & i_filePath,
-                                    t_real * o_displacement,
-                                    bool printErr){
-    int l_ncid;
-    int l_varidZ;
-    int l_status = 0;
-    int ndims;
-    int dimids[NC_MAX_VAR_DIMS];
-    size_t dim_sizes[NC_MAX_VAR_DIMS];
-                                    
-    l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid), printErr);
-    if (l_status) return -1;
-    l_status = errorChecking( nc_inq_varid(l_ncid, "z", &l_varidZ), printErr );
-    if (l_status) return -1;
-    l_status = errorChecking( nc_inq_var(l_ncid, l_varidZ, nullptr, nullptr, &ndims, dimids, nullptr), printErr );
-    if (l_status) return -1;
-    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[0], &dim_sizes[0]), printErr );
-    if (l_status) return -1;
-    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[1], &dim_sizes[1]), printErr );
-    if (l_status) return -1;
-    size_t nx = dim_sizes[1];
-    size_t ny = dim_sizes[0];
-
-    if (dim_sizes[2] != 0 || nx != i_cellX || ny != i_cellY){
-        if (printErr){
-            printf("Error: NetCdf dimension mismatch.\n");
-        }
-        return -1;
-    }
-
-    l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, o_displacement), printErr );
-    if (l_status) return -1;
-    l_status = errorChecking( nc_close(l_ncid), printErr );
-    return l_status;
-}
-
-int io::NetCdf::readBathymetry(t_idx i_cellX,
-                                t_idx i_cellY,
-                                const std::string & i_filePath,
-                                t_real * o_bathymetry,
-                                bool printErr){
-    int l_ncid;
-    int l_varidZ;
-    int l_status = 0;
-    int ndims;
-    int dimids[NC_MAX_VAR_DIMS];
-    size_t dim_sizes[NC_MAX_VAR_DIMS];
-                                    
-    l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid), printErr );
-    if (l_status) return -1;
-    l_status = errorChecking( nc_inq_varid(l_ncid, "z", &l_varidZ), printErr );
-    if (l_status) return -1;
-    l_status = errorChecking( nc_inq_var(l_ncid, l_varidZ, nullptr, nullptr, &ndims, dimids, nullptr), printErr );
-    if (l_status) return -1;
-    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[0], &dim_sizes[0]), printErr );
-    if (l_status) return -1;
-    l_status = errorChecking( nc_inq_dimlen(l_ncid, dimids[1], &dim_sizes[1]), printErr );
-    if (l_status) return -1;
-    size_t nx = dim_sizes[1];
-    size_t ny = dim_sizes[0];
-
-    if (dim_sizes[2] != 0 || nx != i_cellX || ny != i_cellY){
-        if(printErr){
-            printf("Error: NetCdf dimension mismatch.\n");
-        }
-        return -1;
-    }
-
-    l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, o_bathymetry), printErr );
-    if (l_status) return -1;
-    l_status = errorChecking( nc_close(l_ncid), printErr );
-    return l_status;
 }
 
 int io::NetCdf::read( const std::string  & i_filePath,
