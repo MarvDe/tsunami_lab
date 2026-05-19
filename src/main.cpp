@@ -294,11 +294,14 @@ int main( int   i_argc,
   std::cout << "entering time loop" << std::endl;
 
   //setup NetCdf
-  tsunami_lab::io::NetCdf* l_netCdf = new tsunami_lab::io::NetCdf(  l_nx,
-                                                                    l_ny,
-                                                                    l_dxy,
-                                                                    l_dt,
-                                                                    "solution.nc");
+  tsunami_lab::io::NetCdf* l_netCdf;
+  if (l_formatId == tsunami_lab::io::NC){
+    l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
+                                            l_ny,
+                                            l_dxy,
+                                            l_dt,
+                                            "solution.nc");
+  }
 
   // iterate over time
   while( l_simTime < l_endTime ){
@@ -361,8 +364,10 @@ int main( int   i_argc,
   std::cout << "freeing memory" << std::endl;
   delete l_setup;
   delete l_waveProp;
-  delete l_netCdf;
-
+  if (l_formatId == tsunami_lab::io::NC){
+    delete l_netCdf;
+  }
+  
   std::cout << "finished, exiting" << std::endl;
   return EXIT_SUCCESS;
 }
