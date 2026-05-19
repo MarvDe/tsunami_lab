@@ -37,23 +37,37 @@ setups::TsunamiEvent2d::~TsunamiEvent2d(){
 }
 
 t_real setups::TsunamiEvent2d::getHeight( t_real i_x, t_real i_y ) const {
-    t_idx i_bIx = (t_idx) (i_x / ( m_dxy * (t_real) m_cellsX ) * (t_real) m_bCellsX + 0.5);
-    t_idx i_bIy = (t_idx) (i_y / ( m_dxy * (t_real) m_cellsY ) * (t_real) m_bCellsY + 0.5);
+    t_real rel_x = i_x / ( m_dxy * (t_real) m_cellsX );
+    t_real rel_y = i_y / ( m_dxy * (t_real) m_cellsY );
 
-    t_idx i_dIx = (t_idx) (i_x / ( m_dxy * (t_real) m_cellsX ) * (t_real) m_dCellsX + 0.5);
-    t_idx i_dIy = (t_idx) (i_y / ( m_dxy * (t_real) m_cellsY ) * (t_real) m_dCellsY + 0.5);
+    t_idx i_bIx = (t_idx) (rel_x * m_bCellsX);
+    t_idx i_bIy = (t_idx) (rel_y * m_bCellsY);
+
+    t_idx i_dIx = (t_idx) (rel_x * m_dCellsX);
+    t_idx i_dIy = (t_idx) (rel_y * m_dCellsY);
+
+    if (i_bIx >= m_bCellsX) i_bIx = m_bCellsX - 1;
+    if (i_bIy >= m_bCellsY) i_bIy = m_bCellsY - 1;
+    
+    if (i_dIx >= m_dCellsX) i_dIx = m_dCellsX - 1;
+    if (i_dIy >= m_dCellsY) i_dIy = m_dCellsY - 1;
 
     if (m_bathymetry[i_bIy * m_bCellsX + i_bIx] < 0){
-
         return std::max(-m_bathymetry[i_bIy * m_bCellsX + i_bIx], m_delta) + m_displacement[i_dIy * m_dCellsX + i_dIx];
     }
     return 0;
 }
 
 t_real setups::TsunamiEvent2d::getBathymetry( t_real i_x, t_real i_y ) const {
+    
+    t_real rel_x = i_x / ( m_dxy * (t_real) m_cellsX );
+    t_real rel_y = i_y / ( m_dxy * (t_real) m_cellsY );
 
-    t_idx i_bIx = (t_idx) (i_x / ( m_dxy * (t_real) m_cellsX ) * (t_real) m_bCellsX + 0.5);
-    t_idx i_bIy = (t_idx) (i_y / ( m_dxy * (t_real) m_cellsY ) * (t_real) m_bCellsY + 0.5);
+    t_idx i_bIx = (t_idx) (rel_x * m_bCellsX);
+    t_idx i_bIy = (t_idx) (rel_y * m_bCellsY);
+
+    if (i_bIx >= m_bCellsX) i_bIx = m_bCellsX - 1;
+    if (i_bIy >= m_bCellsY) i_bIy = m_bCellsY - 1;
 
     if (m_bathymetry[i_bIy * m_bCellsX + i_bIx] < 0){
         return std::min(m_bathymetry[i_bIy * m_bCellsX + i_bIx], -m_delta);
