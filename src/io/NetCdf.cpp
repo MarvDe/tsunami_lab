@@ -114,7 +114,7 @@ void io::NetCdf::write( t_idx                i_nx,
             for (size_t y = 0; y < i_ny; y++) {
                 std::memcpy(
                     &buffer[y * i_nx],
-                    &i_h[y * i_stride],
+                    &i_hu[y * i_stride],
                     i_nx * sizeof(float)
                 );
             }
@@ -124,7 +124,7 @@ void io::NetCdf::write( t_idx                i_nx,
             for (size_t y = 0; y < i_ny; y++) {
                 std::memcpy(
                     &buffer[y * i_nx],
-                    &i_h[y * i_stride],
+                    &i_hv[y * i_stride],
                     i_nx * sizeof(float)
                 );
             }
@@ -134,7 +134,7 @@ void io::NetCdf::write( t_idx                i_nx,
             for (size_t y = 0; y < i_ny; y++) {
                 std::memcpy(
                     &buffer[y * i_nx],
-                    &i_h[y * i_stride],
+                    &i_bathymetry[y * i_stride],
                     i_nx * sizeof(float)
                 );
             }

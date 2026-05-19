@@ -219,7 +219,8 @@ int main( int   i_argc,
   // construct solver
   tsunami_lab::patches::WavePropagation *l_waveProp;
   if (l_setupId == tsunami_lab::setups::DAM_BREAK_2D ||
-      l_setupId == tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D){
+      l_setupId == tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D ||
+      l_setupId == tsunami_lab::setups::TSUNAMI_EVENT_2D){
     l_waveProp = new tsunami_lab::patches::WavePropagation2d( l_nx,
                                                               l_ny,
                                                               l_solverId);
