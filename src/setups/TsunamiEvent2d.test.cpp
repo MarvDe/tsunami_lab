@@ -36,11 +36,11 @@ TEST_CASE( "Test the two-dimensional tsunami event setup.", "[TsunamiEvent2d]" )
     setups::TsunamiEvent2d l_tsunamiEvent(l_nx, l_ny, 1, l_nx, l_ny, l_nx, l_ny, l_bathymetry, l_displacement);
 
     REQUIRE( l_tsunamiEvent.getBathymetry(4, 0) == Approx(-40) );
-    REQUIRE( l_tsunamiEvent.getBathymetry(4, 4) == Approx(-36) );
+    REQUIRE( l_tsunamiEvent.getBathymetry(4, 4) == Approx(-40) );
     REQUIRE( l_tsunamiEvent.getBathymetry(3, 0) == Approx(-30) );
 
-    REQUIRE( l_tsunamiEvent.getHeight(4, 4) == Approx(40) );
-    REQUIRE( l_tsunamiEvent.getHeight(3, 2) == Approx(30) );
+    REQUIRE( l_tsunamiEvent.getHeight(4, 4) == Approx(44) );
+    REQUIRE( l_tsunamiEvent.getHeight(3, 2) == Approx(32) );
 
     REQUIRE( l_tsunamiEvent.getMomentumX(0, 0) == Approx(0) );
     REQUIRE( l_tsunamiEvent.getMomentumY(0, 0) == Approx(0) );
