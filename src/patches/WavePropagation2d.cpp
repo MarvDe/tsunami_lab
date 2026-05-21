@@ -7,10 +7,12 @@
 #include "WavePropagation2d.h"
 #include "../solvers/Roe.h"
 #include "../solvers/F_wave.h"
+#include <iostream>
 
-tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::t_idx i_solverId ): m_solverId(i_solverId) {
+tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::t_idx i_solverId, tsunami_lab::t_idx i_ghost ): m_solverId(i_solverId) {
   m_xCells = i_xCells;
   m_yCells = i_yCells;
+  m_ghost = i_ghost;
 
   // allocate memory including a single ghost cell on each side
   for( unsigned short l_st = 0; l_st < 2; l_st++ ) {
@@ -89,19 +91,22 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
 
       // check for dry cells
       bool l_dryL = false, l_dryR = false;
-      if (l_hL <= 1e-6f && l_hR <= 1e-6f) { // both cells dry
+      if (l_hL <= 0 && l_hR <= 0) { // both cells dry
         // skip evaluation
+        std::cout << "cell dry" << std::endl;
         continue;
       }
-      else if (l_hL <= 1e-6f){               // left cell dry
+      else if (l_hL <= 0){               // left cell dry
         // set reflecting boundary conditions left
+        std::cout << "cell dry" << std::endl;
         l_dryL = true;
         l_hL = l_hR;
         l_huL = -l_huR;
         l_bL  = l_bR;
       }
-      else if (l_hR <= 1e-6f){      // right cell dry
+      else if (l_hR <= 0){      // right cell dry
         // set reflecting boundary conditions right
+        std::cout << "cell dry" << std::endl;
         l_dryR = true;
         l_hR = l_hL;
         l_huR = -l_huL;
@@ -170,19 +175,22 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       // check for dry cells
       bool l_dryU = false, l_dryB = false;
 
-      if (l_hU <= 1e-6f && l_hB <= 1e-6f) { // both cells dry
+      if (l_hU <= 0 && l_hB <= 0) { // both cells dry
         // skip evaluation
         continue;
       }
-      else if (l_hU <= 1e-6f){               // left cell dry
+      else if (l_hU <= 0){               // left cell dry
         // set reflecting boundary conditions left
+        std::cout << "cell dry" << std::endl;
         l_dryU = true;
         l_hU = l_hB;
         l_hvU = -l_hvB;
         l_bU  = l_bB;
+
       }
-      else if (l_hB <= 1e-6f){      // right cell dry
+      else if (l_hB <= 0){      // right cell dry
         // set reflecting boundary conditions right
+        std::cout << "cell dry" << std::endl;
         l_dryB = true;
         l_hB = l_hU;
         l_hvB = -l_hvU;
@@ -215,7 +223,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         l_hNew[l_ceU]  -= i_scaling * l_netUpdatesY[0][0];
         if (l_hNew[l_ceU] <= 1e-6f ){
           l_hNew[l_ceU] = 1e-6f;
-          l_huNew[l_ceU] = 0;
+          l_hvNew[l_ceU] = 0;
         }
         l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
       }
@@ -223,7 +231,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
         if (l_hNew[l_ceB] <= 1e-6f ){
           l_hNew[l_ceB] = 1e-6f;
-          l_huNew[l_ceB] = 0;
+          l_hvNew[l_ceB] = 0;
         }
         l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
       }
@@ -237,6 +245,7 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow() {
   t_real * l_hv = m_hv[m_step];
 
   if (m_ghost == 1){
+    // reflecting
     for (t_idx l_i = 1; l_i < m_xCells+1; l_i++){
       l_h[l_i] = l_h[l_i + getStride()];
       l_hv[l_i] = -l_hv[l_i + getStride()];
@@ -254,6 +263,7 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow() {
 
   }
   else{
+    // outflow 
     for (t_idx l_i = 1; l_i < m_xCells+1; l_i++){
       l_h[l_i] = l_h[l_i + getStride()];
       l_hv[l_i] = l_hv[l_i + getStride()];

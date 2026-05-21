@@ -31,6 +31,7 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std
 
     // creating variables
     int l_dimIds[3] = {m_tDimId, m_yDimId, m_xDimId};
+    int l_dimIdsB[2] = {m_yDimId, m_xDimId};
 
     errorChecking( nc_def_var(m_fileId, "x", NC_FLOAT, 1, &m_xDimId, &m_xVarId) );
     errorChecking( nc_put_att_text(m_fileId, m_xVarId, "units", 1, "m") );
@@ -51,7 +52,7 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std
     errorChecking( nc_def_var(m_fileId, "hv", NC_FLOAT, 3, l_dimIds, &m_hvVarId) );
     errorChecking( nc_put_att_text(m_fileId, m_hvVarId, "units", 6, "kg*m/s") );
     
-    errorChecking( nc_def_var(m_fileId, "b", NC_FLOAT, 3, l_dimIds, &m_bVarId) );
+    errorChecking( nc_def_var(m_fileId, "b", NC_FLOAT, 2, l_dimIdsB, &m_bVarId) );
     errorChecking( nc_put_att_text(m_fileId, m_bVarId, "units", 1, "m") );
     
     // register COARDS convention
@@ -98,6 +99,8 @@ void io::NetCdf::write( t_idx                i_nx,
         errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep));
         size_t start[3] = {i_timeStep, 0, 0};
         size_t count[3] = {1, i_ny, i_nx};
+        size_t startB[2] = {0,0};
+        size_t countB[2] = {i_ny, i_nx};
         std::vector<float> buffer(i_nx * i_ny);
         if (i_h != nullptr){
             for (size_t y = 0; y < i_ny; y++) {
@@ -130,7 +133,7 @@ void io::NetCdf::write( t_idx                i_nx,
             }
             errorChecking( nc_put_vara_float(m_fileId, m_hvVarId, start, count, buffer.data()));
         }
-        if (i_bathymetry != nullptr){
+        if (i_bathymetry != nullptr && i_timeStep == 0){
             for (size_t y = 0; y < i_ny; y++) {
                 std::memcpy(
                     &buffer[y * i_nx],
@@ -138,7 +141,7 @@ void io::NetCdf::write( t_idx                i_nx,
                     i_nx * sizeof(float)
                 );
             }
-            errorChecking( nc_put_vara_float(m_fileId, m_bVarId, start, count, buffer.data()));
+            errorChecking( nc_put_vara_float(m_fileId, m_bVarId, startB, countB, buffer.data()));
         }
     
     }
@@ -149,6 +152,7 @@ void io::NetCdf::write( t_idx                i_nx,
         for (t_idx l_cy = 0; l_cy < i_ny; l_cy++){
             for (t_idx l_cx = 0; l_cx < i_nx; l_cx++){
                 t_idx l_index[3] = {i_timeStep, l_cy, l_cx};
+                t_idx l_indexB[2] = {l_cy, l_cx};
                 if (i_h != nullptr){
                     errorChecking( nc_put_var1_float( m_fileId, m_hVarId, l_index, &i_h[l_cy * i_stride + l_cx] ) );
                 }
@@ -158,8 +162,8 @@ void io::NetCdf::write( t_idx                i_nx,
                 if (i_hv != nullptr){
                     errorChecking( nc_put_var1_float( m_fileId, m_hvVarId, l_index, &i_hv[l_cy * i_stride + l_cx] ) );
                 }
-                if (i_bathymetry != nullptr){
-                    errorChecking( nc_put_var1_float( m_fileId, m_bVarId, l_index, &i_bathymetry[l_cy * i_stride + l_cx] ) );
+                if (i_bathymetry != nullptr && i_timeStep == 0){
+                    errorChecking( nc_put_var1_float( m_fileId, m_bVarId, l_indexB, &i_bathymetry[l_cy * i_stride + l_cx] ) );
                 }
             }
         }
