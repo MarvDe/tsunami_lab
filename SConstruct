@@ -5,6 +5,8 @@
 # Entry-point for builds.
 ##
 import SCons
+import os
+
 
 print( '####################################' )
 print( '### Tsunami Lab                  ###' )
@@ -72,12 +74,14 @@ env.Append(CPPPATH=['submodules/yaml-cpp/include'])
 env.Append(LIBPATH=['submodules/yaml-cpp/build'])
 env.Append(LIBS=['yaml-cpp'])
 
-# add netcdf
+# add netcdf via pkg-config
+env.ParseConfig('nc-config --cflags --libs')
+
 conf = Configure(env)
-if not conf.CheckLib('netcdf'):
-    print ("Did not find libnetcdf.a or libnetcdf.lib, exiting!")
+if not conf.CheckCXXHeader('netcdf.h'):
+    print("Did not find netcdf.h, exiting!")
     Exit(1)
-env.Append(LIBS=['netcdf'])
+env = conf.Finish()
 
 # get source files
 VariantDir( variant_dir = 'build/src',

@@ -37,7 +37,7 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
     //! bathymetry data 
     t_real * m_bathymetry = nullptr;
 
-    // ! ghost cell updating condition (0 = outflow, 1 = reflecting)
+    //! ghost cell updating condition (0 = outflow, 1 = reflecting)
     t_idx m_ghost = 0;
     
     public:
@@ -46,9 +46,10 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
      *
      * @param i_xCells number of cells.
      * @param i_yCells number of cells.
-     * @param i_solver_id flag to choose solver, 0=Roe, 1=F_wave.
+     * @param i_solverId flag to choose solver, 0=Roe, 1=F_wave.
+     * @param i_ghost ghost cell updating condition (0 = outflow, 1 = reflecting)
      **/
-    WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::t_idx i_solverId );
+    WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::t_idx i_solverId, t_idx i_ghost = 0 );
 
     /**
      * Destructor which frees all allocated memory.
@@ -152,9 +153,9 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
      * Sets the cells' bathymetry.
      *
      * @param i_ix id of the cell in x-direction.
+     * @param i_iy id of the cell in y-direction.
+     * @param i_height height of bathymetry
      * 
-     * 
-     * @return bathymetry
      **/
     void setBathymetry( t_idx i_ix, 
                         t_idx i_iy, 
