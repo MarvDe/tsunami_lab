@@ -231,6 +231,8 @@ int main( int   i_argc,
 
   // maximum observed height in the setup
   tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
+  tsunami_lab::t_real l_uMaxAbs = 0;
+  tsunami_lab::t_real l_vMaxAbs = 0;
 
   // set up solver
   for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ ) {
@@ -246,8 +248,15 @@ int main( int   i_argc,
 
       tsunami_lab::t_real l_hu = l_setup->getMomentumX( l_x,
                                                         l_y );
+
       tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
                                                         l_y );
+      if (l_h > 1e-9){
+        tsunami_lab::t_real l_u = l_hu / l_h;        
+        tsunami_lab::t_real l_v = l_hv / l_h;
+        l_uMaxAbs = std::max( std::abs(l_u), l_uMaxAbs);
+        l_vMaxAbs = std::max( std::abs(l_v), l_vMaxAbs);
+      }
       tsunami_lab::t_real l_bathymetry = l_setup->getBathymetry( l_x, l_y );
 
       // set initial values in wave propagation solver
@@ -278,11 +287,12 @@ int main( int   i_argc,
   
    
 
-  // derive maximum wave speed in setup; the momentum is ignored
-  tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
+  // derive maximum wave speed in setup;  
+  tsunami_lab::t_real l_xSpeedMax = std::sqrt( 9.81f * l_hMax ) + l_uMaxAbs;
+  tsunami_lab::t_real l_ySpeedMax = std::sqrt( 9.81f * l_hMax ) + l_vMaxAbs;
 
   // derive constant time step; changes at simulation time are ignored
-  tsunami_lab::t_real l_dt = 0.5 * l_dxy / l_speedMax;
+  tsunami_lab::t_real l_dt = 0.5 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
 
   // derive scaling for a time step
   tsunami_lab::t_real l_scaling = l_dt / l_dxy;
