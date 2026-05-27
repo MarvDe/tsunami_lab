@@ -52,10 +52,10 @@ int main( int   i_argc,
   std::string l_bathymetryFilePath = "profile_commas.csv";
   
   // bathymetry nc file path
-  std::string l_bathymetryNCFilePath = "utilities/artificialtsunami_bathymetry_1000.nc";
+  std::string l_bathymetryNCFilePath = "output/tohoku_gebco08_ucsb3_250m_bath.nc"; //"output/chile_gebco20_usgs_250m_bath_fixed.nc"; //// //"utilities/artificialtsunami_bathymetry_1000.nc";
 
   // displacement nc file path
-  std::string l_displacementNCFilePath = "utilities/artificialtsunami_displ_1000.nc";
+  std::string l_displacementNCFilePath = "output/tohoku_gebco08_ucsb3_250m_displ.nc"; //"output/chile_gebco20_usgs_250m_displ_fixed.nc"; // // //"utilities/artificialtsunami_displ_1000.nc";
   
 
   std::cout << "####################################" << std::endl;
@@ -282,10 +282,7 @@ int main( int   i_argc,
   tsunami_lab::io::Stations l_stations(l_nx, l_ny, l_dxy);
   if (l_stationsFilePath.compare("") != 0){
     l_stations.readFile(l_stationsFilePath);
-  }
-  
-  
-   
+  } 
 
   // derive maximum wave speed in setup;  
   tsunami_lab::t_real l_xSpeedMax = std::sqrt( 9.81f * l_hMax ) + l_uMaxAbs;
@@ -293,6 +290,7 @@ int main( int   i_argc,
 
   // derive constant time step; changes at simulation time are ignored
   tsunami_lab::t_real l_dt = 0.5 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
+  std::cout << "delta time: " << l_dt << std::endl; 
 
   // derive scaling for a time step
   tsunami_lab::t_real l_scaling = l_dt / l_dxy;
