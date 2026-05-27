@@ -55,7 +55,7 @@ Es ergeben sich also etwa 33 Minuten bis die erste Welle die Simulation verläss
 
 **2011 M 9.1 Tohoku Event**
 
-.. image:: ../images/tohoku2011.gif
+.. image:: ../images/tohoku2011_resize.gif
 
 Philipp Prell
 *************
