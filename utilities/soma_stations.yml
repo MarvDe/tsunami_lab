@@ -1,0 +1,4 @@
+stations:
+  - name: "soma"
+    locX: 315
+    locY: 2710

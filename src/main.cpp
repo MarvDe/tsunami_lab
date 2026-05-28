@@ -4,6 +4,7 @@
  * @section DESCRIPTION
  * Entry-point for simulations.
  **/
+#include "constants.h"
 #include "patches/WavePropagation1d.h"
 #include "patches/WavePropagation2d.h"
 #include "setups/DamBreak1d.h"
@@ -31,6 +32,10 @@ int main( int   i_argc,
   // number of cells in x- and y-direction
   tsunami_lab::t_idx l_nx = 0;
   tsunami_lab::t_idx l_ny = 1;
+
+  // origin of simulation
+  tsunami_lab::t_idx l_ox = 0;
+  tsunami_lab::t_idx l_oy = 0;
   
   // id of solver
   tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::FWAVE;

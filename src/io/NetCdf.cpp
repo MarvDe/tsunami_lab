@@ -22,7 +22,7 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std
             return;
     }
     // creating file
-    errorChecking( nc_create(i_filePath.c_str(), NC_CLOBBER, &m_fileId) );
+    errorChecking( nc_create(i_filePath.c_str(), NC_CLOBBER | NC_SHUFFLE, &m_fileId) );
 
     // creating dimensions
     errorChecking( nc_def_dim(m_fileId, "x", i_nx, &m_xDimId) );
@@ -44,15 +44,19 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std
     errorChecking( nc_put_att_text(m_fileId, m_tVarId, "units", l_timeUnit.size(), l_timeUnit.c_str()) );
     
     errorChecking( nc_def_var(m_fileId, "h", NC_FLOAT, 3, l_dimIds, &m_hVarId) );
+    errorChecking( nc_def_var_deflate(m_fileId, m_hVarId, 1, 3) );
     errorChecking( nc_put_att_text(m_fileId, m_hVarId, "units", 1, "m") );
 
     errorChecking( nc_def_var(m_fileId, "hu", NC_FLOAT, 3, l_dimIds, &m_huVarId) );
+    errorChecking( nc_def_var_deflate(m_fileId, m_huVarId, 1, 3) );
     errorChecking( nc_put_att_text(m_fileId, m_huVarId, "units", 6, "kg*m/s") );
     
     errorChecking( nc_def_var(m_fileId, "hv", NC_FLOAT, 3, l_dimIds, &m_hvVarId) );
+    errorChecking( nc_def_var_deflate(m_fileId, m_hvVarId, 1, 3) );
     errorChecking( nc_put_att_text(m_fileId, m_hvVarId, "units", 6, "kg*m/s") );
     
     errorChecking( nc_def_var(m_fileId, "b", NC_FLOAT, 2, l_dimIdsB, &m_bVarId) );
+    errorChecking( nc_def_var_deflate(m_fileId, m_bVarId, 1, 3) );
     errorChecking( nc_put_att_text(m_fileId, m_bVarId, "units", 1, "m") );
     
     // register COARDS convention
@@ -173,18 +177,31 @@ void io::NetCdf::write( t_idx                i_nx,
 int io::NetCdf::read( const std::string  & i_filePath,
                       t_idx      &  o_cellX,
                       t_idx      &  o_cellY,
+                      t_real     &  o_dxy,
+                      t_real     &  o_left,
+                      t_real     &  o_upper,
                       t_real    **  o_data,
                       bool printErr ){
 
     int l_ncid;
     int l_varidZ;
+    int l_varIdX;
+    int l_varIdY;
     int l_status = 0;
     int ndims;
     int dimids[NC_MAX_VAR_DIMS];
     size_t dim_sizes[NC_MAX_VAR_DIMS];
-                                    
+    
+    
     l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid), printErr );
     if (l_status) return -1;
+    
+    l_status = errorChecking( nc_inq_varid(l_ncid, "x", &l_varIdX), printErr );
+    if (l_status) return -1;
+
+    l_status = errorChecking( nc_inq_varid(l_ncid, "y", &l_varIdY), printErr );
+    if (l_status) return -1;
+    
     l_status = errorChecking( nc_inq_varid(l_ncid, "z", &l_varidZ), printErr );
     if (l_status) return -1;
     l_status = errorChecking( nc_inq_var(l_ncid, l_varidZ, nullptr, nullptr, &ndims, dimids, nullptr), printErr );
@@ -197,6 +214,17 @@ int io::NetCdf::read( const std::string  & i_filePath,
     o_cellX = dim_sizes[1];
     o_cellY = dim_sizes[0];
     *o_data = new t_real[o_cellX * o_cellY];
+    
+    float l_nextToLeft;
+    size_t l_coord[] = {0};
+    size_t l_coord1[] = {1};
+    l_status = errorChecking( nc_get_var1_float(l_ncid, l_varIdX, l_coord, &o_left), printErr );
+    if (l_status) return -1;
+    l_status = errorChecking ( nc_get_var1_float(l_ncid, l_varIdX, l_coord1, &l_nextToLeft), printErr );
+    if (l_status) return -1;
+    l_status = errorChecking( nc_get_var1_float(l_ncid, l_varIdY, l_coord, &o_upper), printErr );
+    if (l_status) return -1;
+    o_dxy = l_nextToLeft - o_left;
 
     l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, *o_data), printErr );
     if (l_status) return -1;
