@@ -3,3 +3,4 @@ config.log
 .sconsign.dblite
 .sconf_temp/
 solution.nc
+large_data/

@@ -93,12 +93,12 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       bool l_dryL = false, l_dryR = false;
       if (l_hL <= 0 && l_hR <= 0) { // both cells dry
         // skip evaluation
-        std::cout << "cell dry" << std::endl;
+        //std::cout << "cell dry" << std::endl;
         continue;
       }
       else if (l_hL <= 0){               // left cell dry
         // set reflecting boundary conditions left
-        std::cout << "cell dry" << std::endl;
+        //std::cout << "cell dry" << std::endl;
         l_dryL = true;
         l_hL = l_hR;
         l_huL = -l_huR;
@@ -106,7 +106,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       }
       else if (l_hR <= 0){      // right cell dry
         // set reflecting boundary conditions right
-        std::cout << "cell dry" << std::endl;
+        //std::cout << "cell dry" << std::endl;
         l_dryR = true;
         l_hR = l_hL;
         l_huR = -l_huL;
@@ -181,7 +181,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       }
       else if (l_hU <= 0){               // left cell dry
         // set reflecting boundary conditions left
-        std::cout << "cell dry" << std::endl;
+        //std::cout << "cell dry" << std::endl;
         l_dryU = true;
         l_hU = l_hB;
         l_hvU = -l_hvB;
@@ -190,7 +190,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       }
       else if (l_hB <= 0){      // right cell dry
         // set reflecting boundary conditions right
-        std::cout << "cell dry" << std::endl;
+        //std::cout << "cell dry" << std::endl;
         l_dryB = true;
         l_hB = l_hU;
         l_hvB = -l_hvU;
