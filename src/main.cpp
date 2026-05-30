@@ -100,7 +100,9 @@ int main( int   i_argc,
                         l_nx,
                         l_ny,
                         l_endTime,
-                        l_stationsFilePath
+                        l_stationsFilePath,
+                        l_left,
+                        l_upper
                         );
   }
   else {
@@ -128,20 +130,24 @@ int main( int   i_argc,
   
     // set stations yaml file;
     l_stationsFilePath = l_parser.get("stations", "");
+
+    // select size of cell
+    l_dxy = l_parser.get("dxy", (tsunami_lab::t_real)1);
+
+    // select left most coordiante
+    l_left = l_parser.get("left", (tsunami_lab::t_real)0);
+
+    // select upper most coordinate
+    l_upper = l_parser.get("upper", (tsunami_lab::t_real)0);
   }
 
   if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
   else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
   else l_solverName = "roe";
   
-  // select size of cell
-  l_dxy = l_parser.get("dxy", (tsunami_lab::t_real)1);
+  
 
-  // select left most coordiante
-  l_left = l_parser.get("left", (tsunami_lab::t_real)0);
-
-  // select upper most coordinate
-  l_upper = l_parser.get("upper", (tsunami_lab::t_real)0);
+  
 
   if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
   else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;

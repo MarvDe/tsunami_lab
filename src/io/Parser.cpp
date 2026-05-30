@@ -56,7 +56,9 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         tsunami_lab::t_idx &i_nx,
                                         tsunami_lab::t_idx &i_ny,
                                         tsunami_lab::t_real &i_endTime,
-                                        std::string &i_stationsFilePath
+                                        std::string &i_stationsFilePath,
+                                        tsunami_lab::t_real &i_left,
+                                        tsunami_lab::t_real &i_upper
                                     ){
     YAML::Node l_file;
     try {
@@ -64,6 +66,8 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
 
         auto  args = l_file["args"][0];
         i_solverName = args["solverName"].as<std::string>();
+        i_left = args["startCoordX"].as<tsunami_lab::t_real>();
+        i_upper = args["startCoordY"].as<tsunami_lab::t_real>();
         i_setupName = args["setupName"].as<std::string>();
         i_formatName = args["formatName"].as<std::string>();
         i_dxy = args["cellSize"].as<tsunami_lab::t_real>();
