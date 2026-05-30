@@ -23,15 +23,25 @@ private:
     t_idx m_cellsY = 0;
 
     //! number of cells in bathymetry grid
-    t_idx m_bCellsX = 0;
-    t_idx m_bCellsY = 0;
+    t_idx m_cellsXBat = 0;
+    t_idx m_cellsYBat = 0;
 
     //! number of cells in displacement grid
-    t_idx m_dCellsX = 0;
-    t_idx m_dCellsY = 0;
+    t_idx m_cellsXDis = 0;
+    t_idx m_cellsYDis = 0;
 
     //! size of cells
     t_real m_dxy = 1;
+    t_real m_dxyBat = 1;
+    t_real m_dxyDis = 1;
+
+    //! coordinates 
+    t_real m_left = 0;
+    t_real m_upper = 0;
+    t_real m_leftBat = 0;
+    t_real m_upperBat = 0;
+    t_real m_leftDis = 0;
+    t_real m_upperDis = 0;
 
     //! bathymetry data
     t_real * m_bathymetry = nullptr;
@@ -48,14 +58,23 @@ public:
      * @param i_cellsX number of cells in x direction.
      * @param i_cellsY number of cells in y direction.
      * @param i_dxy size of cell.
-     * @param i_bCellsX 
-     * @param i_bCellsY
-     * @param i_dCellsX
-     * @param i_dCellsY
+     * @param i_left coordinate of left most cell.
+     * @param i_upper coordinate of upper most cell.
+     * @param i_cellsXBat number of cells in x direction of bathymetry grid.
+     * @param i_cellsYBat number of cells in y direction of bathymetry grid.
+     * @param i_dxyBat size of cell of bathymetry grid.
+     * @param i_leftBat coordinate of left most cell in bathymetry grid.
+     * @param i_upperBat coordinate of upper most cell in bathymetry grid.
+     * @param i_cellsXDis number of cells in x direction of displacement grid.
+     * @param i_cellsYDis number of cells in y direction of displacement grid.
+     * @param i_dxyDis size of cell of displacement grid.
+     * @param i_leftDis coordinate of left most cell in displacement grid.
+     * @param i_upperDis coordinate of upper most cell in displacement grid.
      * @param i_bathymetry input bathymetry data.
      * @param i_displacement input displacement data.
      */
-    TsunamiEvent2d( t_idx i_cellsX, t_idx i_cellsY, t_real i_dxy, t_idx i_bCellsX, t_idx i_bCellsY, t_idx i_dCellsX, t_idx i_dCellsY, const t_real * i_bathymetry, const t_real * i_displacement);
+    TsunamiEvent2d( t_idx i_cellsX, t_idx i_cellsY, t_real i_dxy, t_real i_left, t_real i_upper, t_idx i_cellsXBat, t_idx i_cellsYBat, t_real i_dxyBat, t_real i_leftBat, t_real i_upperBat,
+                    t_idx i_cellsXDis, t_idx i_cellsYDis, t_real i_dxyDis, t_real i_leftDis, t_real i_upperDis, const t_real * i_bathymetry, const t_real * i_displacement);
 
     /**
      * Destructor.

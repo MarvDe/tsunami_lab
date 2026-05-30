@@ -13,6 +13,10 @@ TEST_CASE( "Test the two-dimensional tsunami event setup.", "[TsunamiEvent2d]" )
     constexpr t_idx l_nx = 5;
     constexpr t_idx l_ny = 5;
 
+    t_real l_dxy = 1;
+    t_real l_left = 0;
+    t_real l_upper = 0;
+
     t_real l_bathymetry[l_nx * l_ny];
     t_real l_displacement[l_nx * l_ny];
 
@@ -33,7 +37,8 @@ TEST_CASE( "Test the two-dimensional tsunami event setup.", "[TsunamiEvent2d]" )
     // d[.,2] = 2
     // h[3,2] = 30
 
-    setups::TsunamiEvent2d l_tsunamiEvent(l_nx, l_ny, 1, l_nx, l_ny, l_nx, l_ny, l_bathymetry, l_displacement);
+    setups::TsunamiEvent2d l_tsunamiEvent(l_nx, l_ny, l_dxy, l_left, l_upper, l_nx, l_ny, l_dxy, l_left, l_upper, 
+                                          l_nx, l_ny, l_dxy, l_left, l_upper, l_bathymetry, l_displacement);
 
     REQUIRE( l_tsunamiEvent.getBathymetry(4, 0) == Approx(-40) );
     REQUIRE( l_tsunamiEvent.getBathymetry(4, 4) == Approx(-36) );
