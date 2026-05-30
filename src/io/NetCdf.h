@@ -47,8 +47,22 @@ class tsunami_lab::io::NetCdf {
 
   public:
 
-    NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std::string & i_filePath );
+    /**
+     * Constructs a NetCdf object and creates a new .nc file. With calls to the write function this nc file can be filled with data.
+     *
+     * @param i_nx number of cells in x-direction.
+     * @param i_ny number of cells in y-direction.
+     * @param i_dxy size of cell.
+     * @param i_left coordinates of left most cell.
+     * @param i_upper coordinates of upper most cell.
+     * @param i_filePath path of the new nc file.
+     **/
+    NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, const std::string & i_filePath );
     
+
+    /**
+     * Destructor.
+     */
     ~NetCdf();
 
     /**

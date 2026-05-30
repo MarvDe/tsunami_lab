@@ -1,32 +1,45 @@
 #include "TsunamiEvent2d.h"
 
 #include <cmath>
+#include <algorithm>
 
 using namespace tsunami_lab;
 
-setups::TsunamiEvent2d::TsunamiEvent2d( t_idx i_cellsX, t_idx i_cellsY, t_real i_dxy, t_idx i_bCellsX, t_idx i_bCellsY, t_idx i_dCellsX, t_idx i_dCellsY, const t_real * i_bathymetry, const t_real * i_displacement ){
+setups::TsunamiEvent2d::TsunamiEvent2d( t_idx i_cellsX, t_idx i_cellsY, t_real i_dxy, t_real i_left, t_real i_upper, t_idx i_bCellsX, t_idx i_bCellsY, t_real i_dxyBat, t_real i_leftBat, t_real i_upperBat,
+                                        t_idx i_dCellsX, t_idx i_dCellsY, t_real i_dxyDis, t_real i_leftDis, t_real i_upperDis, const t_real * i_bathymetry, const t_real * i_displacement ){
     m_cellsX = i_cellsX;
     m_cellsY = i_cellsY;
     m_dxy = i_dxy;
+    m_left = i_left;
+    m_upper = i_upper;
 
-    m_bCellsX = i_bCellsX;
-    m_bCellsY = i_bCellsY;
+    m_cellsXBat = i_bCellsX;
+    m_cellsYBat = i_bCellsY;
 
-    m_dCellsX = i_dCellsX;
-    m_dCellsY = i_dCellsY;
+    m_cellsXDis = i_dCellsX;
+    m_cellsYDis = i_dCellsY;
 
-    m_bathymetry = new t_real[m_bCellsX * m_bCellsY];
-    m_displacement = new t_real[m_dCellsX * m_dCellsY];
+    m_dxyBat = i_dxyBat;
+    m_dxyDis = i_dxyDis;
 
-    for (t_idx l_iy = 0; l_iy < m_bCellsY; l_iy++){
-        for (t_idx l_ix = 0; l_ix < m_bCellsX; l_ix++){
-            m_bathymetry[l_iy * m_bCellsX + l_ix] = i_bathymetry[l_iy * m_bCellsX + l_ix];
+    m_leftBat = i_leftBat;
+    m_upperBat = i_upperBat;
+
+    m_leftDis = i_leftDis;
+    m_upperDis = i_upperDis;
+
+    m_bathymetry = new t_real[m_cellsXBat * m_cellsYBat];
+    m_displacement = new t_real[m_cellsXDis * m_cellsYDis];
+
+    for (t_idx l_iy = 0; l_iy < m_cellsYBat; l_iy++){
+        for (t_idx l_ix = 0; l_ix < m_cellsXBat; l_ix++){
+            m_bathymetry[l_iy * m_cellsXBat + l_ix] = i_bathymetry[l_iy * m_cellsXBat + l_ix];
         }
     }
 
-    for (t_idx l_iy = 0; l_iy < m_dCellsY; l_iy++){
-        for (t_idx l_ix = 0; l_ix < m_dCellsX; l_ix++){
-            m_displacement[l_iy * m_dCellsX + l_ix] = i_displacement[l_iy * m_dCellsX + l_ix];
+    for (t_idx l_iy = 0; l_iy < m_cellsYDis; l_iy++){
+        for (t_idx l_ix = 0; l_ix < m_cellsXDis; l_ix++){
+            m_displacement[l_iy * m_cellsXBat + l_ix] = i_displacement[l_iy * m_cellsXBat + l_ix];
         }
     }
 }
@@ -37,58 +50,26 @@ setups::TsunamiEvent2d::~TsunamiEvent2d(){
 }
 
 t_real setups::TsunamiEvent2d::getHeight( t_real i_x, t_real i_y ) const {
-    t_real rel_x = i_x / ( m_dxy * (t_real) m_cellsX );
-    t_real rel_y = i_y / ( m_dxy * (t_real) m_cellsY );
-
-<<<<<<< HEAD
-    t_idx i_bIx = (t_idx) (rel_x * m_bCellsX);
-    t_idx i_bIy = (t_idx) (rel_y * m_bCellsY);
-=======
-    t_idx i_bIx = (t_idx) std::round(rel_x * m_bCellsX);
-    t_idx i_bIy = (t_idx) std::round(rel_y * m_bCellsY);
->>>>>>> Marvin
-
-    if (i_bIx >= m_bCellsX) i_bIx = m_bCellsX - 1;
-    if (i_bIy >= m_bCellsY) i_bIy = m_bCellsY - 1;
     
-
-
-    if (m_bathymetry[i_bIy * m_bCellsX + i_bIx] < 0){
-        return std::max(-m_bathymetry[i_bIy * m_bCellsX + i_bIx], m_delta);
+    t_idx l_bIx = (t_idx) std::clamp<t_real>( std::round((i_x + m_left - m_leftBat) / m_dxyBat), 0, m_cellsXBat -1 );
+    t_idx l_bIy = (t_idx) std::clamp<t_real>( std::round((i_y + m_upper - m_upperBat) / m_dxyBat), 0, m_cellsYBat -1 );
+    
+    if (m_bathymetry[l_bIy * m_cellsXBat + l_bIx] < 0){
+        return std::max(-m_bathymetry[l_bIy * m_cellsXBat + l_bIx], m_delta);
     }
     return 0;
 }
 
 t_real setups::TsunamiEvent2d::getBathymetry( t_real i_x, t_real i_y ) const {
-    
-    t_real rel_x = i_x / ( m_dxy * (t_real) m_cellsX );
-    t_real rel_y = i_y / ( m_dxy * (t_real) m_cellsY );
 
-<<<<<<< HEAD
-    t_idx i_bIx = (t_idx) (rel_x * m_bCellsX);
-    t_idx i_bIy = (t_idx) (rel_y * m_bCellsY);
-=======
-    t_idx i_bIx = (t_idx) std::round(rel_x * m_bCellsX);
-    t_idx i_bIy = (t_idx) std::round(rel_y * m_bCellsY);
->>>>>>> Marvin
+    t_idx l_bIx = (t_idx) std::clamp<t_real>( std::round((i_x + m_left - m_leftBat) / m_dxyBat), 0, m_cellsXBat -1 );
+    t_idx l_bIy = (t_idx) std::clamp<t_real>( std::round((i_y + m_upper - m_upperBat) / m_dxyBat), 0, m_cellsYBat -1 );
 
-    if (i_bIx >= m_bCellsX) i_bIx = m_bCellsX - 1;
-    if (i_bIy >= m_bCellsY) i_bIy = m_bCellsY - 1;
+    t_idx l_dIx = (t_idx) std::clamp<t_real>( std::round((i_x + m_left - m_leftDis) / m_dxyDis), 0, m_cellsXDis -1 );
+    t_idx l_dIy = (t_idx) std::clamp<t_real>( std::round((i_y + m_upper - m_upperDis) / m_dxyDis), 0, m_cellsYDis -1 );
 
-
-<<<<<<< HEAD
-    t_idx i_dIx = (t_idx) (rel_x * m_dCellsX);
-    t_idx i_dIy = (t_idx) (rel_y * m_dCellsY);
-=======
-    t_idx i_dIx = (t_idx) std::round(rel_x * m_dCellsX);
-    t_idx i_dIy = (t_idx) std::round(rel_y * m_dCellsY);
->>>>>>> Marvin
-
-    if (i_dIx >= m_dCellsX) i_dIx = m_dCellsX - 1;
-    if (i_dIy >= m_dCellsY) i_dIy = m_dCellsY - 1;
-
-    if (m_bathymetry[i_bIy * m_bCellsX + i_bIx] < 0){
-        return std::min(m_bathymetry[i_bIy * m_bCellsX + i_bIx], -m_delta) + m_displacement[i_dIy * m_dCellsX + i_dIx];
+    if (m_bathymetry[l_bIy * m_cellsXBat + l_bIx] < 0){
+        return std::min(m_bathymetry[l_bIy * m_cellsXBat + l_bIx], -m_delta) + m_displacement[l_dIy * m_cellsXDis + l_dIx];
     }
-    return std::max(m_bathymetry[i_bIy * m_bCellsX + i_bIx], m_delta) + m_displacement[i_dIy * m_dCellsX + i_dIx];
+    return std::max(m_bathymetry[l_bIy * m_cellsXBat + l_bIx], m_delta) + m_displacement[l_dIy * m_cellsXDis + l_dIx];
 }

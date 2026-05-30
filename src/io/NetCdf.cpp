@@ -9,9 +9,11 @@
 #include <cstring>
 using namespace tsunami_lab;
 
-io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std::string & i_filePath ){
+io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, const std::string & i_filePath ){
+
     m_dxy = i_dxy;
     m_dt = i_dt;
+
     // Opening new netcdf file
     // check if file path ends with '.nc'
     if (i_filePath.length() < 3 ||
@@ -22,7 +24,7 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std
             return;
     }
     // creating file
-    errorChecking( nc_create(i_filePath.c_str(), NC_CLOBBER | NC_SHUFFLE, &m_fileId) );
+    errorChecking( nc_create(i_filePath.c_str(), NC_NETCDF4 | NC_CLOBBER | NC_SHUFFLE, &m_fileId) );
 
     // creating dimensions
     errorChecking( nc_def_dim(m_fileId, "x", i_nx, &m_xDimId) );
@@ -43,20 +45,25 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std
     const std::string l_timeUnit = "seconds since start";
     errorChecking( nc_put_att_text(m_fileId, m_tVarId, "units", l_timeUnit.size(), l_timeUnit.c_str()) );
     
+    int l_compressionLevel = 3;
+    int l_useZlibCompression = 1;
+    int l_useShuffle = 1;
+
     errorChecking( nc_def_var(m_fileId, "h", NC_FLOAT, 3, l_dimIds, &m_hVarId) );
-    errorChecking( nc_def_var_deflate(m_fileId, m_hVarId, 1, 3) );
+    // turn on compression
+    errorChecking( nc_def_var_deflate(m_fileId, m_hVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
     errorChecking( nc_put_att_text(m_fileId, m_hVarId, "units", 1, "m") );
 
     errorChecking( nc_def_var(m_fileId, "hu", NC_FLOAT, 3, l_dimIds, &m_huVarId) );
-    errorChecking( nc_def_var_deflate(m_fileId, m_huVarId, 1, 3) );
+    errorChecking( nc_def_var_deflate(m_fileId, m_huVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
     errorChecking( nc_put_att_text(m_fileId, m_huVarId, "units", 6, "kg*m/s") );
     
     errorChecking( nc_def_var(m_fileId, "hv", NC_FLOAT, 3, l_dimIds, &m_hvVarId) );
-    errorChecking( nc_def_var_deflate(m_fileId, m_hvVarId, 1, 3) );
+    errorChecking( nc_def_var_deflate(m_fileId, m_hvVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
     errorChecking( nc_put_att_text(m_fileId, m_hvVarId, "units", 6, "kg*m/s") );
     
     errorChecking( nc_def_var(m_fileId, "b", NC_FLOAT, 2, l_dimIdsB, &m_bVarId) );
-    errorChecking( nc_def_var_deflate(m_fileId, m_bVarId, 1, 3) );
+    errorChecking( nc_def_var_deflate(m_fileId, m_bVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
     errorChecking( nc_put_att_text(m_fileId, m_bVarId, "units", 1, "m") );
     
     // register COARDS convention
@@ -66,12 +73,12 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, const std
     nc_enddef(m_fileId);
 
     for (tsunami_lab::t_idx l_cx = 0; l_cx < i_nx; l_cx++){
-        tsunami_lab::t_real l_cxFloat = l_cx * m_dxy;
+        tsunami_lab::t_real l_cxFloat = l_cx * m_dxy + i_left;
         errorChecking( nc_put_var1_float(m_fileId, m_xVarId, &l_cx, &l_cxFloat) );
     }
 
     for (tsunami_lab::t_idx l_cy = 0; l_cy < i_ny; l_cy++){
-        tsunami_lab::t_real l_cyFloat = l_cy * m_dxy;
+        tsunami_lab::t_real l_cyFloat = l_cy * m_dxy + i_upper;
         errorChecking( nc_put_var1_float(m_fileId, m_yVarId, &l_cy, &l_cyFloat) );
     }
 }
@@ -98,6 +105,7 @@ void io::NetCdf::write( t_idx                i_nx,
                         t_real       const * i_hu,
                         t_real       const * i_hv,
                         t_real       const * i_bathymetry ){
+
     if (i_nx + 2 == i_stride ){ // if ghost cells are passed
         const float l_timeStep = i_timeStep;
         errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep));

@@ -54,9 +54,13 @@ int main( int   i_argc,
 
   // id of output format
   tsunami_lab::t_idx l_formatId = tsunami_lab::io::CSV;
-
+  
   // set cell size
   tsunami_lab::t_real l_dxy = 1;
+  
+  // coordinates of upper left cell
+  tsunami_lab::t_real l_left = 0;
+  tsunami_lab::t_real l_upper = 0;
 
   // outflow types
   tsunami_lab::t_idx l_outflowTypeL = 0;
@@ -138,6 +142,15 @@ int main( int   i_argc,
   if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
   else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
   else l_solverName = "roe";
+  
+  // select size of cell
+  l_dxy = l_parser.get("dxy", (tsunami_lab::t_real)1);
+
+  // select left most coordiante
+  l_left = l_parser.get("left", (tsunami_lab::t_real)0);
+
+  // select upper most coordinate
+  l_upper = l_parser.get("upper", (tsunami_lab::t_real)0);
 
   if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
   else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
@@ -251,14 +264,21 @@ int main( int   i_argc,
     tsunami_lab::t_idx l_bY = 0;
     tsunami_lab::t_idx l_dX = 0;
     tsunami_lab::t_idx l_dY = 0;
+    tsunami_lab::t_real l_dxyBat = 0;
+    tsunami_lab::t_real l_dxyDis = 0;
+    tsunami_lab::t_real l_leftBat = 0;
+    tsunami_lab::t_real l_leftDis = 0;
+    tsunami_lab::t_real l_upperBat = 0;
+    tsunami_lab::t_real l_upperDis = 0;
   
     tsunami_lab::t_real * l_bathymetry = nullptr;
     tsunami_lab::t_real * l_displacement = nullptr;
 
-    tsunami_lab::io::NetCdf::read(l_bathymetryNCFilePath, l_bX, l_bY, &l_bathymetry);
-    tsunami_lab::io::NetCdf::read(l_displacementNCFilePath, l_dX, l_dY, &l_displacement);
+    tsunami_lab::io::NetCdf::read(l_bathymetryNCFilePath, l_bX, l_bY, l_dxyBat, l_leftBat, l_upperBat, &l_bathymetry);
+    tsunami_lab::io::NetCdf::read(l_displacementNCFilePath, l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, &l_displacement);
 
-    l_setup = new tsunami_lab::setups::TsunamiEvent2d(l_nx, l_ny, l_dxy, l_bX, l_bY, l_dX, l_dY, l_bathymetry, l_displacement);
+    l_setup = new tsunami_lab::setups::TsunamiEvent2d(l_nx, l_ny, l_dxy, l_left, l_upper, l_bX, l_bY, l_dxyBat, l_leftBat, l_upperBat, 
+                                                      l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, l_bathymetry, l_displacement);
   
     delete[] l_bathymetry;
     delete[] l_displacement;
@@ -356,6 +376,8 @@ int main( int   i_argc,
                                             l_ny,
                                             l_dxy,
                                             l_dt,
+                                            l_left,
+                                            l_upper,
                                             "solution.nc");
   }
 
