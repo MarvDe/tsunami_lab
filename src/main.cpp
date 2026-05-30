@@ -32,19 +32,10 @@ int main( int   i_argc,
   // number of cells in x- and y-direction
   tsunami_lab::t_idx l_nx = 0;
   tsunami_lab::t_idx l_ny = 1;
-  
-  // id of solver
-  tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::FWAVE;
-
-  // id of setup
-  tsunami_lab::t_idx l_setupId = tsunami_lab::setups::TSUNAMI_EVENT;
-
-  // id of output format
-  tsunami_lab::t_idx l_formatId = tsunami_lab::io::CSV;
 
   // origin of simulation
-  tsunami_lab::t_idx l_ox = 0;
-  tsunami_lab::t_idx l_oy = 0;
+  //tsunami_lab::t_idx l_ox = 0;
+  //tsunami_lab::t_idx l_oy = 0;
   
   // id of solver
   tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::FWAVE;
