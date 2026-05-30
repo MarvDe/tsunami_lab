@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <string.h>
 #include <iostream>
-
+#include <yaml-cpp/yaml.h>
 
 tsunami_lab::io::Parser::Parser(int i_argc, char *i_argv[]){
     // parsing arguments
@@ -44,4 +44,38 @@ float tsunami_lab::io::Parser::get(const std::string &i_name, float i_fallback){
         return i_fallback;
     }
     return std::stof(l_item->second);
+}
+
+void tsunami_lab::io::Parser::parseFile(std::string &i_file,
+                                        std::string &i_solverName,
+                                        std::string &i_setupName,
+                                        std::string &i_formatName,
+                                        tsunami_lab::t_real &i_dxy,
+                                        std::string &i_bathymetryNCFilePath,
+                                        std::string &i_displacementNCFilePath,
+                                        tsunami_lab::t_idx &i_nx,
+                                        tsunami_lab::t_idx &i_ny,
+                                        tsunami_lab::t_real &i_endTime,
+                                        std::string &i_stationsFilePath
+                                    ){
+    YAML::Node l_file;
+    try {
+        l_file = YAML::LoadFile(i_file);
+
+        auto  args = l_file["args"][0];
+        i_solverName = args["solverName"].as<std::string>();
+        i_setupName = args["setupName"].as<std::string>();
+        i_formatName = args["formatName"].as<std::string>();
+        i_dxy = args["cellSize"].as<tsunami_lab::t_real>();
+        i_nx = args["cellx"].as<tsunami_lab::t_idx>();
+        i_ny = args["celly"].as<tsunami_lab::t_idx>();
+        i_endTime = args["endTime"].as<tsunami_lab::t_real>();
+        i_stationsFilePath = args["stations"].as<std::string>();
+        i_displacementNCFilePath = args["displacement"][0]["filePath"].as<std::string>();
+        i_bathymetryNCFilePath = args["bathymetry"][0]["filePath"].as<std::string>();
+    } catch (YAML::Exception& e){
+        std::cerr << "YAML Error: " << e.what() << std::endl;
+        return;
+    }
+
 }

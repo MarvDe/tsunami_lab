@@ -56,6 +56,12 @@ int main( int   i_argc,
 
   // displacement nc file path
   std::string l_displacementNCFilePath = "utilities/artificialtsunami_displ_1000.nc";
+
+  // max simulation time
+  tsunami_lab::t_real l_endTime;
+
+  // path to station file
+  std::string l_stationsFilePath;
   
 
   std::cout << "####################################" << std::endl;
@@ -68,14 +74,57 @@ int main( int   i_argc,
   // parse runtime arguments
   auto l_parser = tsunami_lab::io::Parser(i_argc, i_argv);
 
-  // choose solver
-  std::string l_solverName = l_parser.get("solver", "roe");
+  std::string l_setupFile = l_parser.get("args", "");
+
+  std::string l_solverName = "fwave";
+  std::string l_setupName = "damBreak";
+  std::string l_formatName = "NONE";
+
+  if (l_setupFile.compare("") != 0){
+    l_parser.parseFile( l_setupFile,
+                        l_solverName,
+                        l_setupName,
+                        l_formatName,
+                        l_dxy,
+                        l_bathymetryNCFilePath,
+                        l_displacementNCFilePath,
+                        l_nx,
+                        l_ny,
+                        l_endTime,
+                        l_stationsFilePath
+                        );
+  }
+  else {
+    // choose solver
+    l_solverName = l_parser.get("solver", "roe");
+    
+  
+    // choose setup
+    l_setupName = l_parser.get("setup", "damBreak");
+    
+  
+    // choose ouput format
+    l_formatName = l_parser.get("format", "csv");
+    
+  
+    // select number of cells in x direction
+    l_nx = l_parser.get("cellx", (tsunami_lab::t_idx)1);
+    
+  
+    l_ny = l_parser.get("celly", (tsunami_lab::t_idx)1);
+  
+    // select number of cells in x direction
+    l_endTime = l_parser.get("endtime", (tsunami_lab::t_real)3.0);
+    
+  
+    // set stations yaml file;
+    l_stationsFilePath = l_parser.get("stations", "");
+  }
+
   if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
   else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
   else l_solverName = "roe";
 
-  // choose setup
-  std::string l_setupName = l_parser.get("setup", "damBreak");
   if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
   else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
   else if (l_setupName.compare("shockShock") == 0) l_setupId = tsunami_lab::setups::SHOCK_SHOCK;
@@ -87,26 +136,16 @@ int main( int   i_argc,
   else if (l_setupName.compare("tsunamiEvent2d") == 0) l_setupId = tsunami_lab::setups::TSUNAMI_EVENT_2D;
   else l_setupName = "damBreak";
 
-  // choose ouput format
-  std::string l_formatName = l_parser.get("format", "csv");
   if (l_formatName.compare("nc") == 0) l_formatId = tsunami_lab::io::NC;
   else if (l_formatName.compare("NONE") == 0) l_formatId = tsunami_lab::io::NONE;
   else if (l_formatName.compare("csv")) l_formatId = tsunami_lab::io::CSV;
   else l_formatId = tsunami_lab::io::CSV;
 
-  // select number of cells in x direction
-  l_nx = l_parser.get("cellx", (tsunami_lab::t_idx)1);
   if (l_nx == 0) l_nx = 1;
 
-  l_ny = l_parser.get("celly", (tsunami_lab::t_idx)1);
   if (l_ny == 0) l_ny = 1;
 
-  // select number of cells in x direction
-  tsunami_lab::t_real l_endTime = l_parser.get("endtime", (tsunami_lab::t_real)3.0);
   if (l_endTime < 0.0) l_endTime = 3.0;
-
-  // set stations yaml file;
-  std::string l_stationsFilePath = l_parser.get("stations", "");
 
   std::cout << "runtime configuration" << std::endl;
   std::cout << "  number of cells in x-direction: " << l_nx << std::endl;
@@ -295,7 +334,7 @@ int main( int   i_argc,
   std::cout << "entering time loop" << std::endl;
 
   //setup NetCdf
-  tsunami_lab::io::NetCdf* l_netCdf;
+  tsunami_lab::io::NetCdf* l_netCdf = nullptr;
   if (l_formatId == tsunami_lab::io::NC){
     l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
                                             l_ny,
