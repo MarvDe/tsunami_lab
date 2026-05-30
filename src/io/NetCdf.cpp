@@ -9,10 +9,11 @@
 #include <cstring>
 using namespace tsunami_lab;
 
-io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, const std::string & i_filePath ){
+io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, t_idx i_outRes, const std::string & i_filePath ){
 
-    m_dxy = i_dxy;
+    m_dxy = i_dxy * i_outRes;
     m_dt = i_dt;
+    m_outRes = i_outRes;
 
     // Opening new netcdf file
     // check if file path ends with '.nc'
@@ -27,8 +28,8 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_
     errorChecking( nc_create(i_filePath.c_str(), NC_NETCDF4 | NC_CLOBBER | NC_SHUFFLE, &m_fileId) );
 
     // creating dimensions
-    errorChecking( nc_def_dim(m_fileId, "x", i_nx, &m_xDimId) );
-    errorChecking( nc_def_dim(m_fileId, "y", i_ny, &m_yDimId) );
+    errorChecking( nc_def_dim(m_fileId, "x", i_nx / i_outRes, &m_xDimId) );
+    errorChecking( nc_def_dim(m_fileId, "y", i_ny / i_outRes, &m_yDimId) );
     errorChecking( nc_def_dim(m_fileId, "time", NC_UNLIMITED, &m_tDimId) );
 
     // creating variables
@@ -72,12 +73,12 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_
 
     nc_enddef(m_fileId);
 
-    for (tsunami_lab::t_idx l_cx = 0; l_cx < i_nx; l_cx++){
+    for (tsunami_lab::t_idx l_cx = 0; l_cx < i_nx / i_outRes; l_cx++){
         tsunami_lab::t_real l_cxFloat = l_cx * m_dxy + i_left;
         errorChecking( nc_put_var1_float(m_fileId, m_xVarId, &l_cx, &l_cxFloat) );
     }
 
-    for (tsunami_lab::t_idx l_cy = 0; l_cy < i_ny; l_cy++){
+    for (tsunami_lab::t_idx l_cy = 0; l_cy < i_ny / i_outRes; l_cy++){
         tsunami_lab::t_real l_cyFloat = l_cy * m_dxy + i_upper;
         errorChecking( nc_put_var1_float(m_fileId, m_yVarId, &l_cy, &l_cyFloat) );
     }
@@ -99,7 +100,8 @@ int io::NetCdf::errorChecking(int i_errId, bool i_printErr){
 
 void io::NetCdf::write( t_idx                i_nx,
                         t_idx                i_ny,
-                        t_idx                i_timeStep,
+                        t_idx                i_timeIndex,
+                        t_real               i_simTime,
                         t_idx                i_stride,
                         t_real       const * i_h,
                         t_real       const * i_hu,
@@ -107,63 +109,76 @@ void io::NetCdf::write( t_idx                i_nx,
                         t_real       const * i_bathymetry ){
 
     if (i_nx + 2 == i_stride ){ // if ghost cells are passed
-        const float l_timeStep = i_timeStep;
-        errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep));
-        size_t start[3] = {i_timeStep, 0, 0};
-        size_t count[3] = {1, i_ny, i_nx};
+        errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeIndex, &i_simTime));
+        size_t start[3] = {i_timeIndex, 0, 0};
+        size_t count[3] = {1, (i_ny / m_outRes), (i_nx / m_outRes)};
         size_t startB[2] = {0,0};
-        size_t countB[2] = {i_ny, i_nx};
-        std::vector<float> buffer(i_nx * i_ny);
-        if (i_h != nullptr){
-            for (size_t y = 0; y < i_ny; y++) {
-                //if (i_h[y * i_stride + i_nx - 1] == 0) std::cout << "last value row " << y << " = " << 0 << std::endl;
-                std::memcpy(
-                    &buffer[y * i_nx],
-                    &i_h[y * i_stride],
-                    i_nx * sizeof(float)
-                );
+        size_t countB[2] = {(i_ny / m_outRes), (i_nx / m_outRes)};
+        std::vector<float> buffer((i_nx / m_outRes) * (i_ny / m_outRes));
+
+        // write the hight, momentum_x and momentum_y
+        const t_real * l_buffers[3] = {i_h, i_hu, i_hv};
+        int l_varIds[3] = {m_hVarId, m_huVarId, m_hvVarId};
+        for (t_idx l_bufferIndex = 0; l_bufferIndex < 3; l_bufferIndex++){ // iterate over height, momentum_x and momentum_y
+            if (l_buffers[l_bufferIndex] != nullptr){
+                for (size_t y = 0; y < i_ny / m_outRes; y++) {
+                    // if output resolution is equal to 1 -> copy whole array
+                    if (m_outRes == 1){
+                        std::memcpy(
+                            &buffer[y * i_nx],
+                            &l_buffers[l_bufferIndex][y * i_stride],
+                            i_nx * sizeof(float)
+                        );
+                    }
+                    // merge cells to reduce output size
+                    else{
+                        for (size_t x = 0; x < i_nx / m_outRes; x++){
+                            t_real l_value = 0;
+                            for (size_t a = 0; a < m_outRes; a++){
+                                for (size_t b = 0; b < m_outRes; b++){
+                                    l_value += l_buffers[l_bufferIndex][(y * m_outRes + a) * i_stride + x * m_outRes + b];
+                                }
+                            }
+                            l_value /= m_outRes * m_outRes;
+                            buffer[y * (i_nx / m_outRes) + x] = l_value;
+                        }
+                    }
+                }
+            errorChecking( nc_put_vara_float(m_fileId, l_varIds[l_bufferIndex], start, count, buffer.data()));
             }
-            errorChecking( nc_put_vara_float(m_fileId, m_hVarId, start, count, buffer.data()));
         }
-        if (i_hu != nullptr){
-            for (size_t y = 0; y < i_ny; y++) {
-                std::memcpy(
-                    &buffer[y * i_nx],
-                    &i_hu[y * i_stride],
-                    i_nx * sizeof(float)
-                );
-            }
-            errorChecking( nc_put_vara_float(m_fileId, m_huVarId, start, count, buffer.data()));
-        }
-        if (i_hv != nullptr){
-            for (size_t y = 0; y < i_ny; y++) {
-                std::memcpy(
-                    &buffer[y * i_nx],
-                    &i_hv[y * i_stride],
-                    i_nx * sizeof(float)
-                );
-            }
-            errorChecking( nc_put_vara_float(m_fileId, m_hvVarId, start, count, buffer.data()));
-        }
-        if (i_bathymetry != nullptr && i_timeStep == 0){
-            for (size_t y = 0; y < i_ny; y++) {
-                std::memcpy(
-                    &buffer[y * i_nx],
-                    &i_bathymetry[y * i_stride],
-                    i_nx * sizeof(float)
-                );
+        // write the bathymetry only in the first time step
+        if (i_bathymetry != nullptr && i_timeIndex == 0){
+            for (size_t y = 0; y < i_ny / m_outRes; y++) {
+                if (m_outRes == 1){
+                    std::memcpy(
+                        &buffer[y * i_nx],
+                        &i_bathymetry[y * i_stride],
+                        i_nx * sizeof(float)
+                    );
+                }
+                else{
+                    for (size_t x = 0; x < i_nx / m_outRes; x++){
+                        t_real l_value = 0;
+                        for (size_t a = 0; a < m_outRes; a++){
+                            for (size_t b = 0; b < m_outRes; b++){
+                                l_value += i_bathymetry[(y * m_outRes + a) * i_stride + x * m_outRes + b];
+                            }
+                        }
+                        l_value /= m_outRes * m_outRes;
+                        buffer[y * (i_nx / m_outRes) + x] = l_value; 
+                    }
+                }
             }
             errorChecking( nc_put_vara_float(m_fileId, m_bVarId, startB, countB, buffer.data()));
         }
-    
     }
     else {
         // write data to file
-        tsunami_lab::t_real l_timeStep = i_timeStep;
-        errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep) );
+        errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeIndex, &i_simTime) );
         for (t_idx l_cy = 0; l_cy < i_ny; l_cy++){
             for (t_idx l_cx = 0; l_cx < i_nx; l_cx++){
-                t_idx l_index[3] = {i_timeStep, l_cy, l_cx};
+                t_idx l_index[3] = {i_timeIndex, l_cy, l_cx};
                 t_idx l_indexB[2] = {l_cy, l_cx};
                 if (i_h != nullptr){
                     errorChecking( nc_put_var1_float( m_fileId, m_hVarId, l_index, &i_h[l_cy * i_stride + l_cx] ) );
@@ -174,7 +189,7 @@ void io::NetCdf::write( t_idx                i_nx,
                 if (i_hv != nullptr){
                     errorChecking( nc_put_var1_float( m_fileId, m_hvVarId, l_index, &i_hv[l_cy * i_stride + l_cx] ) );
                 }
-                if (i_bathymetry != nullptr && i_timeStep == 0){
+                if (i_bathymetry != nullptr && i_timeIndex == 0){
                     errorChecking( nc_put_var1_float( m_fileId, m_bVarId, l_indexB, &i_bathymetry[l_cy * i_stride + l_cx] ) );
                 }
             }

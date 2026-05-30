@@ -32,10 +32,6 @@ int main( int   i_argc,
   // number of cells in x- and y-direction
   tsunami_lab::t_idx l_nx = 0;
   tsunami_lab::t_idx l_ny = 1;
-
-  // origin of simulation
-  //tsunami_lab::t_idx l_ox = 0;
-  //tsunami_lab::t_idx l_oy = 0;
   
   // id of solver
   tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::FWAVE;
@@ -56,15 +52,18 @@ int main( int   i_argc,
   // outflow types
   tsunami_lab::t_idx l_outflowTypeL = 0;
   tsunami_lab::t_idx l_outflowTypeR = 0;
+  
+  // amount of cells which will be merged together in output (= 1: every cell will be written, > 1: cells will be merged)
+  tsunami_lab::t_idx l_outputResolution = 10;  
 
   // bathymetry file path
   std::string l_bathymetryFilePath = "profile_commas.csv";
   
   // bathymetry nc file path
-  std::string l_bathymetryNCFilePath = "utilities/artificialtsunami_bathymetry_1000.nc";
+  std::string l_bathymetryNCFilePath = "large_data/tohoku_gebco08_ucsb3_250m_bath.nc";//"utilities/artificialtsunami_bathymetry_1000.nc";
 
   // displacement nc file path
-  std::string l_displacementNCFilePath = "utilities/artificialtsunami_displ_1000.nc";
+  std::string l_displacementNCFilePath = "large_data/tohoku_gebco08_ucsb3_250m_displ.nc"; //"utilities/artificialtsunami_displ_1000.nc";
 
   // max simulation time
   tsunami_lab::t_real l_endTime;
@@ -139,16 +138,14 @@ int main( int   i_argc,
 
     // select upper most coordinate
     l_upper = l_parser.get("upper", (tsunami_lab::t_real)0);
+
+    l_outputResolution = l_parser.get("res", (tsunami_lab::t_idx) 1);
   }
 
   if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
   else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
   else l_solverName = "roe";
   
-  
-
-  
-
   if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
   else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
   else if (l_setupName.compare("shockShock") == 0) l_setupId = tsunami_lab::setups::SHOCK_SHOCK;
@@ -375,6 +372,7 @@ int main( int   i_argc,
                                             l_dt,
                                             l_left,
                                             l_upper,
+                                            l_outputResolution,
                                             "solution.nc");
   }
 
@@ -407,6 +405,7 @@ int main( int   i_argc,
         l_netCdf->write( l_nx,
                         l_ny,
                         l_nOut,
+                        l_simTime,
                         l_waveProp->getStride(),
                         l_waveProp->getHeight(),
                         l_waveProp->getMomentumX(),
