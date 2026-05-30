@@ -4,6 +4,7 @@
  * @section DESCRIPTION
  * Entry-point for simulations.
  **/
+#include "constants.h"
 #include "patches/WavePropagation1d.h"
 #include "patches/WavePropagation2d.h"
 #include "setups/DamBreak1d.h"
@@ -31,6 +32,19 @@ int main( int   i_argc,
   // number of cells in x- and y-direction
   tsunami_lab::t_idx l_nx = 0;
   tsunami_lab::t_idx l_ny = 1;
+  
+  // id of solver
+  tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::FWAVE;
+
+  // id of setup
+  tsunami_lab::t_idx l_setupId = tsunami_lab::setups::TSUNAMI_EVENT;
+
+  // id of output format
+  tsunami_lab::t_idx l_formatId = tsunami_lab::io::CSV;
+
+  // origin of simulation
+  tsunami_lab::t_idx l_ox = 0;
+  tsunami_lab::t_idx l_oy = 0;
   
   // id of solver
   tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::FWAVE;
@@ -270,6 +284,8 @@ int main( int   i_argc,
 
   // maximum observed height in the setup
   tsunami_lab::t_real l_hMax = std::numeric_limits< tsunami_lab::t_real >::lowest();
+  tsunami_lab::t_real l_uMaxAbs = 0;
+  tsunami_lab::t_real l_vMaxAbs = 0;
 
   // set up solver
   for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ ) {
@@ -285,6 +301,7 @@ int main( int   i_argc,
 
       tsunami_lab::t_real l_hu = l_setup->getMomentumX( l_x,
                                                         l_y );
+
       tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
                                                         l_y );
       tsunami_lab::t_real l_bathymetry = l_setup->getBathymetry( l_x, l_y );
@@ -312,16 +329,15 @@ int main( int   i_argc,
   tsunami_lab::io::Stations l_stations(l_nx, l_ny, l_dxy);
   if (l_stationsFilePath.compare("") != 0){
     l_stations.readFile(l_stationsFilePath);
-  }
-  
-  
-   
+  } 
 
-  // derive maximum wave speed in setup; the momentum is ignored
-  tsunami_lab::t_real l_speedMax = std::sqrt( 9.81 * l_hMax );
+  // derive maximum wave speed in setup;  
+  tsunami_lab::t_real l_xSpeedMax = std::sqrt( 9.81f * l_hMax ) + l_uMaxAbs;
+  tsunami_lab::t_real l_ySpeedMax = std::sqrt( 9.81f * l_hMax ) + l_vMaxAbs;
 
   // derive constant time step; changes at simulation time are ignored
-  tsunami_lab::t_real l_dt = 0.5 * l_dxy / l_speedMax;
+  tsunami_lab::t_real l_dt = 0.5 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
+  std::cout << "delta time: " << l_dt << std::endl; 
 
   // derive scaling for a time step
   tsunami_lab::t_real l_scaling = l_dt / l_dxy;

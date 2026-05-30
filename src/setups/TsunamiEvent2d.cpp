@@ -40,8 +40,13 @@ t_real setups::TsunamiEvent2d::getHeight( t_real i_x, t_real i_y ) const {
     t_real rel_x = i_x / ( m_dxy * (t_real) m_cellsX );
     t_real rel_y = i_y / ( m_dxy * (t_real) m_cellsY );
 
+<<<<<<< HEAD
     t_idx i_bIx = (t_idx) (rel_x * m_bCellsX);
     t_idx i_bIy = (t_idx) (rel_y * m_bCellsY);
+=======
+    t_idx i_bIx = (t_idx) std::round(rel_x * m_bCellsX);
+    t_idx i_bIy = (t_idx) std::round(rel_y * m_bCellsY);
+>>>>>>> Marvin
 
     if (i_bIx >= m_bCellsX) i_bIx = m_bCellsX - 1;
     if (i_bIy >= m_bCellsY) i_bIy = m_bCellsY - 1;
@@ -59,15 +64,25 @@ t_real setups::TsunamiEvent2d::getBathymetry( t_real i_x, t_real i_y ) const {
     t_real rel_x = i_x / ( m_dxy * (t_real) m_cellsX );
     t_real rel_y = i_y / ( m_dxy * (t_real) m_cellsY );
 
+<<<<<<< HEAD
     t_idx i_bIx = (t_idx) (rel_x * m_bCellsX);
     t_idx i_bIy = (t_idx) (rel_y * m_bCellsY);
+=======
+    t_idx i_bIx = (t_idx) std::round(rel_x * m_bCellsX);
+    t_idx i_bIy = (t_idx) std::round(rel_y * m_bCellsY);
+>>>>>>> Marvin
 
     if (i_bIx >= m_bCellsX) i_bIx = m_bCellsX - 1;
     if (i_bIy >= m_bCellsY) i_bIy = m_bCellsY - 1;
 
 
+<<<<<<< HEAD
     t_idx i_dIx = (t_idx) (rel_x * m_dCellsX);
     t_idx i_dIy = (t_idx) (rel_y * m_dCellsY);
+=======
+    t_idx i_dIx = (t_idx) std::round(rel_x * m_dCellsX);
+    t_idx i_dIy = (t_idx) std::round(rel_y * m_dCellsY);
+>>>>>>> Marvin
 
     if (i_dIx >= m_dCellsX) i_dIx = m_dCellsX - 1;
     if (i_dIy >= m_dCellsY) i_dIy = m_dCellsY - 1;

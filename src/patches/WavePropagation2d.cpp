@@ -72,7 +72,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   
   // iterate over edges and update with Riemann solutions
   // X
-  for (t_idx l_yed = 0; l_yed < m_yCells+2; l_yed++){
+  for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
     for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
       // determine left and right cell-id
       t_idx l_ceL = l_xed + getStride() * l_yed;
@@ -93,12 +93,10 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       bool l_dryL = false, l_dryR = false;
       if (l_hL <= 0 && l_hR <= 0) { // both cells dry
         // skip evaluation
-        //std::cout << "cell dry" << std::endl;
         continue;
       }
       else if (l_hL <= 0){               // left cell dry
         // set reflecting boundary conditions left
-        //std::cout << "cell dry" << std::endl;
         l_dryL = true;
         l_hL = l_hR;
         l_huL = -l_huR;
@@ -106,7 +104,6 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       }
       else if (l_hR <= 0){      // right cell dry
         // set reflecting boundary conditions right
-        //std::cout << "cell dry" << std::endl;
         l_dryR = true;
         l_hR = l_hL;
         l_huR = -l_huL;
@@ -155,12 +152,11 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   }
   // Y
   for (t_idx l_yed = 0; l_yed < m_yCells+1; l_yed++){
-    for( t_idx l_xed = 0; l_xed < m_xCells+2; l_xed++ ) {
+    for( t_idx l_xed = 1; l_xed < m_xCells+1; l_xed++ ) {
       // determine left and right cell-id
 
       t_idx l_ceU = l_xed + getStride() * l_yed;
       t_idx l_ceB = l_xed + getStride() * (l_yed + 1);
-  
       // extract cell data
       t_real l_hU = l_hOld[l_ceU];
       t_real l_hB = l_hOld[l_ceB];
@@ -181,7 +177,6 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       }
       else if (l_hU <= 0){               // left cell dry
         // set reflecting boundary conditions left
-        //std::cout << "cell dry" << std::endl;
         l_dryU = true;
         l_hU = l_hB;
         l_hvU = -l_hvB;
@@ -190,7 +185,6 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       }
       else if (l_hB <= 0){      // right cell dry
         // set reflecting boundary conditions right
-        //std::cout << "cell dry" << std::endl;
         l_dryB = true;
         l_hB = l_hU;
         l_hvB = -l_hvU;
@@ -260,7 +254,6 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow() {
       l_h[l_i * getStride() + getStride() - 1] = l_h[l_i * getStride() + getStride() - 2];
       l_hu[l_i * getStride() + getStride() - 1] = -l_hu[l_i * getStride() + getStride() - 2];
     }
-
   }
   else{
     // outflow 
@@ -287,7 +280,7 @@ void tsunami_lab::patches::WavePropagation2d::setBathymetry( t_idx i_ix,
                                                              t_idx i_iy, 
                                                              t_real i_height){ 
   m_bathymetry[i_ix + 1 + (i_iy + 1) * getStride()] = i_height;
-  
+  // setting ghost edges
   if (i_ix == 0){
     m_bathymetry[i_ix + (i_iy + 1) * getStride()]  = i_height;
   }
@@ -299,5 +292,18 @@ void tsunami_lab::patches::WavePropagation2d::setBathymetry( t_idx i_ix,
   }
   if (i_iy == m_yCells - 1){
     m_bathymetry[i_ix + 1 + (i_iy + 2) * getStride()] = i_height;
+  }
+  // setting ghost corners
+  if (i_ix == 0 && i_iy == 0){
+    m_bathymetry[0] = i_height;
+  }
+  if (i_ix == m_xCells - 1 && i_iy == 0){
+    m_bathymetry[m_xCells + 1] = i_height;
+  }
+  if (i_ix == 0 && i_iy == m_yCells - 1){
+    m_bathymetry[m_yCells * getStride()] = i_height;
+  }
+  if (i_ix == m_xCells - 1 && i_iy == m_yCells - 1){
+    m_bathymetry[m_xCells + 1 + m_yCells * getStride()] = i_height;
   }
 }

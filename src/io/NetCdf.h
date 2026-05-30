@@ -78,6 +78,9 @@ class tsunami_lab::io::NetCdf {
      * @param i_filePath path to file.
      * @param o_cellX number of cells in x direction.
      * @param o_cellY number of cells in y direction.
+     * @param o_dxy   size of cell (calculated through the difference between the first and second element in the x variable of the nc file)
+     * @param o_left  x-coordinate of the left most cell in the nc file
+     * @param o_upper y-coordinate of the upper most cell in the nc file
      * @param o_data data.
      *
      * @return success.
@@ -85,6 +88,9 @@ class tsunami_lab::io::NetCdf {
     static int read(  const std::string  & i_filePath,
                       t_idx      &  o_cellX,
                       t_idx      &  o_cellY,
+                      t_real     &  o_dxy,
+                      t_real     &  o_left,
+                      t_real     &  o_upper,
                       t_real     ** o_data,
                       bool printErr = true );                                
 
