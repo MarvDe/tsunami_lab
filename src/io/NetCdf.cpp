@@ -7,6 +7,7 @@
 #include "NetCdf.h"
 #include <vector>
 #include <cstring>
+#include <cmath>
 using namespace tsunami_lab;
 
 io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, t_idx i_outRes, const std::string & i_filePath ){
@@ -150,6 +151,7 @@ void io::NetCdf::write( t_idx                i_nx,
         // write the bathymetry only in the first time step
         if (i_bathymetry != nullptr && i_timeIndex == 0){
             for (size_t y = 0; y < i_ny / m_outRes; y++) {
+                // if output resolution is equal to 1 -> copy whole array
                 if (m_outRes == 1){
                     std::memcpy(
                         &buffer[y * i_nx],
@@ -157,6 +159,7 @@ void io::NetCdf::write( t_idx                i_nx,
                         i_nx * sizeof(float)
                     );
                 }
+                // merge cells to reduce output size
                 else{
                     for (size_t x = 0; x < i_nx / m_outRes; x++){
                         t_real l_value = 0;
@@ -205,7 +208,7 @@ int io::NetCdf::read( const std::string  & i_filePath,
                       t_real     &  o_upper,
                       t_real    **  o_data,
                       bool printErr ){
-
+        
     int l_ncid;
     int l_varidZ;
     int l_varIdX;
@@ -214,7 +217,6 @@ int io::NetCdf::read( const std::string  & i_filePath,
     int ndims;
     int dimids[NC_MAX_VAR_DIMS];
     size_t dim_sizes[NC_MAX_VAR_DIMS];
-    
     
     l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid), printErr );
     if (l_status) return -1;
@@ -250,6 +252,14 @@ int io::NetCdf::read( const std::string  & i_filePath,
     o_dxy = l_nextToLeft - o_left;
 
     l_status = errorChecking( nc_get_var_float(l_ncid, l_varidZ, *o_data), printErr );
+    // replace NaNs with 0
+    for (t_idx l_y = 0; l_y < o_cellY; l_y++){
+        for (t_idx l_x = 0; l_x < o_cellX; l_x++){
+            if (std::isnan((*o_data)[l_y * o_cellX + l_x])){
+                (*o_data)[l_y * o_cellX + l_x] = 0;
+            }
+        }
+    }
     if (l_status) return -1;
     l_status = errorChecking( nc_close(l_ncid), printErr );
     return l_status;

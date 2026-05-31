@@ -1,0 +1,16 @@
+args:
+  - solverName: "fwave"
+    formatName: "nc"
+    setupName: "tsunamiEvent2d"
+    startCoordX: -200000. # global coordinates
+    startCoordY: -750000. # of simulation
+    cellSize: 50
+    cellx: 54000
+    celly: 30000
+    endTime: 50 #12 # time in s (needs to be updated)
+    stations: "" #"utilities/soma_stations.yml"
+    outputResolution: 100
+    bathymetry:
+        filePath: "large_data/tohoku_gebco20_ucsb3_50m_bath.nc"
+    displacement: 
+        filePath: "large_data/tohoku_gebco20_ucsb3_50m_displ.nc"

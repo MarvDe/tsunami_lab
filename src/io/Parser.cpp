@@ -47,36 +47,38 @@ float tsunami_lab::io::Parser::get(const std::string &i_name, float i_fallback){
 }
 
 void tsunami_lab::io::Parser::parseFile(std::string &i_file,
-                                        std::string &i_solverName,
-                                        std::string &i_setupName,
-                                        std::string &i_formatName,
-                                        tsunami_lab::t_real &i_dxy,
-                                        std::string &i_bathymetryNCFilePath,
-                                        std::string &i_displacementNCFilePath,
-                                        tsunami_lab::t_idx &i_nx,
-                                        tsunami_lab::t_idx &i_ny,
-                                        tsunami_lab::t_real &i_endTime,
-                                        std::string &i_stationsFilePath,
-                                        tsunami_lab::t_real &i_left,
-                                        tsunami_lab::t_real &i_upper
+                                        std::string &o_solverName,
+                                        std::string &o_setupName,
+                                        std::string &o_formatName,
+                                        tsunami_lab::t_real &o_dxy,
+                                        std::string &o_bathymetryNCFilePath,
+                                        std::string &o_displacementNCFilePath,
+                                        tsunami_lab::t_idx &o_nx,
+                                        tsunami_lab::t_idx &o_ny,
+                                        tsunami_lab::t_real &o_endTime,
+                                        std::string &o_stationsFilePath,
+                                        tsunami_lab::t_real &o_left,
+                                        tsunami_lab::t_real &o_upper,
+                                        tsunami_lab::t_idx &o_outRes
                                     ){
     YAML::Node l_file;
     try {
         l_file = YAML::LoadFile(i_file);
 
         auto  args = l_file["args"][0];
-        i_solverName = args["solverName"].as<std::string>();
-        i_left = args["startCoordX"].as<tsunami_lab::t_real>();
-        i_upper = args["startCoordY"].as<tsunami_lab::t_real>();
-        i_setupName = args["setupName"].as<std::string>();
-        i_formatName = args["formatName"].as<std::string>();
-        i_dxy = args["cellSize"].as<tsunami_lab::t_real>();
-        i_nx = args["cellx"].as<tsunami_lab::t_idx>();
-        i_ny = args["celly"].as<tsunami_lab::t_idx>();
-        i_endTime = args["endTime"].as<tsunami_lab::t_real>();
-        i_stationsFilePath = args["stations"].as<std::string>();
-        i_displacementNCFilePath = args["displacement"][0]["filePath"].as<std::string>();
-        i_bathymetryNCFilePath = args["bathymetry"][0]["filePath"].as<std::string>();
+        o_solverName = args["solverName"].as<std::string>();
+        o_left = args["startCoordX"].as<tsunami_lab::t_real>();
+        o_upper = args["startCoordY"].as<tsunami_lab::t_real>();
+        o_setupName = args["setupName"].as<std::string>();
+        o_formatName = args["formatName"].as<std::string>();
+        o_dxy = args["cellSize"].as<tsunami_lab::t_real>();
+        o_nx = args["cellx"].as<tsunami_lab::t_idx>();
+        o_ny = args["celly"].as<tsunami_lab::t_idx>();
+        o_endTime = args["endTime"].as<tsunami_lab::t_real>();
+        o_stationsFilePath = args["stations"].as<std::string>();
+        o_displacementNCFilePath = args["displacement"]["filePath"].as<std::string>();
+        o_bathymetryNCFilePath = args["bathymetry"]["filePath"].as<std::string>();
+        o_outRes = args["outputResolution"].as<tsunami_lab::t_idx>();
     } catch (YAML::Exception& e){
         std::cerr << "YAML Error: " << e.what() << std::endl;
         return;

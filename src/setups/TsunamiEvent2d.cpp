@@ -39,7 +39,7 @@ setups::TsunamiEvent2d::TsunamiEvent2d( t_idx i_cellsX, t_idx i_cellsY, t_real i
 
     for (t_idx l_iy = 0; l_iy < m_cellsYDis; l_iy++){
         for (t_idx l_ix = 0; l_ix < m_cellsXDis; l_ix++){
-            m_displacement[l_iy * m_cellsXBat + l_ix] = i_displacement[l_iy * m_cellsXBat + l_ix];
+            m_displacement[l_iy * m_cellsXDis + l_ix] = i_displacement[l_iy * m_cellsXDis + l_ix];
         }
     }
 }
