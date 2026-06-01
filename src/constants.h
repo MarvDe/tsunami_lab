@@ -44,7 +44,8 @@ namespace tsunami_lab {
       SUPERCRITICAL_FLOW,
       DAM_BREAK_2D,
       ARTIFICIAL_TSUNAMI_2D,
-      TSUNAMI_EVENT_2D
+      TSUNAMI_EVENT_2D,
+      CHECK_POINT,
     };
   }
 

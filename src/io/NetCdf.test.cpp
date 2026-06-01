@@ -25,7 +25,7 @@ TEST_CASE( "Test netcdf.", "[NetCdf]" ){
     tsunami_lab::t_real l_b[l_nx * l_ny] = {4};
 
     for (tsunami_lab::t_idx l_i = 0; l_i < 3; l_i++){
-        l_nc->write(l_nx, l_ny, l_i, l_nx, l_h, l_hu, l_hv, l_b);
+        l_nc->write(l_nx, l_ny, 0, l_i, l_nx, l_h, l_hu, l_hv, l_b);
     }
     delete l_nc;
 

@@ -9,77 +9,95 @@
 #include <cstring>
 using namespace tsunami_lab;
 
-io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, const std::string & i_filePath ){
+io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, const std::string & i_filePath , bool i_existingFile){
 
     m_dxy = i_dxy;
     m_dt = i_dt;
 
-    // Opening new netcdf file
-    // check if file path ends with '.nc'
-    if (i_filePath.length() < 3 ||
-        i_filePath[i_filePath.length() - 3] != '.' ||
-        i_filePath[i_filePath.length() - 2] != 'n' ||
-        i_filePath[i_filePath.length() - 1] != 'c'){
-            std::cerr << "netcdf file should end with '.nc'" << std::endl;
-            return;
-    }
-    // creating file
-    errorChecking( nc_create(i_filePath.c_str(), NC_NETCDF4 | NC_CLOBBER | NC_SHUFFLE, &m_fileId) );
+    if (!i_existingFile){
 
-    // creating dimensions
-    errorChecking( nc_def_dim(m_fileId, "x", i_nx, &m_xDimId) );
-    errorChecking( nc_def_dim(m_fileId, "y", i_ny, &m_yDimId) );
-    errorChecking( nc_def_dim(m_fileId, "time", NC_UNLIMITED, &m_tDimId) );
-
-    // creating variables
-    int l_dimIds[3] = {m_tDimId, m_yDimId, m_xDimId};
-    int l_dimIdsB[2] = {m_yDimId, m_xDimId};
-
-    errorChecking( nc_def_var(m_fileId, "x", NC_FLOAT, 1, &m_xDimId, &m_xVarId) );
-    errorChecking( nc_put_att_text(m_fileId, m_xVarId, "units", 1, "m") );
-
-    errorChecking( nc_def_var(m_fileId, "y", NC_FLOAT, 1, &m_yDimId, &m_yVarId) );
-    errorChecking( nc_put_att_text(m_fileId, m_yVarId, "units", 1, "m") );
-
-    errorChecking( nc_def_var(m_fileId, "time", NC_FLOAT, 1, &m_tDimId, &m_tVarId) );
-    const std::string l_timeUnit = "seconds since start";
-    errorChecking( nc_put_att_text(m_fileId, m_tVarId, "units", l_timeUnit.size(), l_timeUnit.c_str()) );
+        // Opening new netcdf file
+        // check if file path ends with '.nc'
+        if (i_filePath.length() < 3 ||
+            i_filePath[i_filePath.length() - 3] != '.' ||
+            i_filePath[i_filePath.length() - 2] != 'n' ||
+            i_filePath[i_filePath.length() - 1] != 'c'){
+                std::cerr << "netcdf file should end with '.nc'" << std::endl;
+                return;
+        }
+        // creating file
+        errorChecking( nc_create(i_filePath.c_str(), NC_NETCDF4 | NC_CLOBBER | NC_SHUFFLE, &m_fileId) );
     
-    int l_compressionLevel = 3;
-    int l_useZlibCompression = 1;
-    int l_useShuffle = 1;
-
-    errorChecking( nc_def_var(m_fileId, "h", NC_FLOAT, 3, l_dimIds, &m_hVarId) );
-    // turn on compression
-    errorChecking( nc_def_var_deflate(m_fileId, m_hVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
-    errorChecking( nc_put_att_text(m_fileId, m_hVarId, "units", 1, "m") );
-
-    errorChecking( nc_def_var(m_fileId, "hu", NC_FLOAT, 3, l_dimIds, &m_huVarId) );
-    errorChecking( nc_def_var_deflate(m_fileId, m_huVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
-    errorChecking( nc_put_att_text(m_fileId, m_huVarId, "units", 6, "kg*m/s") );
+        // creating dimensions
+        errorChecking( nc_def_dim(m_fileId, "x", i_nx, &m_xDimId) );
+        errorChecking( nc_def_dim(m_fileId, "y", i_ny, &m_yDimId) );
+        errorChecking( nc_def_dim(m_fileId, "time", NC_UNLIMITED, &m_tDimId) );
     
-    errorChecking( nc_def_var(m_fileId, "hv", NC_FLOAT, 3, l_dimIds, &m_hvVarId) );
-    errorChecking( nc_def_var_deflate(m_fileId, m_hvVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
-    errorChecking( nc_put_att_text(m_fileId, m_hvVarId, "units", 6, "kg*m/s") );
+        // creating variables
+        int l_dimIds[3] = {m_tDimId, m_yDimId, m_xDimId};
+        int l_dimIdsB[2] = {m_yDimId, m_xDimId};
     
-    errorChecking( nc_def_var(m_fileId, "b", NC_FLOAT, 2, l_dimIdsB, &m_bVarId) );
-    errorChecking( nc_def_var_deflate(m_fileId, m_bVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
-    errorChecking( nc_put_att_text(m_fileId, m_bVarId, "units", 1, "m") );
+        errorChecking( nc_def_var(m_fileId, "x", NC_FLOAT, 1, &m_xDimId, &m_xVarId) );
+        errorChecking( nc_put_att_text(m_fileId, m_xVarId, "units", 1, "m") );
     
-    // register COARDS convention
-    const char *l_coardsStr = "COARDS";
-    nc_put_att_text( m_fileId, NC_GLOBAL, "Conventions", 6, l_coardsStr);
+        errorChecking( nc_def_var(m_fileId, "y", NC_FLOAT, 1, &m_yDimId, &m_yVarId) );
+        errorChecking( nc_put_att_text(m_fileId, m_yVarId, "units", 1, "m") );
+    
+        errorChecking( nc_def_var(m_fileId, "time", NC_FLOAT, 1, &m_tDimId, &m_tVarId) );
+        const std::string l_timeUnit = "seconds since start";
+        errorChecking( nc_put_att_text(m_fileId, m_tVarId, "units", l_timeUnit.size(), l_timeUnit.c_str()) );
+        
+        int l_compressionLevel = 3;
+        int l_useZlibCompression = 1;
+        int l_useShuffle = 1;
+    
+        errorChecking( nc_def_var(m_fileId, "h", NC_FLOAT, 3, l_dimIds, &m_hVarId) );
+        // turn on compression
+        errorChecking( nc_def_var_deflate(m_fileId, m_hVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
+        errorChecking( nc_put_att_text(m_fileId, m_hVarId, "units", 1, "m") );
+    
+        errorChecking( nc_def_var(m_fileId, "hu", NC_FLOAT, 3, l_dimIds, &m_huVarId) );
+        errorChecking( nc_def_var_deflate(m_fileId, m_huVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
+        errorChecking( nc_put_att_text(m_fileId, m_huVarId, "units", 6, "kg*m/s") );
+        
+        errorChecking( nc_def_var(m_fileId, "hv", NC_FLOAT, 3, l_dimIds, &m_hvVarId) );
+        errorChecking( nc_def_var_deflate(m_fileId, m_hvVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
+        errorChecking( nc_put_att_text(m_fileId, m_hvVarId, "units", 6, "kg*m/s") );
+        
+        errorChecking( nc_def_var(m_fileId, "b", NC_FLOAT, 2, l_dimIdsB, &m_bVarId) );
+        errorChecking( nc_def_var_deflate(m_fileId, m_bVarId, l_useShuffle, l_useZlibCompression, l_compressionLevel) );
+        errorChecking( nc_put_att_text(m_fileId, m_bVarId, "units", 1, "m") );
+        
+        // register COARDS convention
+        const char *l_coardsStr = "COARDS";
+        nc_put_att_text( m_fileId, NC_GLOBAL, "Conventions", 6, l_coardsStr);
+    
+        nc_enddef(m_fileId);
+    
+        for (tsunami_lab::t_idx l_cx = 0; l_cx < i_nx; l_cx++){
+            tsunami_lab::t_real l_cxFloat = l_cx * m_dxy + i_left;
+            errorChecking( nc_put_var1_float(m_fileId, m_xVarId, &l_cx, &l_cxFloat) );
+        }
+    
+        for (tsunami_lab::t_idx l_cy = 0; l_cy < i_ny; l_cy++){
+            tsunami_lab::t_real l_cyFloat = l_cy * m_dxy + i_upper;
+            errorChecking( nc_put_var1_float(m_fileId, m_yVarId, &l_cy, &l_cyFloat) );
+        }
+    } else {
+        errorChecking( nc_open(i_filePath.c_str(), NC_WRITE, &m_fileId), true);
 
-    nc_enddef(m_fileId);
+        errorChecking(nc_inq_dimid(m_fileId, "x", &m_xDimId), true);
+        errorChecking(nc_inq_dimid(m_fileId, "y", &m_yDimId), true);
+        errorChecking(nc_inq_dimid(m_fileId, "time", &m_tDimId), true);
 
-    for (tsunami_lab::t_idx l_cx = 0; l_cx < i_nx; l_cx++){
-        tsunami_lab::t_real l_cxFloat = l_cx * m_dxy + i_left;
-        errorChecking( nc_put_var1_float(m_fileId, m_xVarId, &l_cx, &l_cxFloat) );
-    }
+        errorChecking(nc_inq_varid(m_fileId, "x", &m_xVarId), true);
+        errorChecking(nc_inq_varid(m_fileId, "y", &m_yVarId), true);
+        errorChecking(nc_inq_varid(m_fileId, "time", &m_tVarId), true);
 
-    for (tsunami_lab::t_idx l_cy = 0; l_cy < i_ny; l_cy++){
-        tsunami_lab::t_real l_cyFloat = l_cy * m_dxy + i_upper;
-        errorChecking( nc_put_var1_float(m_fileId, m_yVarId, &l_cy, &l_cyFloat) );
+        errorChecking(nc_inq_varid(m_fileId, "h", &m_hVarId), true);
+        errorChecking(nc_inq_varid(m_fileId, "hu", &m_huVarId), true);
+        errorChecking(nc_inq_varid(m_fileId, "hv", &m_hvVarId), true);
+        errorChecking(nc_inq_varid(m_fileId, "b", &m_bVarId), true);
     }
 }
 
@@ -100,6 +118,7 @@ int io::NetCdf::errorChecking(int i_errId, bool i_printErr){
 void io::NetCdf::write( t_idx                i_nx,
                         t_idx                i_ny,
                         t_idx                i_timeStep,
+                        t_real               i_simTime,
                         t_idx                i_stride,
                         t_real       const * i_h,
                         t_real       const * i_hu,
@@ -107,10 +126,13 @@ void io::NetCdf::write( t_idx                i_nx,
                         t_real       const * i_bathymetry ){
 
     if (i_nx + 2 == i_stride ){ // if ghost cells are passed
-        const float l_timeStep = i_timeStep;
-        errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep));
-        size_t start[3] = {i_timeStep, 0, 0};
+        size_t nt;
+        nc_inq_dimlen(m_fileId, m_tDimId, &nt);
+        size_t start[3] = {nt, 0, 0};
         size_t count[3] = {1, i_ny, i_nx};
+        //const float l_timeStep = i_timeStep;
+        //size_t start[3] = {i_timeStep, 0, 0};
+        //size_t count[3] = {1, i_ny, i_nx};
         size_t startB[2] = {0,0};
         size_t countB[2] = {i_ny, i_nx};
         std::vector<float> buffer(i_nx * i_ny);
@@ -155,12 +177,13 @@ void io::NetCdf::write( t_idx                i_nx,
             }
             errorChecking( nc_put_vara_float(m_fileId, m_bVarId, startB, countB, buffer.data()));
         }
+        errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &nt, &i_simTime));
+        errorChecking( nc_sync(m_fileId));
     
     }
     else {
         // write data to file
         tsunami_lab::t_real l_timeStep = i_timeStep;
-        errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep) );
         for (t_idx l_cy = 0; l_cy < i_ny; l_cy++){
             for (t_idx l_cx = 0; l_cx < i_nx; l_cx++){
                 t_idx l_index[3] = {i_timeStep, l_cy, l_cx};
@@ -179,6 +202,8 @@ void io::NetCdf::write( t_idx                i_nx,
                 }
             }
         }
+        errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeStep, &l_timeStep) );
+        errorChecking( nc_sync(m_fileId));
     }
 }
 

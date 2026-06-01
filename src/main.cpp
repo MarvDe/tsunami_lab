@@ -16,6 +16,7 @@
 #include "setups/CircularDamBreak2d.h"
 #include "setups/ArtificialTsunami2d.h"
 #include "setups/TsunamiEvent2d.h"
+#include "setups/CheckPoint.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include "io/Stations.h"
@@ -71,6 +72,19 @@ int main( int   i_argc,
 
   // path to station file
   std::string l_stationsFilePath;
+
+  // path to check point file
+  std::string l_checkPointFilePath = "src/utilities/artificialTsunami_crashed.nc";
+
+  // start timestep of simulation
+  tsunami_lab::t_idx  l_timeStep = 0;
+  
+  // start time of simulation
+  tsunami_lab::t_real l_simTime = 0;
+
+  // flag to append data when using checkpoints
+  bool l_appendFile = false;
+  
   
 
   std::cout << "####################################" << std::endl;
@@ -102,7 +116,9 @@ int main( int   i_argc,
                         l_endTime,
                         l_stationsFilePath,
                         l_left,
-                        l_upper
+                        l_upper,
+                        l_checkPointFilePath,
+                        l_appendFile
                         );
   }
   else {
@@ -158,6 +174,7 @@ int main( int   i_argc,
   else if (l_setupName.compare("damBreak2d") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK_2D;
   else if (l_setupName.compare("artificialTsunami") == 0) l_setupId = tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D;
   else if (l_setupName.compare("tsunamiEvent2d") == 0) l_setupId = tsunami_lab::setups::TSUNAMI_EVENT_2D;
+  else if (l_setupName.compare("checkPoint") == 0) l_setupId = tsunami_lab::setups::CHECK_POINT;
   else l_setupName = "damBreak";
 
   if (l_formatName.compare("nc") == 0) l_formatId = tsunami_lab::io::NC;
@@ -280,6 +297,28 @@ int main( int   i_argc,
     delete[] l_bathymetry;
     delete[] l_displacement;
   }
+  else if (l_setupId == tsunami_lab::setups::CHECK_POINT){
+    //l_checkPointFilePath = "utilities/solution.nc";
+    //l_solverId = tsunami_lab::solvers::FWAVE;
+    //l_formatId = tsunami_lab::io::NC;
+    //l_endTime = 20;
+    //l_appendFile = true;
+    l_setup = new tsunami_lab::setups::CheckPoint(  l_checkPointFilePath,
+                                                    l_simTime,
+                                                    l_timeStep,
+                                                    l_nx,
+                                                    l_ny,
+                                                    l_dxy,
+                                                    l_left,
+                                                    l_upper
+                                                  );
+    std::cout << "CheckPoint: " << std::endl;
+    std::cout << "sim time: " << l_simTime << std::endl;
+    std::cout << "time steps: " << l_timeStep << std::endl;
+    std::cout << "nx: " << l_nx << std::endl;
+    std::cout << "ny: " << l_ny << std::endl;
+    std::cout << "dxy: " << l_dxy << std::endl;
+  }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 50,
                                                  100,
@@ -290,7 +329,8 @@ int main( int   i_argc,
   tsunami_lab::patches::WavePropagation *l_waveProp;
   if (l_setupId == tsunami_lab::setups::DAM_BREAK_2D ||
       l_setupId == tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D ||
-      l_setupId == tsunami_lab::setups::TSUNAMI_EVENT_2D){
+      l_setupId == tsunami_lab::setups::TSUNAMI_EVENT_2D ||
+      l_setupId == tsunami_lab::setups::CHECK_POINT ){
     l_waveProp = new tsunami_lab::patches::WavePropagation2d( l_nx,
                                                               l_ny,
                                                               l_solverId);
@@ -360,22 +400,32 @@ int main( int   i_argc,
   tsunami_lab::t_real l_scaling = l_dt / l_dxy;
 
   // set up time and print control
-  tsunami_lab::t_idx  l_timeStep = 0;
   tsunami_lab::t_idx  l_nOut = 0;
-  tsunami_lab::t_real l_simTime = 0;
+
 
   std::cout << "entering time loop" << std::endl;
 
   //setup NetCdf
   tsunami_lab::io::NetCdf* l_netCdf = nullptr;
   if (l_formatId == tsunami_lab::io::NC){
-    l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
-                                            l_ny,
-                                            l_dxy,
-                                            l_dt,
-                                            l_left,
-                                            l_upper,
-                                            "solution.nc");
+    if (!l_appendFile){
+      l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
+                                              l_ny,
+                                              l_dxy,
+                                              l_dt,
+                                              l_left,
+                                              l_upper,
+                                              "solution.nc");
+    } else {
+      l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
+                                              l_ny,
+                                              l_dxy,
+                                              l_dt,
+                                              l_left,
+                                              l_upper,
+                                              l_checkPointFilePath,
+                                              true);
+    }
   }
 
   // iterate over time
@@ -407,6 +457,7 @@ int main( int   i_argc,
         l_netCdf->write( l_nx,
                         l_ny,
                         l_nOut,
+                        l_simTime,
                         l_waveProp->getStride(),
                         l_waveProp->getHeight(),
                         l_waveProp->getMomentumX(),
