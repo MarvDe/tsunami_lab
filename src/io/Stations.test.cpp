@@ -26,7 +26,7 @@ TEST_CASE( "Test stations.", "[Stations]" ){
     std::stringstream l_stream3;
     std::stringstream l_stream4;
     std::stringstream l_stream5;
-    tsunami_lab::io::Stations l_stations(l_cellX, l_cellY, l_dxy);
+    tsunami_lab::io::Stations l_stations(l_cellX, l_cellY, l_dxy, 0, 0);
 
     // station at beginning
     l_stations.addStation("station1", 0, 0, &l_stream1);

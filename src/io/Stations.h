@@ -34,6 +34,10 @@ class tsunami_lab::io::Stations{
 
         //! cell size
         t_real m_dxy = 0;
+
+        //! global coord of left upper cell
+        t_real m_leftUpperX = 0;
+        t_real m_leftUpperY = 0;
     
 
     public:
@@ -43,8 +47,10 @@ class tsunami_lab::io::Stations{
          * @param i_cellX number of cells in x direction.
          * @param i_cellY number of cells in y direction.
          * @param i_dxy cell size
+         * @param i_leftUpperX x value of global left upper coordinate.
+         * @param i_leftUpperY y value of global left upper coordinate.
          **/
-        Stations( t_idx i_cellX, t_idx i_cellY, t_real i_dxy);
+        Stations( t_idx i_cellX, t_idx i_cellY, t_real i_dxy, t_real i_leftUpperX, t_real i_leftUpperY);
 
 
         /**
