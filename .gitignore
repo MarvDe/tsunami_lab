@@ -4,3 +4,4 @@ config.log
 .sconf_temp/
 solution.nc
 large_data/
+output/

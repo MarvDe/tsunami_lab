@@ -86,19 +86,19 @@ void setups::CheckPoint::readNetCdfFile(std::string i_inputFile,
     // collect vars and push to heap
 
     errorChecking( nc_inq_varid(l_ncid, "h", &l_varIdHeight), true);
-    m_height = (t_real *) malloc(l_nx * l_ny * sizeof(t_real));
+    m_height = new t_real[l_nx * l_ny];
     errorChecking( nc_get_vara_float(l_ncid, l_varIdHeight, l_startVars, l_countVars, m_height), true);
 
     errorChecking( nc_inq_varid(l_ncid, "hu", &l_varIdHu), true);
-    m_momentumX = (t_real *) malloc(l_nx * l_ny * sizeof(t_real));
+    m_momentumX = new t_real[l_nx * l_ny];
     errorChecking( nc_get_vara_float(l_ncid, l_varIdHu, l_startVars, l_countVars, m_momentumX), true);
 
     errorChecking( nc_inq_varid(l_ncid, "hv", &l_varIdHv), true);
-    m_momentumY = (t_real *) malloc(l_nx * l_ny * sizeof(t_real));
+    m_momentumY = new t_real[l_nx * l_ny];
     errorChecking( nc_get_vara_float(l_ncid, l_varIdHv, l_startVars, l_countVars, m_momentumY), true);
 
     errorChecking( nc_inq_varid(l_ncid, "b", &l_varIdBathy), true);
-    m_bathymetry = (t_real *) malloc(l_nx * l_ny * sizeof(t_real));
+    m_bathymetry = new t_real[l_nx * l_ny];
     errorChecking( nc_get_vara_float(l_ncid, l_varIdBathy, l_startBathy, l_countBathy, m_bathymetry), true);
 
     // calculate l_dxy with x
