@@ -1,7 +1,7 @@
 #include "Stations.h"
 
-tsunami_lab::io::Stations::Stations( t_idx i_cellX, t_idx i_cellY, t_real i_dxy) : 
-    m_cellX(i_cellX), m_cellY(i_cellY), m_dxy(i_dxy){
+tsunami_lab::io::Stations::Stations( t_idx i_cellX, t_idx i_cellY, t_real i_dxy, t_real i_leftUpperX, t_real i_leftUpperY) : 
+    m_cellX(i_cellX), m_cellY(i_cellY), m_dxy(i_dxy), m_leftUpperX(i_leftUpperX), m_leftUpperY(i_leftUpperY){
 }
 
 tsunami_lab::io::Stations::~Stations(){
@@ -33,8 +33,8 @@ void tsunami_lab::io::Stations::write( t_real i_simTime, const t_real * i_height
             l_stream << "\n";
         }
 
-        t_idx l_idxPosX = (t_idx) l_station.m_posX / m_dxy;
-        t_idx l_idxPosY = (t_idx) l_station.m_posY / m_dxy;
+        t_idx l_idxPosX = (t_idx) (l_station.m_posX - m_leftUpperX) / m_dxy;
+        t_idx l_idxPosY = (t_idx) (l_station.m_posY - m_leftUpperY) / m_dxy;
         
         t_idx l_id = l_idxPosX + l_idxPosY * i_stride;
         l_stream << i_simTime << "," << l_station.m_name << ",";

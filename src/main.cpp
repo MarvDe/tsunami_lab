@@ -383,7 +383,7 @@ int main( int   i_argc,
 
   // setup stations for measurement
   
-  tsunami_lab::io::Stations l_stations(l_nx, l_ny, l_dxy);
+  tsunami_lab::io::Stations l_stations(l_nx, l_ny, l_dxy, l_left, l_upper);
   if (l_stationsFilePath.compare("") != 0){
     l_stations.readFile(l_stationsFilePath);
   } 
