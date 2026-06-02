@@ -83,7 +83,11 @@ class tsunami_lab::io::Parser{
                     tsunami_lab::t_idx &i_nx,
                     tsunami_lab::t_idx &i_ny,
                     tsunami_lab::t_real &i_endTime,
-                    std::string &i_stationsFilePath
+                    std::string &i_stationsFilePath,
+                    tsunami_lab::t_real &i_left,
+                    tsunami_lab::t_real &i_upper,
+                    std::string &i_checkPointFile,
+                    bool &appendFile
                   );
 };
 

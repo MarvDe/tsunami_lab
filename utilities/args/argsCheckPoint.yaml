@@ -1,0 +1,8 @@
+args:
+  - solverName: "fwave"
+    formatName: "nc"
+    setupName: "checkPoint"
+    checkPointFile: "solution.nc"
+    endTime: 4 # time in s (needs to be updated)
+    stations: ""
+    appendFile: true

@@ -56,10 +56,10 @@ class tsunami_lab::io::NetCdf {
      * @param i_left coordinates of left most cell.
      * @param i_upper coordinates of upper most cell.
      * @param i_filePath path of the new nc file.
+     * @param i_existingFile if true do not create a new file, but use filepath file
      **/
-    NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, const std::string & i_filePath );
+    NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, const std::string & i_filePath , bool i_existingFile = false);
     
-
     /**
      * Destructor.
      */
@@ -71,6 +71,7 @@ class tsunami_lab::io::NetCdf {
      * @param i_nx number of cells in x-direction.
      * @param i_ny number of cells in y-direction.
      * @param i_timeStep current time step of simulation.
+     * @param i_simTime current sim time of simulation.
      * @param i_stride stride of the data arrays in y-direction (x is assumed to be stride-1).
      * @param i_h water height of the cells; optional: use nullptr if not required.
      * @param i_hu momentum in x-direction of the cells; optional: use nullptr if not required.
@@ -80,6 +81,7 @@ class tsunami_lab::io::NetCdf {
     void write( t_idx                i_nx,
                 t_idx                i_ny,
                 t_idx                i_timeStep,
+                t_real               i_simTime,
                 t_idx                i_stride,
                 t_real       const * i_h,
                 t_real       const * i_hu,

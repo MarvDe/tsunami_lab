@@ -56,7 +56,11 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         tsunami_lab::t_idx &i_nx,
                                         tsunami_lab::t_idx &i_ny,
                                         tsunami_lab::t_real &i_endTime,
-                                        std::string &i_stationsFilePath
+                                        std::string &i_stationsFilePath,
+                                        tsunami_lab::t_real &i_left,
+                                        tsunami_lab::t_real &i_upper,
+                                        std::string &i_checkPointFile,
+                                        bool &i_appendFile
                                     ){
     YAML::Node l_file;
     try {
@@ -64,13 +68,20 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
 
         auto  args = l_file["args"][0];
         i_solverName = args["solverName"].as<std::string>();
-        i_setupName = args["setupName"].as<std::string>();
         i_formatName = args["formatName"].as<std::string>();
+        i_setupName = args["setupName"].as<std::string>();
+        i_endTime = args["endTime"].as<tsunami_lab::t_real>();
+        i_stationsFilePath = args["stations"].as<std::string>();
+        if (i_setupName.compare("checkPoint") == 0 ){
+            i_checkPointFile = args["checkPointFile"].as<std::string>();
+            i_appendFile = args["appendFile"].as<bool>();
+            return;
+        }
+        i_left = args["startCoordX"].as<tsunami_lab::t_real>();
+        i_upper = args["startCoordY"].as<tsunami_lab::t_real>();
         i_dxy = args["cellSize"].as<tsunami_lab::t_real>();
         i_nx = args["cellx"].as<tsunami_lab::t_idx>();
         i_ny = args["celly"].as<tsunami_lab::t_idx>();
-        i_endTime = args["endTime"].as<tsunami_lab::t_real>();
-        i_stationsFilePath = args["stations"].as<std::string>();
         i_displacementNCFilePath = args["displacement"][0]["filePath"].as<std::string>();
         i_bathymetryNCFilePath = args["bathymetry"][0]["filePath"].as<std::string>();
     } catch (YAML::Exception& e){
