@@ -86,6 +86,8 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         i_bathymetryNCFilePath = args["bathymetry"][0]["filePath"].as<std::string>();
     } catch (YAML::Exception& e){
         std::cerr << "YAML Error: " << e.what() << std::endl;
+        std::cerr << "Line: " << e.mark.line
+                  << ", Column: " << e.mark.column << std::endl;
         return;
     }
 
