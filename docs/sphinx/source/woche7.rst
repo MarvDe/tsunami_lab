@@ -24,18 +24,29 @@ Marvin Döring
 Um Zellen in der Ausgabe zu verschmelzen haben wir den ``output resolution`` Parameter in das Programm eingebaut, welcher
 die Größe des Quadrates angibt. Alle Zellen, die sich in diesem Quadrat befinden werden, in der 
 Ausgabedatei, auf einen Wert abgebildet. Dieser entspricht dem Durchschnitt aller Zellen in dem Quadrat. Somit hat die 
-entstehenden Ausgabedatei eine Größe von ``(Height / output resolution) x (Width / output resolution)`` und ist somit deutlich kleiner 
-als das Simulationsgrid.
+entstehende Ausgabedatei eine Größe von ``(Height / output resolution) x (Width / output resolution)`` und ist somit deutlich kleiner 
+als das Simulationsgrid. Zur Visualisierung der Funktionalität haben wir nochmal das 250m Gitter von Tohoku verwendet, denn 
+die Datei mit einem 50m Gitter konnten wir weder lokal noch über den Uni PC simulieren. Der Ram hat nicht gereicht... 
 
-**Original Grid 250m**
+**Demonstration des verschmelzens von Zellen*
+
+.. image:: ../images/downscaled2d.0000.png
 
 
-
-**Demonstration des verschmelzens von Zellen mit output resolution 10**
-
+.. image:: ../images/downscaled3d.0000.png
 
 
 Philipp Prell
 *************
 
+Zur Implementierung der Stations-Funktionalität wird nach jedem Zeitschritt, der von der
+``NetCdf``-Klasse in die Solutions-Datei geschrieben wird, ein ``nc_sync()`` aufgerufen.
+Dadurch wird der gesamte Puffer vollständig in den Speicher geschrieben.
 
+Das Setup liest den letzten Zeitschritt aus der bestehenden NetCDF-Datei aus, indem die
+Größe der Dimension ``time`` abgefragt und die Simulation an genau dieser Stelle fortgesetzt
+wird. Daten wie Bathymetrie und Geschwindigkeit werden in den Puffer eingelesen und über
+``Setup`` an die Wellenausbreitung (``WavePropagation``) übergeben.
+
+Der Nutzer hat die Wahl, ob eine neue NetCDF-Datei angelegt oder die neue Simulation an
+eine bestehende Datei angehängt werden soll.

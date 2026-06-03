@@ -237,6 +237,8 @@ int io::NetCdf::read( const std::string  & i_filePath,
     int ndims;
     int dimids[NC_MAX_VAR_DIMS];
     size_t dim_sizes[NC_MAX_VAR_DIMS];
+
+    std::cout << i_filePath << std::endl;
     
     l_status = errorChecking( nc_open(i_filePath.c_str(), NC_NOWRITE, &l_ncid), printErr );
     if (l_status) return -1;

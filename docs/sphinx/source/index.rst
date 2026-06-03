@@ -37,9 +37,6 @@ Die Software ``tsunami_lab`` und Unit-Tests sind nach dem Bauen des Projektes im
   woche2
   woche3
   woche4
-<<<<<<< HEAD
-  woche5
-=======
   woche5
   woche6
->>>>>>> Marvin
+  woche7

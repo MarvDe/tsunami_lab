@@ -89,6 +89,8 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_outRes = args["outputResolution"].as<tsunami_lab::t_idx>();
     } catch (YAML::Exception& e){
         std::cerr << "YAML Error: " << e.what() << std::endl;
+        std::cerr << "Line: " << e.mark.line
+                  << ", Column: " << e.mark.column << std::endl;
         return;
     }
 

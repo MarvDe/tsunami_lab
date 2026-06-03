@@ -7,10 +7,10 @@ args:
     cellSize: 250
     cellx: 10800
     celly: 6000
-    endTime: 250 #12 # time in s (needs to be updated)
+    endTime: 50 #12 # time in s (needs to be updated)
     stations: "" #"utilities/soma_stations.yml"
     outputResolution: 1
     bathymetry:
-        filePath: "large_data/tohoku_gebco20_ucsb3_250m_bath.nc"
+      - filePath: "large_data/tohoku_gebco20_ucsb3_250m_bath.nc"
     displacement: 
-        filePath: "large_data/tohoku_gebco20_ucsb3_250m_displ.nc"
+      - filePath: "large_data/tohoku_gebco20_ucsb3_250m_displ.nc"
