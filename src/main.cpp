@@ -33,10 +33,6 @@ int main( int   i_argc,
   // number of cells in x- and y-direction
   tsunami_lab::t_idx l_nx = 0;
   tsunami_lab::t_idx l_ny = 1;
-
-  // origin of simulation
-  //tsunami_lab::t_idx l_ox = 0;
-  //tsunami_lab::t_idx l_oy = 0;
   
   // id of solver
   tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::FWAVE;
@@ -57,16 +53,18 @@ int main( int   i_argc,
   // outflow types
   tsunami_lab::t_idx l_outflowTypeL = 0;
   tsunami_lab::t_idx l_outflowTypeR = 0;
+  
+  // amount of cells which will be merged together in output (= 1: every cell will be written, > 1: cells will be merged)
+  tsunami_lab::t_idx l_outputResolution = 1;  
 
   // bathymetry file path
   std::string l_bathymetryFilePath = "profile_commas.csv";
   
   // bathymetry nc file path
-  std::string l_bathymetryNCFilePath = "utilities/artificialtsunami_bathymetry_1000.nc";
+  std::string l_bathymetryNCFilePath = "large_data/tohoku_gebco08_ucsb3_250m_bath.nc";//"utilities/artificialtsunami_bathymetry_1000.nc";
 
   // displacement nc file path
-  std::string l_displacementNCFilePath = "utilities/artificialtsunami_displ_1000.nc";
-
+  std::string l_displacementNCFilePath = "large_data/tohoku_gebco08_ucsb3_250m_displ.nc"; //"utilities/artificialtsunami_displ_1000.nc";
   // max simulation time
   tsunami_lab::t_real l_endTime;
 
@@ -118,7 +116,8 @@ int main( int   i_argc,
                         l_left,
                         l_upper,
                         l_checkPointFilePath,
-                        l_appendFile
+                        l_appendFile,
+                        l_outputResolution
                         );
   }
   else {
@@ -142,7 +141,7 @@ int main( int   i_argc,
   
     // select number of cells in x direction
     l_endTime = l_parser.get("endtime", (tsunami_lab::t_real)3.0);
-    
+
   
     // set stations yaml file;
     l_stationsFilePath = l_parser.get("stations", "");
@@ -155,16 +154,14 @@ int main( int   i_argc,
 
     // select upper most coordinate
     l_upper = l_parser.get("upper", (tsunami_lab::t_real)0);
+
+    l_outputResolution = l_parser.get("res", (tsunami_lab::t_idx) 1);
   }
 
   if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
   else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
   else l_solverName = "roe";
   
-  
-
-  
-
   if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
   else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
   else if (l_setupName.compare("shockShock") == 0) l_setupId = tsunami_lab::setups::SHOCK_SHOCK;
@@ -196,6 +193,7 @@ int main( int   i_argc,
   std::cout << "  setup:                          " << l_setupName << std::endl;
   std::cout << "  format:                         " << l_formatName << std::endl;
   std::cout << "  end time:                       " << l_endTime << std::endl;
+  std::cout << "  output resolution:              " << l_outputResolution << std::endl;
 
   // construct setup
   tsunami_lab::setups::Setup *l_setup;
@@ -288,8 +286,12 @@ int main( int   i_argc,
     tsunami_lab::t_real * l_bathymetry = nullptr;
     tsunami_lab::t_real * l_displacement = nullptr;
 
-    tsunami_lab::io::NetCdf::read(l_bathymetryNCFilePath, l_bX, l_bY, l_dxyBat, l_leftBat, l_upperBat, &l_bathymetry);
-    tsunami_lab::io::NetCdf::read(l_displacementNCFilePath, l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, &l_displacement);
+    int l_batRes = tsunami_lab::io::NetCdf::read(l_bathymetryNCFilePath, l_bX, l_bY, l_dxyBat, l_leftBat, l_upperBat, &l_bathymetry);
+    int l_disRes = tsunami_lab::io::NetCdf::read(l_displacementNCFilePath, l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, &l_displacement);
+
+    if (l_batRes || l_disRes){
+      std::cout << "error reading bathymetry or displacement" << std::endl;
+    }
 
     l_setup = new tsunami_lab::setups::TsunamiEvent2d(l_nx, l_ny, l_dxy, l_left, l_upper, l_bX, l_bY, l_dxyBat, l_leftBat, l_upperBat, 
                                                       l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, l_bathymetry, l_displacement);
@@ -415,6 +417,7 @@ int main( int   i_argc,
                                               l_dt,
                                               l_left,
                                               l_upper,
+                                              l_outputResolution,
                                               "solution.nc");
     } else {
       l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
@@ -423,6 +426,7 @@ int main( int   i_argc,
                                               l_dt,
                                               l_left,
                                               l_upper,
+                                              l_outputResolution,
                                               l_checkPointFilePath,
                                               true);
     }

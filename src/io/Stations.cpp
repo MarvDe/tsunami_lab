@@ -16,8 +16,7 @@ void tsunami_lab::io::Stations::addStation(const std::string &i_name, t_real i_p
    m_stations.push_back(Station{i_name, i_posX, i_posY, io_stream, i_ownsStream});
 }
 
-void tsunami_lab::io::Stations::write( t_real i_simTime, const t_real * i_height, const t_real * i_momentumX, const t_real * i_momentumY, const t_real * i_bathymetry, t_idx i_stride ) const{
-    
+void tsunami_lab::io::Stations::write( t_real i_simTime, const t_real * i_height, const t_real * i_momentumX, const t_real * i_momentumY, const t_real * i_bathymetry, t_idx i_stride ) const {
 
     for (const auto &l_station: m_stations){
 

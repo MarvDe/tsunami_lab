@@ -17,7 +17,7 @@ TEST_CASE( "Test netcdf.", "[NetCdf]" ){
     const tsunami_lab::t_idx l_ny = 10;
     std::string l_fileName = "nc_test.nc";
 
-    auto *l_nc = new tsunami_lab::io::NetCdf(l_nx, l_ny, 1, 1, 0, 0, l_fileName);
+    auto *l_nc = new tsunami_lab::io::NetCdf(l_nx, l_ny, 1, 1, 0, 0, 1, l_fileName);
     
     tsunami_lab::t_real l_h[l_nx * l_ny] = {1};
     tsunami_lab::t_real l_hu[l_nx * l_ny] = {2};
@@ -25,7 +25,7 @@ TEST_CASE( "Test netcdf.", "[NetCdf]" ){
     tsunami_lab::t_real l_b[l_nx * l_ny] = {4};
 
     for (tsunami_lab::t_idx l_i = 0; l_i < 3; l_i++){
-        l_nc->write(l_nx, l_ny, 0, l_i, l_nx, l_h, l_hu, l_hv, l_b);
+        l_nc->write(l_nx, l_ny, l_i, l_i, l_nx, l_h, l_hu, l_hv, l_b);
     }
     delete l_nc;
 

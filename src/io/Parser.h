@@ -62,32 +62,36 @@ class tsunami_lab::io::Parser{
      * Function for parsing a yaml file as input args.
      * 
      * @param i_file yaml file location
-     * @param i_solverName name of solver
-     * @param i_setupName name of setup
-     * @param i_formatName name of output format
-     * @param i_dxy cellsize
-     * @param i_bathymetryNcFilePath path to NetCDF bathymetry file
-     * @param i_displacementNCFilePath path to NetCDF displacement file
-     * @param i_nx cells in x direction
-     * @param i_ny cells in y direction
-     * @param i_endTime duration of simulation
-     * @param i_stationsFilePath path to the station yaml file
+     * @param o_solverName name of solver
+     * @param o_setupName name of setup
+     * @param o_formatName name of output format
+     * @param o_dxy cellsize
+     * @param o_bathymetryNcFilePath path to NetCDF bathymetry file
+     * @param o_displacementNCFilePath path to NetCDF displacement file
+     * @param o_nx cells in x direction
+     * @param o_ny cells in y direction
+     * @param o_endTime duration of simulation
+     * @param o_stationsFilePath path to the station yaml file
+     * @param o_left 
+     * @param o_upper
+     * @param o_outRes
      */
     void parseFile( std::string &i_file,
-                    std::string &i_solverName,
-                    std::string &i_setupName,
-                    std::string &i_formatName,
-                    tsunami_lab::t_real &i_dxy,
-                    std::string &i_bathymetryNCFilePath,
-                    std::string &i_displacementNCFilePath,
-                    tsunami_lab::t_idx &i_nx,
-                    tsunami_lab::t_idx &i_ny,
-                    tsunami_lab::t_real &i_endTime,
-                    std::string &i_stationsFilePath,
-                    tsunami_lab::t_real &i_left,
-                    tsunami_lab::t_real &i_upper,
-                    std::string &i_checkPointFile,
-                    bool &appendFile
+                    std::string &o_solverName,
+                    std::string &o_setupName,
+                    std::string &o_formatName,
+                    tsunami_lab::t_real &o_dxy,
+                    std::string &o_bathymetryNCFilePath,
+                    std::string &o_displacementNCFilePath,
+                    tsunami_lab::t_idx &o_nx,
+                    tsunami_lab::t_idx &o_ny,
+                    tsunami_lab::t_real &o_endTime,
+                    std::string &o_stationsFilePath,
+                    tsunami_lab::t_real &o_left,
+                    tsunami_lab::t_real &o_upper,
+                    std::string &o_checkPointFile,
+                    bool &o_appendFile,
+                    tsunami_lab::t_idx &o_outRes
                   );
 };
 
