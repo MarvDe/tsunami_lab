@@ -3,7 +3,7 @@ Woche 7
 
 In der siebten Woche des Tsunami Labs soll die Möglichkeit von Checkpoints implementiert werden.
 Dieses Feature kann dafür verwendet werden eine Simulation fort zu setzten falls das Programm abgestürzt ist.
-Des weiteren soll die Ausgabe so erweitert werden, dass nicht jede Zelle abgespeichert wird sondern in einem 
+Des Weiteren soll die Ausgabe so erweitert werden, dass nicht jede Zelle abgespeichert wird sondern in einem 
 bestimmten Quadrat nur der Durchschnitt aller dort befindlichen Zellen ausgegeben wird.
 Dadurch ist die Ausgabedatei kleiner.
 
@@ -28,7 +28,7 @@ entstehende Ausgabedatei eine Größe von ``(Height / output resolution) x (Widt
 als das Simulationsgrid. Zur Visualisierung der Funktionalität haben wir nochmal das 250m Gitter von Tohoku verwendet, denn 
 die Datei mit einem 50m Gitter konnten wir weder lokal noch über den Uni PC simulieren. Der Ram hat nicht gereicht... 
 
-**Demonstration des verschmelzens von Zellen*
+**Demonstration des verschmelzens von Zellen**
 
 .. image:: ../images/downscaled2d.0000.png
 
@@ -39,11 +39,11 @@ die Datei mit einem 50m Gitter konnten wir weder lokal noch über den Uni PC sim
 Philipp Prell
 *************
 
-Zur Implementierung der Stations-Funktionalität wird nach jedem Zeitschritt, der von der
-``NetCdf``-Klasse in die Solutions-Datei geschrieben wird, ein ``nc_sync()`` aufgerufen.
+Zur Implementierung der CheckPoint-Funktionalität wird nach jedem Schreibvorgang, der
+``NetCdf``-Klasse in die Solutions-Datei, ein ``nc_sync()`` aufgerufen.
 Dadurch wird der gesamte Puffer vollständig in den Speicher geschrieben.
 
-Das Setup liest den letzten Zeitschritt aus der bestehenden NetCDF-Datei aus, indem die
+Das Setup ``setups::CheckPoint`` liest den letzten Zeitschritt aus der bestehenden NetCDF-Datei aus, indem die
 Größe der Dimension ``time`` abgefragt und die Simulation an genau dieser Stelle fortgesetzt
 wird. Daten wie Bathymetrie und Geschwindigkeit werden in den Puffer eingelesen und über
 ``Setup`` an die Wellenausbreitung (``WavePropagation``) übergeben.
