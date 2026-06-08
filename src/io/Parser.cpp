@@ -84,8 +84,8 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_ny = args["celly"].as<tsunami_lab::t_idx>();
         o_endTime = args["endTime"].as<tsunami_lab::t_real>();
         o_stationsFilePath = args["stations"].as<std::string>();
-        o_displacementNCFilePath = args["displacement"]["filePath"].as<std::string>();
-        o_bathymetryNCFilePath = args["bathymetry"]["filePath"].as<std::string>();
+        o_displacementNCFilePath = args["displacement"][0]["filePath"].as<std::string>();
+        o_bathymetryNCFilePath = args["bathymetry"][0]["filePath"].as<std::string>();
         o_outRes = args["outputResolution"].as<tsunami_lab::t_idx>();
     } catch (YAML::Exception& e){
         std::cerr << "YAML Error: " << e.what() << std::endl;

@@ -21,9 +21,6 @@ private:
     t_idx m_cellsX = 1000;
     t_idx m_cellsY = 1000;
 
-    //! size of cells
-    t_real m_dxy = 1;
-
     //! stride of the setup
     t_idx m_stride = 0;
 

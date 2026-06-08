@@ -73,7 +73,7 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
      *
      * @return stride in y-direction.
      **/
-    t_idx getStride(){
+    t_idx getStride() {
       return m_xCells + 2;
     }
 

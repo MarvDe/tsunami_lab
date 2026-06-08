@@ -1,7 +1,7 @@
 #include "SubcriticalFlow1d.h"
 
 
-tsunami_lab::setups::SubcriticalFlow1d::SubcriticalFlow1d() {};
+tsunami_lab::setups::SubcriticalFlow1d::SubcriticalFlow1d() {}
 
 tsunami_lab::t_real tsunami_lab::setups::SubcriticalFlow1d::getHeight(t_real i_x, t_real) const {
     return - tsunami_lab::setups::SubcriticalFlow1d::getBathymetry(i_x, 0);
