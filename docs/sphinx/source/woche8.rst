@@ -34,16 +34,16 @@ Bei dem Optimization Build werden die Flags ``-O3``, ``-ffast-math`` und ``march
 Die normalisierte Zeit ist die gesamte Laufzeit geteilt durch die Anzahl an 
 Zellen multipliziert mit der Anzahl an Zeitschritten.
 
-=====                               ==============      =======================
-                                    Gesamtzeit (s)      normalisierte Zeit (s)
-=====                               ==============      =======================
+==================================   ==============      ======================
+Konfiguration                        Gesamtzeit (s)      normalisierte Zeit (s)
+==================================   ==============      ======================
 Draco & Release Build & gcc          20.0219             3.19328e-08
 Draco & Optimization Build & gcc     15.1645             2.41858e-08
 Draco & Release Build  & clang       22.3432             3.5635e-08
 Draco & Optimization Build & clang   17.6711             2.81836e-08
 Local & Release Build & gcc          17.7471             2.83048e-08
 Local & Optimization Build & gcc     13.1028             2.08976e-08
-=====                               ==============      =======================
+==================================   ==============      ======================
 
 Es lässt sich also sagen, dass die Optimierungsflags durchaus einen Unterschied machen.
 Des Weiteren scheint der gcc Compiler einwenig effizienteren Code zu produzieren als 
@@ -63,9 +63,11 @@ viele kleine Optimierungen vornehmen.
 Wir verwenden nun die Funktionen ``std::copy_n``, ``std::fill_n`` und ``std::transform``, dies hilft dem 
 Compiler die Operationen auf Arrays zu vektorisieren. Des Weiteren wird das Keyword ``__restrict__``
 an gegebenen Stellen verwendet, somit muss der Compiler sicht nicht um Aliasing von Pointern kümmern und 
-somit wird der Code schneller. Dann haben wir eine ``if``-Bedingung aus einer doppelten For-Schleife entfernt, dadurch 
+der Code wird schneller. Dann haben wir eine ``if``-Bedingung aus einer doppelten For-Schleife entfernt, dadurch 
 muss diese nicht unnötig ausgewertet werden.  
-
+Der unoptimierte Code führt die Benchmark-Konfiguration in 23.0412 Sekunden aus. Mit den Optimierungen kommt das 
+Programm unter gleichen Compliereinstellungen immerhin auf 18.2675 Sekunden. Somit lässt sich sagen, 
+dass die Optimierungen durchaus einen Unterschied machen.  
 
 
 
