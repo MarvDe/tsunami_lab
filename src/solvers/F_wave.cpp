@@ -36,28 +36,28 @@ void tsunami_lab::solvers::Fwave::waveStrengths(t_real   i_hL,
                                                 t_real & o_strengthR){
     //calculate the inverse l_rInv of R = [eigvec1, eigvec2]
     t_real l_rInvDet = 1 / (i_waveSpeedR - i_waveSpeedL);
-    t_real l_rInv[2][2] = {0};
-    l_rInv[0][0] = l_rInvDet * i_waveSpeedR;
-    l_rInv[0][1] = - l_rInvDet;
-    l_rInv[1][0] = - l_rInvDet * i_waveSpeedL;
-    l_rInv[1][1] = l_rInvDet;
 
-    //calculate flux function for both sides
-    t_real l_fR[2] = {i_huR, i_huR * i_uR + 0.5f * m_g * i_hR * i_hR};
-    t_real l_fL[2] = {i_huL, i_huL * i_uL + 0.5f * m_g * i_hL * i_hL};
+    t_real l_rInv00 = l_rInvDet * i_waveSpeedR;
+    t_real l_rInv01 = - l_rInvDet;
+    t_real l_rInv10 = - l_rInvDet * i_waveSpeedL;
+    t_real l_rInv11 = l_rInvDet;
+
     
     // bathymetry
-    t_real l_psi = -m_g * 0.5f * (i_hL + i_hR) * (i_bR - i_bL);
-
+    t_real l_psi = -m_g * t_real(0.5) * (i_hL + i_hR) * (i_bR - i_bL);
+    
+    //calculate flux function for both sides
     //calculate delta f for strength calculation
-    t_real l_df[2] = {l_fR[0] - l_fL[0], l_fR[1] - l_fL[1] - l_psi};
+
+    t_real l_df0 = i_huR - i_huL;
+    t_real l_fR1 = i_huR * i_uR + t_real(0.5) * m_g * i_hR * i_hR;
+    t_real l_fL1 = i_huL * i_uL + t_real(0.5) * m_g * i_hL * i_hL;
+    t_real l_df1 = l_fR1 - l_fL1 - l_psi;
 
     //calculate: sigmas = l_rInv * df
-    o_strengthL = l_rInv[0][0] * l_df[0];
-    o_strengthL += l_rInv[0][1] * l_df[1];
+    o_strengthL = l_rInv00 * l_df0 + l_rInv01 * l_df1;
 
-    o_strengthR = l_rInv[1][0] * l_df[0];
-    o_strengthR += l_rInv[1][1] * l_df[1];
+    o_strengthR = l_rInv10 * l_df0 + l_rInv11 * l_df1;
 }
 
 void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
@@ -116,24 +116,33 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
     l_zR[1] = l_aR * l_sR;
     
     for (unsigned int l_pt = 0; l_pt < 2; l_pt++){
-        //init 
-        o_netUpdateL[l_pt] = 0;
-        o_netUpdateR[l_pt] = 0;
+        
+    }
 
-        //1st wave
-        if (l_sL < 0){
-            o_netUpdateL[l_pt] += l_zL[l_pt];
-        }
-        else if (l_sL > 0) {
-            o_netUpdateR[l_pt] += l_zL[l_pt];
-        }
+    //init 
+    o_netUpdateL[0] = 0;
+    o_netUpdateL[1] = 0;
+    o_netUpdateR[0] = 0;
+    o_netUpdateR[1] = 0;
 
-        //2nd wave
-        if (l_sR > 0){
-            o_netUpdateR[l_pt] += l_zR[l_pt];
-        }
-        else if (l_sR < 0){
-            o_netUpdateL[l_pt] += l_zR[l_pt];
-        }
+    //1st wave
+    if (l_sL < 0){
+        o_netUpdateL[0] += l_zL[0];
+        o_netUpdateL[1] += l_zL[1];
+    }
+    else if (l_sL > 0) {
+        o_netUpdateR[0] += l_zL[0];
+        o_netUpdateR[1] += l_zL[1];
+    }
+
+    //2nd wave
+    if (l_sR > 0){
+        o_netUpdateR[0] += l_zR[0];
+        o_netUpdateR[1] += l_zR[1];
+
+    }
+    else if (l_sR < 0){
+        o_netUpdateL[0] += l_zR[0];
+        o_netUpdateL[1] += l_zR[1];
     }
 }

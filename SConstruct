@@ -23,7 +23,7 @@ vars.AddVariables(
   EnumVariable( 'mode',
                 'compile modes, option \'san\' enables address and undefined behavior sanitizers',
                 'release',
-                allowed_values=('release', 'debug', 'release+san', 'debug+san' )
+                allowed_values=('release', 'debug', 'release+san', 'debug+san', 'optimization' )
               )
 )
 
@@ -33,23 +33,35 @@ if vars.UnknownVariables():
   exit(1)
 
 # create environment
-env = Environment( variables = vars )
+env = Environment( variables = vars, ENV=os.environ )
 
 # generate help message
 Help( vars.GenerateHelpText( env ) )
+
+env.Replace( CXX = "clang++" )
 
 # add default flags
 env.Append( CXXFLAGS = [ '-std=c++17',
                          '-Wall',
                          '-Wextra',
-                         '-Wpedantic' ] )
+                         '-Wpedantic',
+                         '-Wno-keyword-macro' ] )
 
 # set optimization mode
 if 'debug' in env['mode']:
   env.Append( CXXFLAGS = [ '-g',
                            '-O0' ] )
 else:
-  env.Append( CXXFLAGS = [ '-O2' ] )
+  if 'optimization' in env['mode']:
+    env.Append( CXXFLAGS = ['-O3',
+                            '-ffast-math',
+                            '-march=native',
+                            #'-flto'
+                            ] )
+
+  else:
+    env.Append( CXXFLAGS = [ '-O2' ] )
+
 
 # add sanitizers
 if 'san' in  env['mode']:
@@ -78,9 +90,10 @@ env.Append(LIBS=['yaml-cpp'])
 env.ParseConfig('nc-config --cflags --libs')
 
 conf = Configure(env)
-if not conf.CheckCXXHeader('netcdf.h'):
+if not conf.CheckCHeader('netcdf.h'):
     print("Did not find netcdf.h, exiting!")
     Exit(1)
+
 env = conf.Finish()
 
 # get source files
