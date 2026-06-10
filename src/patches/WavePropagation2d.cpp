@@ -373,10 +373,12 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow() {
 
   const t_real l_sign = l_reflect ? t_real(-1) : t_real(1);
 
-  #ifdef __clang__
+  #if defined(__clang__)
     __builtin_assume(l_stride >= 2);
-  #elif __GNUG__
+  #elif defined(__GNUG__) 
+    #if __GNUG__ >= 13
     __attribute__((__assume__(l_stride >= 2)));
+    #endif
   #endif
 
   t_real* __restrict__ const l_h_lw  = l_h  + l_stride;
