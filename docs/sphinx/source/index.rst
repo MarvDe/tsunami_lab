@@ -40,3 +40,4 @@ Die Software ``tsunami_lab`` und Unit-Tests sind nach dem Bauen des Projektes im
   woche5
   woche6
   woche7
+  woche8
