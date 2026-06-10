@@ -27,6 +27,7 @@
 #include <fstream>
 #include <limits>
 #include <string>
+#include <chrono>
 
 int main( int   i_argc,
           char *i_argv[] ) {
@@ -433,6 +434,9 @@ int main( int   i_argc,
   }
 
   // iterate over time
+
+  tsunami_lab::t_real l_timeMeasure = 0;
+
   while( l_simTime < l_endTime ){
     if( l_timeStep % 25 == 0 ) {
       std::cout << "  simulation time / #time steps: "
@@ -481,14 +485,21 @@ int main( int   i_argc,
       );
     }
 
+    auto l_timeStart = std::chrono::steady_clock::now();
+    
     l_waveProp->setGhostOutflow();
     l_waveProp->timeStep( l_scaling );
+
+    auto l_timeEnd = std::chrono::steady_clock::now();
+    l_timeMeasure += std::chrono::duration_cast<std::chrono::duration<tsunami_lab::t_real>>(l_timeEnd - l_timeStart).count();
 
     l_timeStep++;
     l_simTime += l_dt;
   }
 
   std::cout << "finished time loop" << std::endl;
+  std::cout << "total time measured: " << l_timeMeasure << std::endl;
+  std::cout << "normalized time measured: " << l_timeMeasure / (l_nx * l_ny * l_timeStep) << std::endl;
 
   // free memory
   std::cout << "freeing memory" << std::endl;

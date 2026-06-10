@@ -372,13 +372,20 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow() {
   }
 
   const t_real l_sign = l_reflect ? t_real(-1) : t_real(1);
-  __builtin_assume(l_stride >= 2);
+
+  #ifdef __clang__
+    __builtin_assume(l_stride >= 2);
+  #elif __GNUG__
+    __attribute__((__assume__(l_stride >= 2)));
+  #endif
 
   t_real* __restrict__ const l_h_lw  = l_h  + l_stride;
   t_real* __restrict__ const l_h_lr  = l_h  + l_stride + 1;
   t_real* __restrict__ const l_hu_lw = l_hu + l_stride;
   t_real* __restrict__ const l_hu_lr = l_hu + l_stride + 1;
-  #pragma clang loop vectorize(disable)
+  #ifdef __clang__
+    #pragma clang loop vectorize(disable)
+  #endif
   for (t_idx l_i = 0; l_i < m_yCells; ++l_i) {
     const t_idx l_off = l_i * l_stride;
     l_h_lw [l_off] = l_h_lr [l_off];
@@ -389,7 +396,9 @@ void tsunami_lab::patches::WavePropagation2d::setGhostOutflow() {
   t_real* __restrict__ const l_h_rr  = l_h  + 2*l_stride - 2;
   t_real* __restrict__ const l_hu_rw = l_hu + 2*l_stride - 1;
   t_real* __restrict__ const l_hu_rr = l_hu + 2*l_stride - 2;
-  #pragma clang loop vectorize(assume_safety)
+  #ifdef __clang__
+    #pragma clang loop vectorize(assume_safety)
+  #endif
   for (t_idx l_i = 0; l_i < m_yCells; ++l_i) {
     const t_idx l_off = l_i * l_stride;
     l_h_rw [l_off] = l_h_rr [l_off];

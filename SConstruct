@@ -38,7 +38,10 @@ env = Environment( variables = vars, ENV=os.environ )
 # generate help message
 Help( vars.GenerateHelpText( env ) )
 
-env.Replace( CXX = "clang++" )
+# select compiler
+if ("CXX" in os.environ):
+  env.Replace( CXX = os.environ["CXX"] )
+print("using compiler: ", env["CXX"])
 
 # add default flags
 env.Append( CXXFLAGS = [ '-std=c++17',
