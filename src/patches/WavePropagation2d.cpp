@@ -9,6 +9,7 @@
 #include "../solvers/F_wave.h"
 #include <iostream>
 #include <algorithm>
+#include <omp.h>
 
 tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::t_idx i_solverId, tsunami_lab::t_idx i_ghost ): m_solverId(i_solverId) {
   const t_idx l_stride = getStride();
@@ -68,7 +69,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   // iterate over edges and update with Riemann solutions
   // X
   if (m_solverId == tsunami_lab::solvers::ROE){
-        
+    
     for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
       for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
         // determine left and right cell-id
@@ -202,6 +203,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
     }
       
   } else {
+    #pragma omp parallel for collapse(2)
     for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
       for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
         // determine left and right cell-id
