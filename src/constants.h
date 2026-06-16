@@ -20,7 +20,8 @@ namespace tsunami_lab {
     //! solver ids
     enum Ids{
       ROE,
-      FWAVE
+      FWAVE,
+      FWAVE_HYDROSTATIC_RECONSTRUCTION
     };
   }
 
@@ -42,6 +43,7 @@ namespace tsunami_lab {
       TSUNAMI_EVENT,
       SUBCRITICAL_FLOW,
       SUPERCRITICAL_FLOW,
+      WETTING_1D,
       DAM_BREAK_2D,
       ARTIFICIAL_TSUNAMI_2D,
       TSUNAMI_EVENT_2D,

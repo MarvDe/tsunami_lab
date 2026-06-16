@@ -7,6 +7,8 @@
 #include "WavePropagation1d.h"
 #include "../solvers/Roe.h"
 #include "../solvers/F_wave.h"
+#include <cmath>
+#include <iostream>
 
 tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId ): m_solverId(i_solverId) {
   m_nCells = i_nCells;
@@ -23,7 +25,6 @@ tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsun
     for( t_idx l_ce = 0; l_ce < m_nCells; l_ce++ ) {
       m_h[l_st][l_ce] = 0;
       m_hu[l_st][l_ce] = 0;
-
     }
 
   }
@@ -99,27 +100,30 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     
     // compute net-updates
     t_real l_netUpdates[2][2];
-    
-    // check for dry cells
+
     bool l_dryL = false, l_dryR = false;
-    if (l_hL <= 1e-6f && l_hR <= 1e-6f) { // both cells dry
-      // skip evaluation
-      continue;
+    if (m_solverId != tsunami_lab::solvers::FWAVE_HYDROSTATIC_RECONSTRUCTION){
+      // check for dry cells
+      if (l_hL <= 1e-6f && l_hR <= 1e-6f) { // both cells dry
+        // skip evaluation
+        continue;
+      }
+      else if (l_hL <= 1e-6f){               // left cell dry
+        // set reflecting boundary conditions left
+        l_dryL = true;
+        l_hL = l_hR;
+        l_huL = -l_huR;
+        l_bL  = l_bR;
+      }
+      else if (l_hR <= 1e-6f){      // right cell dry
+        // set reflecting boundary conditions right
+        l_dryR = true;
+        l_hR = l_hL;
+        l_huR = -l_huL;
+        l_bR  = l_bL;
+      }
     }
-    else if (l_hL <= 1e-6f){               // left cell dry
-      // set reflecting boundary conditions left
-      l_dryL = true;
-      l_hL = l_hR;
-      l_huL = -l_huR;
-      l_bL  = l_bR;
-    }
-    else if (l_hR <= 1e-6f){      // right cell dry
-      // set reflecting boundary conditions right
-      l_dryR = true;
-      l_hR = l_hL;
-      l_huR = -l_huL;
-      l_bR  = l_bL;
-    }
+
  
     // select roe solver 
     if (m_solverId == tsunami_lab::solvers::ROE){
@@ -132,7 +136,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     
     }
     // select fwave solver
-    else{
+    else if (m_solverId == tsunami_lab::solvers::FWAVE){
       solvers::Fwave::netUpdates( l_hL,
                                   l_hR,
                                   l_huL,
@@ -142,6 +146,41 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
                                   l_netUpdates[0],
                                   l_netUpdates[1] );
     }
+    // Hydrostatic reconstruction
+    else{
+
+      // 1. reconstruction first, using original cell-centre values
+      t_real l_bHalf = std::max( l_bL, l_bR );
+      t_real l_hL2   = std::max( t_real(0), l_hL + l_bL - l_bHalf );
+      t_real l_hR2   = std::max( t_real(0), l_hR + l_bR - l_bHalf );
+      t_real l_huL2  = ( l_hL > 0 ) ? l_hL2 * ( l_huL / l_hL ) : t_real(0);
+      t_real l_huR2  = ( l_hR > 0 ) ? l_hR2 * ( l_huR / l_hR ) : t_real(0);
+
+      // 2. source corrections (signs now correct)
+      t_real l_sourceL = t_real(0.5) * 9.81 * ( l_hL2 * l_hL2 - l_hL * l_hL );
+      t_real l_sourceR = t_real(0.5) * 9.81 * ( l_hR * l_hR - l_hR2 * l_hR2 );
+
+      // 3. skip only if both reconstructed heights are negligible
+      if( l_hL2 <= 0 && l_hR2 <= 0 ) continue;
+
+      // 4. call solver
+      tsunami_lab::solvers::Fwave::netUpdates(  l_hL2, l_hR2,
+                                                l_huL2, l_huR2,
+                                                t_real(0), t_real(0),
+                                                l_netUpdates[0],
+                                                l_netUpdates[1] );
+
+      l_netUpdates[0][1] += l_sourceL;
+      l_netUpdates[1][1] += l_sourceR;
+
+      if (l_ed == 50){
+        std::cout << "hL " << l_hL << ";  hR " << l_hR << std::endl;
+        std::cout << "hL2 " << l_hL2 << "; hR2 " << l_hR2 << std::endl;
+        std::cout << "netUpLeft " << l_netUpdates[0][0] << "; " << l_netUpdates[0][1] << std::endl;
+        std::cout << "netUpRight " << l_netUpdates[1][0] << "; " << l_netUpdates[1][1] << std::endl;  
+      }
+    }
+
 
     // update the cells' quantities
     if (!l_dryL){
@@ -191,4 +230,38 @@ void tsunami_lab::patches::WavePropagation1d::setBathymetry( t_idx i_ix,
   if (i_ix == m_nCells - 1){
     m_bathymetry[m_nCells + 1] = i_height;
   }
+}
+
+void tsunami_lab::patches::WavePropagation1d::HydrostaticReconstruction(
+    t_real i_hL,  t_real i_hR,
+    t_real i_huL, t_real i_huR,
+    t_real i_bL,  t_real i_bR,
+    t_real o_netUpdateL[2],
+    t_real o_netUpdateR[2] )
+{
+    // 1. upwind bed level at the interface
+    t_real l_bHalf = std::max( i_bL, i_bR );
+
+    // 2. reconstructed water heights (dry-cell clipping)
+    t_real l_hL = std::max( t_real(0), i_hL + i_bL - l_bHalf );
+    t_real l_hR = std::max( t_real(0), i_hR + i_bR - l_bHalf );
+
+    // 3. reconstructed momenta (velocity stays, height changes)
+    t_real l_huL = ( i_hL > 0 ) ? l_hL * ( i_huL / i_hL ) : t_real(0);
+    t_real l_huR = ( i_hR > 0 ) ? l_hR * ( i_huR / i_hR ) : t_real(0);
+
+    // 4. call your existing solver with reconstructed states
+    //    bed is flat at z_half on both sides, so pass 0/0 or equal values
+    tsunami_lab::solvers::Fwave::netUpdates( l_hL, l_hR,
+                                             l_huL, l_huR,
+                                             t_real(0), t_real(0),
+                                             o_netUpdateL,
+                                             o_netUpdateR );
+
+    // 5. source term correction (distribute bathymetry jump to each side)
+    t_real l_sourceL = t_real(0.5) * 9.81 * ( l_hL * l_hL - i_hL * i_hL );
+    t_real l_sourceR = t_real(0.5) * 9.81 * ( i_hR * i_hR - l_hR * l_hR );
+
+    o_netUpdateL[1] += l_sourceL;
+    o_netUpdateR[1] -= l_sourceR;
 }

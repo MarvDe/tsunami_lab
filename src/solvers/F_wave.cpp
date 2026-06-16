@@ -1,5 +1,6 @@
 #include "F_wave.h"
 #include <cmath>
+#include <iostream>
 
 void tsunami_lab::solvers::Fwave::waveSpeeds(   t_real   i_hL, 
                                                 t_real   i_hR, 
@@ -69,14 +70,8 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
                                                 t_real o_netUpdateL[2],
                                                 t_real o_netUpdateR[2]){
     // calculate particle speed
-    if (i_hL < 1e-6f){
-        i_hL = 1e-6f;
-    }
-    if (i_hR < 1e-6f){
-        i_hR = 1e-6f;
-    }
-    t_real l_uL = i_huL / i_hL;
-    t_real l_uR = i_huR / i_hR;
+    t_real l_uL = (i_hL > 0) ? i_huL / i_hL : t_real(0);
+    t_real l_uR = (i_hR > 0) ? i_huR / i_hR : t_real(0);
 
     // compute wave speeds
     t_real l_sL;
@@ -114,10 +109,6 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
     
     l_zR[0] = l_aR;
     l_zR[1] = l_aR * l_sR;
-    
-    for (unsigned int l_pt = 0; l_pt < 2; l_pt++){
-        
-    }
 
     //init 
     o_netUpdateL[0] = 0;
@@ -139,7 +130,6 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
     if (l_sR > 0){
         o_netUpdateR[0] += l_zR[0];
         o_netUpdateR[1] += l_zR[1];
-
     }
     else if (l_sR < 0){
         o_netUpdateL[0] += l_zR[0];

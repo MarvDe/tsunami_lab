@@ -34,7 +34,7 @@ import pandas as pd
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-CSV_PATTERN = "../build/solution_*.csv"
+CSV_PATTERN = "../solution_*.csv"
 HEIGHT_GIF  = "wave_height.gif"
 MOMENTUM_GIF = "wave_momentum.gif"
 FPS = 5                 # frames per second in the output GIFs

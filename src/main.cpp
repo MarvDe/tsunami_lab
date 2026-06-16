@@ -17,6 +17,7 @@
 #include "setups/ArtificialTsunami2d.h"
 #include "setups/TsunamiEvent2d.h"
 #include "setups/CheckPoint.h"
+#include "setups/Wetting1d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include "io/Stations.h"
@@ -158,10 +159,13 @@ int main( int   i_argc,
 
     l_outputResolution = l_parser.get("res", (tsunami_lab::t_idx) 1);
   }
-
+  
   if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
   else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
-  else l_solverName = "roe";
+  else {
+    l_solverName = "fwave_hydrostatic_reconstruction";
+    l_solverId = tsunami_lab::solvers::FWAVE_HYDROSTATIC_RECONSTRUCTION;
+  }
   
   if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
   else if (l_setupName.compare("rareRare") == 0) l_setupId = tsunami_lab::setups::RARE_RARE;
@@ -173,6 +177,7 @@ int main( int   i_argc,
   else if (l_setupName.compare("artificialTsunami") == 0) l_setupId = tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D;
   else if (l_setupName.compare("tsunamiEvent2d") == 0) l_setupId = tsunami_lab::setups::TSUNAMI_EVENT_2D;
   else if (l_setupName.compare("checkPoint") == 0) l_setupId = tsunami_lab::setups::CHECK_POINT;
+  else if (l_setupName.compare("wetting") == 0) l_setupId = tsunami_lab::setups::WETTING_1D;
   else l_setupName = "damBreak";
 
   if (l_formatName.compare("nc") == 0) l_formatId = tsunami_lab::io::NC;
@@ -235,6 +240,11 @@ int main( int   i_argc,
     l_setup = new tsunami_lab::setups::SupercriticalFlow1d();
     l_dxy = 0.1;
     l_nx /=l_dxy;
+  }
+  else if(l_setupId == tsunami_lab::setups::WETTING_1D){
+    l_setup = new tsunami_lab::setups::Wetting1d();
+    l_nx = 20;
+    l_dxy = 1;
   }
   else if(l_setupId == tsunami_lab::setups::DAM_BREAK_2D){
     constexpr int l_cellsX = 100;
@@ -323,8 +333,8 @@ int main( int   i_argc,
     std::cout << "dxy: " << l_dxy << std::endl;
   }
   else{
-    l_setup = new tsunami_lab::setups::DamBreak1d( 50,
-                                                 100,
+    l_setup = new tsunami_lab::setups::DamBreak1d( 0.0585752,
+                                                   0.0285787,
                                                  60 );
   }
   
@@ -357,13 +367,14 @@ int main( int   i_argc,
       // get initial values of the setup
       tsunami_lab::t_real l_h = l_setup->getHeight( l_x,
                                                     l_y );
-      l_hMax = std::max( l_h, l_hMax );
+      
 
       tsunami_lab::t_real l_hu = l_setup->getMomentumX( l_x,
                                                         l_y );
 
       tsunami_lab::t_real l_hv = l_setup->getMomentumY( l_x,
                                                         l_y );
+
       tsunami_lab::t_real l_bathymetry = l_setup->getBathymetry( l_x, l_y );
 
       // set initial values in wave propagation solver
@@ -380,6 +391,47 @@ int main( int   i_argc,
                                 l_hv );
       
       l_waveProp->setBathymetry( l_cx, l_cy, l_bathymetry );
+
+      if (l_solverId == tsunami_lab::solvers::FWAVE_HYDROSTATIC_RECONSTRUCTION){
+        tsunami_lab::t_real l_xNext = (l_cx + 1) * l_dxy; 
+        tsunami_lab::t_real l_yNext = (l_cy + 1) * l_dxy;
+
+        // get in x direction 
+        tsunami_lab::t_real l_bNext = l_setup->getBathymetry( l_xNext, l_y );
+        
+        tsunami_lab::t_real l_bHalf = std::max(l_bathymetry, l_bNext);
+
+        tsunami_lab::t_real l_hComp = std::max( 
+          tsunami_lab::t_real(0),
+          l_h + l_bathymetry - l_bHalf
+        );
+
+        tsunami_lab::t_real l_uComp = (l_h > 0) ? l_hu / l_h : tsunami_lab::t_real(0);
+        tsunami_lab::t_real l_vComp = (l_h > 0) ? l_hv / l_h : tsunami_lab::t_real(0);
+
+        l_hMax = std::max( l_hComp, l_hMax );
+        l_uMaxAbs = std::max(std::abs(l_uComp), l_uMaxAbs);
+        l_vMaxAbs = std::max(std::abs(l_vComp), l_vMaxAbs);
+
+        // get in y direction
+        l_bNext = l_setup->getBathymetry( l_x, l_yNext );
+        
+        l_bHalf = std::max(l_bathymetry, l_bNext);
+
+        l_hComp = std::max( 
+          tsunami_lab::t_real(0),
+          l_h + l_bathymetry - l_bHalf
+        );
+
+        l_hMax = std::max( l_hComp, l_hMax );
+      }
+      else{
+        l_hMax = std::max( l_h, l_hMax );
+        tsunami_lab::t_real l_u = l_hu * l_h;
+        tsunami_lab::t_real l_v = l_hv * l_h;
+        l_uMaxAbs = std::max(std::abs(l_u), l_uMaxAbs);
+        l_vMaxAbs = std::max(std::abs(l_v), l_vMaxAbs);
+      }
 
     }
   }
