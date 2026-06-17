@@ -204,7 +204,9 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       
   } else {
     #pragma omp parallel for collapse(2)
+    //#pragma omp parallel for 
     for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
+      //#pragma omp parallel for 
       for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
         // determine left and right cell-id
         t_idx l_ceL = l_xed + l_stride * l_yed;
@@ -273,7 +275,10 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
     }
 
     // Y
+    #pragma omp parallel for collapse(2)
+    //#pragma omp parallel for 
     for (t_idx l_yed = 0; l_yed < m_yCells+1; l_yed++){
+      //#pragma omp parallel for 
       for( t_idx l_xed = 1; l_xed < m_xCells+1; l_xed++ ) {
         // determine left and right cell-id
   
