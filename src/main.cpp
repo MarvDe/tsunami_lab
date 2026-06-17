@@ -84,6 +84,10 @@ int main( int   i_argc,
 
   // flag to append data when using checkpoints
   bool l_appendFile = false;
+
+  tsunami_lab::t_idx l_timeStepFreq = 100;
+  
+  tsunami_lab::t_idx l_checkpointFreq = -1;
   
   
 
@@ -439,7 +443,8 @@ int main( int   i_argc,
   double l_timeMeasure = 0;
 
   while( l_simTime < l_endTime ){
-    if( l_timeStep % 25 == 0 ) {
+  // while( l_timeStep <= 10000){ 
+    if( l_timeStep % l_timeStepFreq == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
       if (l_formatId == tsunami_lab::io::CSV){
@@ -463,6 +468,7 @@ int main( int   i_argc,
         l_nOut++;
       }
       else if (l_formatId == tsunami_lab::io::NC){
+        bool l_setCheckpoint = (l_checkpointFreq <= 0) ? l_timeStepFreq % l_checkpointFreq == 0 : false;
         l_netCdf->write( l_nx,
                         l_ny,
                         l_nOut,
@@ -471,7 +477,8 @@ int main( int   i_argc,
                         l_waveProp->getHeight(),
                         l_waveProp->getMomentumX(),
                         l_waveProp->getMomentumY(),
-                        l_waveProp->getBathymetry());
+                        l_waveProp->getBathymetry(),
+                        l_setCheckpoint);
         l_nOut++;
       }
     }

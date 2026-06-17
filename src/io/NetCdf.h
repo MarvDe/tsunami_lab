@@ -89,7 +89,8 @@ class tsunami_lab::io::NetCdf {
                 t_real       const * i_h,
                 t_real       const * i_hu,
                 t_real       const * i_hv,
-                t_real       const * i_bathymetry );
+                t_real       const * i_bathymetry,
+                bool                 i_setCheckpoint );
 
     /**
      * Reads data.

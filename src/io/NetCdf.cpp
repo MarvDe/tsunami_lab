@@ -126,7 +126,8 @@ void io::NetCdf::write( t_idx                i_nx,
                         t_real       const * i_h,
                         t_real       const * i_hu,
                         t_real       const * i_hv,
-                        t_real       const * i_bathymetry ){
+                        t_real       const * i_bathymetry,
+                        bool                 i_setCheckpoint ){
 
     if (i_nx + 2 == i_stride ){ // if ghost cells are passed
         errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeIndex, &i_simTime));
@@ -216,6 +217,8 @@ void io::NetCdf::write( t_idx                i_nx,
                 }
             }
         }
+    }
+    if (i_setCheckpoint){
         errorChecking( nc_sync(m_fileId));
     }
 }
