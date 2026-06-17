@@ -5,8 +5,8 @@ args:
     startCoordX: 0 # global coordinates
     startCoordY: 0 # of simulation
     cellSize: 1
-    cellx: 1000
-    celly: 1000
+    cellx: 10000
+    celly: 10000
     endTime: 5 # time in s (needs to be updated)
     stations: ""
     bathymetry:

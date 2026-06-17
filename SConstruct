@@ -48,7 +48,8 @@ env.Append( CXXFLAGS = [ '-std=c++17',
                          '-Wall',
                          '-Wextra',
                          '-Wpedantic',
-                         '-Wno-keyword-macro' ] )
+                         '-Wno-keyword-macro',
+                         ] )
 
 # set optimization mode
 if 'debug' in env['mode']:
@@ -59,8 +60,10 @@ else:
     env.Append( CXXFLAGS = ['-O3',
                             '-ffast-math',
                             '-march=native',
-                            #'-flto'
+                            '-flto',
+                            '-g'
                             ] )
+    env.Append( LINKFLAGS = ['-flto'])
 
   else:
     env.Append( CXXFLAGS = [ '-O2' ] )
@@ -85,9 +88,13 @@ env.Append( CXXFLAGS = [ '-isystem', 'submodules/Catch2/single_include' ] )
 
 # add yaml-cpp
 env.Append( CXXFLAGS = [ '-isystem', 'submodules/yaml-cpp/include' ] )
-env.Append(CPPPATH=['submodules/yaml-cpp/include'])
-env.Append(LIBPATH=['submodules/yaml-cpp/build'])
-env.Append(LIBS=['yaml-cpp'])
+env.Append( CPPPATH=['submodules/yaml-cpp/include'])
+env.Append( LIBPATH=['submodules/yaml-cpp/build'])
+env.Append( LIBS=['yaml-cpp'])
+
+# add openMP
+env.Append( CXXFLAGS = ['-fopenmp'])
+env.Append( LINKFLAGS = ['-fopenmp'])
 
 # add netcdf via pkg-config
 env.ParseConfig('nc-config --cflags --libs')

@@ -21,6 +21,7 @@
 #include "io/Parser.h"
 #include "io/Stations.h"
 #include "io/NetCdf.h"
+#include <omp.h>
 #include <cstdlib>
 #include <iostream>
 #include <cmath>

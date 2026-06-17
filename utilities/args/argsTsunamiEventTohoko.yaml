@@ -1,14 +1,14 @@
 args:
   - solverName: "fwave"
-    formatName: "nc"
+    formatName: NONE #"nc"
     setupName: "tsunamiEvent2d"
     startCoordX: -200000. # global coordinates
     startCoordY: -750000. # of simulation
     cellSize: 250
     cellx: 10800
     celly: 6000
-    endTime: 2160 # time in s (needs to be updated)
-    stations: "utilities/soma_stations.yml"
+    endTime: 50 #2160 # time in s (needs to be updated)
+    stations: "" #"utilities/soma_stations.yml"
     bathymetry:
       - startCoordX: -200000. # global coordinates
         startCoordY: -750000. # of bathymetry data
