@@ -140,12 +140,6 @@ class tsunami_lab::solvers::Fwave {
     i_hL = std::max(i_hL, l_hMin);
     i_hR = std::max(i_hR, l_hMin);
 
-    // if (i_hL < 1e-6f){
-    //     i_hL = 1e-6f;
-    // }
-    // if (i_hR < 1e-6f){
-    //     i_hR = 1e-6f;
-    // }
 
     const t_real l_uL = i_huL / i_hL;
     const t_real l_uR = i_huR / i_hR;
@@ -177,15 +171,6 @@ class tsunami_lab::solvers::Fwave {
                     l_sR,
                     l_aL,
                     l_aR);
-    
-    // t_real l_zL[2] = {0};
-    // t_real l_zR[2] = {0};
-
-    // l_zL[0] = l_aL;
-    // l_zL[1] = l_aL * l_sL;
-    
-    // l_zR[0] = l_aR;
-    // l_zR[1] = l_aR * l_sR;
 
     const t_real l_zL0 = l_aL;
     const t_real l_zL1 = l_aL * l_sL;
@@ -193,41 +178,22 @@ class tsunami_lab::solvers::Fwave {
     const t_real l_zR1 = l_aR * l_sR;
     
     //init 
-    o_netUpdateL[0] = 0;
-    o_netUpdateL[1] = 0;
-    o_netUpdateR[0] = 0;
-    o_netUpdateR[1] = 0;
+    // o_netUpdateL[0] = 0;
+    // o_netUpdateL[1] = 0;
+    // o_netUpdateR[0] = 0;
+    // o_netUpdateR[1] = 0;
     
     //1st wave
     o_netUpdateL[0] = (l_sL < 0)? l_zL0 : t_real(0);
     o_netUpdateL[1] = (l_sL < 0)? l_zL1 : t_real(0);
-    o_netUpdateR[0] = (l_sL < 0)? l_zL0 : t_real(0);
-    o_netUpdateR[1] = (l_sL < 0)? l_zL1 : t_real(0);
-
-    // if (l_sL < 0){
-    //     o_netUpdateL[0] += l_zL0;
-    //     o_netUpdateL[1] += l_zL1;
-    // }
-    // else if (l_sL > 0) {
-    //     o_netUpdateR[0] += l_zL0;
-    //     o_netUpdateR[1] += l_zL1;
-    // }
+    o_netUpdateR[0] = (l_sL > 0)? l_zL0 : t_real(0);
+    o_netUpdateR[1] = (l_sL > 0)? l_zL1 : t_real(0);
     
     //2nd wave
-    o_netUpdateR[0] += (l_sR < 0)? l_zR0 : t_real(0);
-    o_netUpdateR[1] += (l_sR < 0)? l_zR1 : t_real(0);
+    o_netUpdateR[0] += (l_sR > 0)? l_zR0 : t_real(0);
+    o_netUpdateR[1] += (l_sR > 0)? l_zR1 : t_real(0);
     o_netUpdateL[0] += (l_sR < 0)? l_zR0 : t_real(0);
     o_netUpdateL[1] += (l_sR < 0)? l_zR1 : t_real(0);
-
-    // if (l_sR > 0){
-    //     o_netUpdateR[0] += l_zR0;
-    //     o_netUpdateR[1] += l_zR1;
-
-    // }
-    // else if (l_sR < 0){
-    //     o_netUpdateL[0] += l_zR0;
-    //     o_netUpdateL[1] += l_zR1;
-    // }
   }
 };
 

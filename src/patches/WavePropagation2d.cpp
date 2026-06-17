@@ -10,6 +10,7 @@
 #include <iostream>
 #include <algorithm>
 #include <omp.h>
+#include <vector>
 #include <cstdlib>
 
 tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::t_idx i_solverId, tsunami_lab::t_idx i_ghost ): m_solverId(i_solverId) {
@@ -76,296 +77,100 @@ tsunami_lab::patches::WavePropagation2d::~WavePropagation2d() {
 
 void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   const t_idx l_stride = getStride();
-  // const t_idx n = (m_yCells + 2) * l_stride;
 
-  // pointers to old and new data
-  t_real * __restrict__ l_hOld = m_h[m_step];
+  t_real * __restrict__ l_hOld  = m_h[m_step];
   t_real * __restrict__ l_huOld = m_hu[m_step];
   t_real * __restrict__ l_hvOld = m_hv[m_step];
 
-  m_step = (m_step+1) % 2;
+  m_step = (m_step + 1) % 2;
 
-  t_real * __restrict__ l_hNew =  m_h[m_step];
+  t_real * __restrict__ l_hNew  = m_h[m_step];
   t_real * __restrict__ l_huNew = m_hu[m_step];
   t_real * __restrict__ l_hvNew = m_hv[m_step];
-
-
   const t_real * __restrict__ l_bath = m_bathymetry;
 
-  // const auto solver = //(m_solverId == tsunami_lab::solvers::ROE) ? tsunami_lab::solvers::Roe::netUpdates : tsunami_lab::solvers::Fwave::netUpdates; // Roe solver netupdates needs dummy input 
-  //               tsunami_lab::solvers::Fwave::netUpdates;
-                
   #pragma omp parallel
   {
-    // init new cell quantities
-
     const int tid = omp_get_thread_num();
     const int num_threads = omp_get_num_threads();
 
-    const t_idx rows_per_thread = (m_yCells + 2 + num_threads - 1) / num_threads;
-    const t_idx row_start =  tid * rows_per_thread;
-    const t_idx row_end = std::min<t_idx>(row_start + rows_per_thread, m_yCells + 2);
+    // 1. Zuweisung der Zeilenbereiche (exakte Partitionierung)
+    // Wir teilen das Gitter in horizontale Streifen
+    const t_idx rows_total = m_yCells + 2;
+    const t_idx rows_per_thread = (rows_total + num_threads - 1) / num_threads;
+    const t_idx row_start = std::min<t_idx>(tid * rows_per_thread, rows_total);
+    const t_idx row_end   = std::min<t_idx>(row_start + rows_per_thread, rows_total);
 
-    const t_idx idx_start = row_start * l_stride;
-    const t_idx idx_end = row_end * l_stride;
-
-    
-    for (t_idx i = idx_start; i < idx_end; i++) {
-      l_hNew[i] = l_hOld[i];
-      l_huNew[i] = l_huOld[i];
-      l_hvNew[i] = l_hvOld[i];
+    // Initialisierung des neuen Zeitschritts (nur den eigenen Bereich)
+    for (t_idx i = row_start * l_stride; i < row_end * l_stride; i++) {
+        l_hNew[i]  = l_hOld[i];
+        l_huNew[i] = l_huOld[i];
+        l_hvNew[i] = l_hvOld[i];
     }
-
     #pragma omp barrier
 
-    const t_idx x_sweep_start = std::max<t_idx>(1, row_start);
-    const t_idx x_sweep_end = std::min<t_idx>(m_yCells + 1, row_end);
+    // 2. X-SWEEP: Compute Fluxe & Apply
+    // Hier können wir sicher arbeiten, da jeder Thread an seinen eigenen Zeilen schreibt
+    // X-Sweep beeinflusst l_hNew[x] und l_hNew[x+1]. 
+    // Solange Threads keine Zeilen teilen, ist das sicher.
+    for (t_idx l_yed = row_start; l_yed < row_end; l_yed++) {
+        if (l_yed == 0 || l_yed > m_yCells) continue; // Ghost Rows überspringen
 
-    
-    // X
-    for (t_idx l_yed = x_sweep_start; l_yed < x_sweep_end; l_yed++){
-      #pragma omp simd
-      for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
-        // determine left and right cell-id
-        const t_idx l_ceL = l_xed + l_stride * l_yed;
-        const t_idx l_ceR = l_xed + 1 + l_stride * l_yed;
+        for (t_idx l_xed = 0; l_xed < m_xCells + 1; l_xed++) {
+            const t_idx l_ceL = l_xed + l_stride * l_yed;
+            const t_idx l_ceR = l_xed + 1 + l_stride * l_yed;
 
-        // extract cell data
-        const t_real l_hL = l_hOld[l_ceL];
-        const t_real l_hR = l_hOld[l_ceR];
+            t_real l_netL[2] = {0,0};
+            t_real l_netR[2] = {0,0};
 
-        if (l_hL <= 0 && l_hR <= 0) continue; // langsamer wenn man das weglässt, trotz SIMD
+            // F-Wave Solver Aufruf
+            tsunami_lab::solvers::Fwave::netUpdates(
+                l_hOld[l_ceL], l_hOld[l_ceR],
+                l_huOld[l_ceL], l_huOld[l_ceR],
+                l_bath[l_ceL], l_bath[l_ceR],
+                l_netL, l_netR
+            );
 
-        const t_real l_huL = l_huOld[l_ceL];
-        const t_real l_bL = l_bath[l_ceL];
-        const t_real l_huR = l_huOld[l_ceR];
-        const t_real l_bR = l_bath[l_ceR];
-        
-        // compute net-updates
-        
-        // check for dry cells
-        const bool l_isDryL = (l_hL <= 0);
-        const bool l_isDryR = (l_hR <= 0);
-        
-
-
-        const t_real l_hL_mod = l_isDryL ? l_hR : l_hL;
-        const t_real l_huL_mod = l_isDryL ? -l_huR : l_huL;
-        const t_real l_bL_mod = l_isDryL ? l_bR : l_bL;
-        
-        const t_real l_hR_mod = l_isDryR ? l_hL : l_hR;
-        const t_real l_huR_mod = l_isDryR ? -l_huL : l_huR;
-        const t_real l_bR_mod = l_isDryR ? l_bL : l_bR;
-        
-        t_real l_netUpdatesX[2][2];
-        // select fwave solver (for now, because of inlining ) 
-        tsunami_lab::solvers::Fwave::netUpdates(
-                                    l_hL_mod,
-                                    l_hR_mod,
-                                    l_huL_mod,
-                                    l_huR_mod,
-                                    l_bL_mod,
-                                    l_bR_mod,
-                                    l_netUpdatesX[0],
-                                    l_netUpdatesX[1] );
-
-                                    
-        // update the cells' quantities
-        const t_real l_hNewL_next = l_hNew[l_ceL] - i_scaling * l_netUpdatesX[0][0];
-        const t_real l_huNewL_next = l_huNew[l_ceL] - i_scaling * l_netUpdatesX[0][1];
-
-        const t_real l_hNewR_next = l_hNew[l_ceR] - i_scaling * l_netUpdatesX[1][0];
-        const t_real l_huNewR_next = l_huNew[l_ceR] - i_scaling * l_netUpdatesX[1][1];
-        
-
-        const bool l_clampL = (l_hNewL_next <= 1e-6f);
-        const bool l_clampR = (l_hNewR_next <= 1e-6f);
-
-        l_hNew[l_ceL] = l_isDryL ? l_hNew[l_ceL] : (l_clampL ? 1e-6f : l_hNewL_next);
-        l_huNew[l_ceL] = l_isDryL ? l_huNew[l_ceL] : (l_clampL ? 0.0f : l_huNewL_next);
-
-        l_hNew[l_ceR] = l_isDryR ? l_hNew[l_ceR] : (l_clampR ? 1e-6f : l_hNewR_next);
-        l_huNew[l_ceR] = l_isDryR ? l_huNew[l_ceR] : (l_clampR ? 0.0f : l_huNewR_next);
-      }
-    }
-
-    
-    #pragma omp barrier
-
-    // manuelle verteilung
-    const t_idx y_edge_start = std::max<t_idx>(0, row_start);
-    const t_idx y_edge_end = std::min<t_idx>(m_yCells + 1, row_end);
-    
-
-    // Y
-    if (y_edge_end > y_edge_start) {
-      for( t_idx l_yed = y_edge_start + 1; l_yed < y_edge_end; l_yed++ ) {
-        #pragma omp simd
-        for (t_idx l_xed = 0; l_xed < m_xCells + 1; l_xed++){
-          // determine left and right cell-id
-  
-          const t_idx l_ceU = l_xed + l_stride * l_yed;
-          const t_idx l_ceB = l_xed + l_stride * (l_yed + 1);
-          // extract cell data
-          const t_real l_hU = l_hOld[l_ceU];
-          const t_real l_hB = l_hOld[l_ceB];
-          
-          if (l_hU <= 0 && l_hB <= 0) continue; // langsamer wenn man das weglässt, trotz SIMD
-          
-          const t_real l_hvU = l_hvOld[l_ceU];
-          const t_real l_hvB = l_hvOld[l_ceB];
-          const t_real l_bU = l_bath[l_ceU];
-          const t_real l_bB = l_bath[l_ceB];
-          
-          // compute net-updates
-          t_real l_netUpdatesY[2][2];
-          
-          // check for dry cells
-  
-          const bool l_isDryL = (l_hU <= 0);
-          const bool l_isDryR = (l_hB <= 0);
-  
-          const t_real l_hU_mod = l_isDryL ? l_hB : l_hU;
-          const t_real l_hvU_mod = l_isDryL ? -l_hvB : l_hvU;
-          const t_real l_bU_mod = l_isDryL ? l_bB : l_bU;
-          
-          const t_real l_hB_mod = l_isDryR ? l_hU : l_hB;
-          const t_real l_hvB_mod = l_isDryR ? -l_hvU : l_hvB;
-          const t_real l_bB_mod = l_isDryR ? l_bU : l_bB;
-  
-  
-          // bool l_dryU = false, l_dryB = false;
-  
-          // if (l_hU <= 0 && l_hB <= 0) { // both cells dry
-          //   // skip evaluation
-          //   continue;
-          // }
-          // else if (l_hU <= 0){               // left cell dry
-          //   // set reflecting boundary conditions left
-          //   l_dryU = true;
-          //   l_hU = l_hB;
-          //   l_hvU = -l_hvB;
-          //   l_bU  = l_bB;
-  
-          // }
-          // else if (l_hB <= 0){      // right cell dry
-          //   // set reflecting boundary conditions right
-          //   l_dryB = true;
-          //   l_hB = l_hU;
-          //   l_hvB = -l_hvU;
-          //   l_bB  = l_bU;
-          // }
-          // select Fwave solver for now
-
-          tsunami_lab::solvers::Fwave::netUpdates(                     
-                                      l_hU_mod,
-                                      l_hB_mod,
-                                      l_hvU_mod,
-                                      l_hvB_mod,
-                                      l_bU_mod,
-                                      l_bB_mod,
-                                      l_netUpdatesY[0],
-                                      l_netUpdatesY[1] );
-            
-  
-  
-  
-          // update the cells' quantities
-          const t_real l_hNewU_next = l_hNew[l_ceU] - i_scaling * l_netUpdatesY[0][0];
-          const t_real l_hvNewU_next = l_hvNew[l_ceU] - i_scaling * l_netUpdatesY[0][1];
-  
-          const t_real l_hNewB_next = l_hNew[l_ceB] - i_scaling * l_netUpdatesY[1][0];
-          const t_real l_hvNewB_next = l_hvNew[l_ceB] - i_scaling * l_netUpdatesY[1][1];
-          
-  
-          const bool l_clampU = (l_hNewU_next <= 1e-6f);
-          const bool l_clampB = (l_hNewB_next <= 1e-6f);
-  
-          l_hNew[l_ceU] = l_isDryL ? l_hNew[l_ceU] : (l_clampU ? 1e-6f : l_hNewU_next);
-          l_hvNew[l_ceU] = l_isDryL ? l_hvNew[l_ceU] : (l_clampU ? 0.0f : l_hvNewU_next);
-  
-          l_hNew[l_ceB] = l_isDryR ? l_hNew[l_ceB] : (l_clampB ? 1e-6f : l_hNewB_next);
-          l_hvNew[l_ceB] = l_isDryR ? l_hvNew[l_ceB] : (l_clampB ? 0.0f : l_hvNewB_next);
-  
-  
-          // // update the cells' quantities
-          // if (!l_dryU){
-          //   l_hNew[l_ceU]  -= i_scaling * l_netUpdatesY[0][0];
-          //   if (l_hNew[l_ceU] <= 1e-6f ){
-          //     l_hNew[l_ceU] = 1e-6f;
-          //     l_hvNew[l_ceU] = 0;
-          //   } else {
-          //     l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
-          //   }
-          // }
-          // if (!l_dryB){
-          //   l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
-          //   if (l_hNew[l_ceB] <= 1e-6f ){
-          //     l_hNew[l_ceB] = 1e-6f;
-          //     l_hvNew[l_ceB] = 0;
-          //   } else {
-          //     l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
-          //   }
-          // }
+            // Update direkt (sicher, da Threads an verschiedenen Zeilen arbeiten)
+            l_hNew[l_ceL]  -= i_scaling * l_netL[0];
+            l_huNew[l_ceL] -= i_scaling * l_netL[1];
+            l_hNew[l_ceR]  -= i_scaling * l_netR[0];
+            l_huNew[l_ceR] -= i_scaling * l_netR[1];
         }
-      }
     }
+    #pragma omp barrier
 
-    #pragma omp barrier    
-    if (y_edge_end > y_edge_start) {
-      t_idx l_yed = y_edge_start;
-      #pragma omp simd
-      for (t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++){
-        const t_idx l_ceU = l_xed + l_stride * l_yed;
-        const t_idx l_ceB = l_xed + l_stride * (l_yed + 1);
+    // 3. Y-SWEEP (Der gefährliche Teil)
+    // Wir nutzen hier explizit ATOMIC, da Y-Sweep-Fluxe Zell-Grenzen zwischen Threads überschreiten können.
+    // Das ist die einzige mathematisch wasserdichte Lösung für 2D-Gitter-Updates.
+    for (t_idx l_yed = row_start; l_yed < row_end; l_yed++) {
+        if (l_yed >= m_yCells + 1) continue; // Boundary
 
-        const t_real l_hU = l_hOld[l_ceU];
-        const t_real l_hB = l_hOld[l_ceB];
-        
-        if (l_hU <= 0 && l_hB <= 0) continue; // langsamer wenn man das weglässt, trotz SIMD
-        
-        const t_real l_hvU = l_hvOld[l_ceU];
-        const t_real l_hvB = l_hvOld[l_ceB];
-        const t_real l_bU = l_bath[l_ceU];
-        const t_real l_bB = l_bath[l_ceB];
-        
-        const bool l_isDryL = (l_hU <= 0);
-        const bool l_isDryR = (l_hB <= 0);
+        for (t_idx l_xed = 1; l_xed < m_xCells + 1; l_xed++) {
+            const t_idx l_ceU = l_xed + l_stride * l_yed;
+            const t_idx l_ceB = l_xed + l_stride * (l_yed + 1);
 
-        const t_real l_hU_mod = l_isDryL ? l_hB : l_hU;
-        const t_real l_hvU_mod = l_isDryL ? -l_hvB : l_hvU;
-        const t_real l_bU_mod = l_isDryL ? l_bB : l_bU;
-        
-        const t_real l_hB_mod = l_isDryR ? l_hU : l_hB;
-        const t_real l_hvB_mod = l_isDryR ? -l_hvU : l_hvB;
-        const t_real l_bB_mod = l_isDryR ? l_bU : l_bB;
+            t_real l_netU[2] = {0,0};
+            t_real l_netB[2] = {0,0};
 
-        t_real l_netUpdatesY[2][2];
-        tsunami_lab::solvers::Fwave::netUpdates(                     
-                                    l_hU_mod,
-                                    l_hB_mod,
-                                    l_hvU_mod, 
-                                    l_hvB_mod,
-                                    l_bU_mod, 
-                                    l_bB_mod,
-                                    l_netUpdatesY[0], 
-                                    l_netUpdatesY[1] );
-          
-        const t_real l_hNewU_next = l_hNew[l_ceU] - i_scaling * l_netUpdatesY[0][0];
-        const t_real l_hvNewU_next = l_hvNew[l_ceU] - i_scaling * l_netUpdatesY[0][1];
+            tsunami_lab::solvers::Fwave::netUpdates(
+                l_hOld[l_ceU], l_hOld[l_ceB],
+                l_hvOld[l_ceU], l_hvOld[l_ceB],
+                l_bath[l_ceU], l_bath[l_ceB],
+                l_netU, l_netB
+            );
 
-        const t_real l_hNewB_next = l_hNew[l_ceB] - i_scaling * l_netUpdatesY[1][0];
-        const t_real l_hvNewB_next = l_hvNew[l_ceB] - i_scaling * l_netUpdatesY[1][1];
-
-        const bool l_clampU = (l_hNewU_next <= 1e-6f);
-        const bool l_clampB = (l_hNewB_next <= 1e-6f);
-
-        l_hNew[l_ceU] = l_isDryL ? l_hNew[l_ceU] : (l_clampU ? 1e-6f : l_hNewU_next);
-        l_hvNew[l_ceU] = l_isDryL ? l_hvNew[l_ceU] : (l_clampU ? 0.0f : l_hvNewU_next);
-
-        l_hNew[l_ceB] = l_isDryR ? l_hNew[l_ceB] : (l_clampB ? 1e-6f : l_hNewB_next);
-        l_hvNew[l_ceB] = l_isDryR ? l_hvNew[l_ceB] : (l_clampB ? 0.0f : l_hvNewB_next);
-      }
+            // ATOMIC ist hier zwingend, um Race Conditions bei den Zeilengrenzen zu verhindern
+            #pragma omp atomic
+            l_hNew[l_ceU] -= i_scaling * l_netU[0];
+            #pragma omp atomic
+            l_hvNew[l_ceU] -= i_scaling * l_netU[1];
+            
+            #pragma omp atomic
+            l_hNew[l_ceB] -= i_scaling * l_netB[0];
+            #pragma omp atomic
+            l_hvNew[l_ceB] -= i_scaling * l_netB[1];
+        }
     }
   }
 }
