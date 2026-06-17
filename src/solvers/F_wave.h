@@ -34,6 +34,7 @@ class tsunami_lab::solvers::Fwave {
      * @param o_waveSpeedL will be set to the speed of the wave propagating to the left.
      * @param o_waveSpeedR will be set to the speed of the wave propagating to the right.
      **/
+    __attribute__((always_inline))
     inline static void waveSpeeds( t_real   i_hL,
                             t_real   i_hR,
                             t_real   i_uL,
@@ -71,6 +72,7 @@ class tsunami_lab::solvers::Fwave {
      * @param o_strengthL will be set to the strength of the wave propagating to the left.
      * @param o_strengthR will be set to the strength of the wave propagating to the right.
      **/
+    __attribute__((always_inline))
     inline static void waveStrengths( t_real   i_hL,
                                t_real   i_hR,
                                t_real   i_uL,
@@ -122,6 +124,7 @@ class tsunami_lab::solvers::Fwave {
      * @param o_netUpdateL will be set to the net-updates for the left side; 0: height, 1: momentum.
      * @param o_netUpdateR will be set to the net-updates for the right side; 0: height, 1: momentum.
      **/
+    __attribute__((always_inline))
     inline static void netUpdates( t_real i_hL,
                             t_real i_hR,
                             t_real i_huL,

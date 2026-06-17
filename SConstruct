@@ -61,7 +61,8 @@ else:
                             '-ffast-math',
                             '-march=native',
                             '-flto',
-                            '-g'
+                            '-g',
+                            '-fopt-info-vec-missed',
                             ] )
     env.Append( LINKFLAGS = ['-flto'])
 
