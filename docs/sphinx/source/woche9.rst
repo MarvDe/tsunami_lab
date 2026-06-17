@@ -285,3 +285,4 @@ mit ``OMP_NUM_THREADS=48`` ``OMP_PLACES=cores`` ``OMP_PROC_BIND=close`` ausgefü
 
 Ergebnis:
 
+reine rechenzeit für die updates: 499.998s
