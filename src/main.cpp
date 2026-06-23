@@ -17,7 +17,6 @@
 #include "setups/ArtificialTsunami2d.h"
 #include "setups/TsunamiEvent2d.h"
 #include "setups/CheckPoint.h"
-#include "setups/Wetting1d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include "io/Stations.h"
@@ -177,7 +176,6 @@ int main( int   i_argc,
   else if (l_setupName.compare("artificialTsunami") == 0) l_setupId = tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D;
   else if (l_setupName.compare("tsunamiEvent2d") == 0) l_setupId = tsunami_lab::setups::TSUNAMI_EVENT_2D;
   else if (l_setupName.compare("checkPoint") == 0) l_setupId = tsunami_lab::setups::CHECK_POINT;
-  else if (l_setupName.compare("wetting") == 0) l_setupId = tsunami_lab::setups::WETTING_1D;
   else l_setupName = "damBreak";
 
   if (l_formatName.compare("nc") == 0) l_formatId = tsunami_lab::io::NC;
@@ -240,11 +238,6 @@ int main( int   i_argc,
     l_setup = new tsunami_lab::setups::SupercriticalFlow1d();
     l_dxy = 0.1;
     l_nx /=l_dxy;
-  }
-  else if(l_setupId == tsunami_lab::setups::WETTING_1D){
-    l_setup = new tsunami_lab::setups::Wetting1d();
-    l_nx = 20;
-    l_dxy = 1;
   }
   else if(l_setupId == tsunami_lab::setups::DAM_BREAK_2D){
     constexpr int l_cellsX = 100;
@@ -333,9 +326,9 @@ int main( int   i_argc,
     std::cout << "dxy: " << l_dxy << std::endl;
   }
   else{
-    l_setup = new tsunami_lab::setups::DamBreak1d( 0.0585752,
-                                                   0.0285787,
-                                                 60 );
+    l_setup = new tsunami_lab::setups::DamBreak1d( 0.2,
+                                                   0.1,
+                                                 2 );
   }
   
   // construct solver
@@ -490,7 +483,7 @@ int main( int   i_argc,
   double l_timeMeasure = 0;
 
   while( l_simTime < l_endTime ){
-    if( l_timeStep % 25 == 0 ) {
+    if( l_timeStep % 1 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
       if (l_formatId == tsunami_lab::io::CSV){

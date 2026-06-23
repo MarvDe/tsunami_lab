@@ -70,8 +70,8 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
                                                 t_real o_netUpdateL[2],
                                                 t_real o_netUpdateR[2]){
     // calculate particle speed
-    t_real l_uL = (i_hL > 0) ? i_huL / i_hL : t_real(0);
-    t_real l_uR = (i_hR > 0) ? i_huR / i_hR : t_real(0);
+    t_real l_uL = (i_hL > 1e-12) ? i_huL / i_hL : t_real(0);
+    t_real l_uR = (i_hR > 1e-12) ? i_huR / i_hR : t_real(0);
 
     // compute wave speeds
     t_real l_sL;

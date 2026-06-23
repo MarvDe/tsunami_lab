@@ -5,3 +5,4 @@ config.log
 solution.nc
 large_data/
 output/
+solution_*.csv

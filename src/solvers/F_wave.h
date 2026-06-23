@@ -20,6 +20,7 @@ class tsunami_lab::solvers::Fwave {
     //! square root of gravity
     static t_real constexpr m_gSqrt = 3.131557121;
     static t_real constexpr m_g = 9.80665;
+    static t_real constexpr m_delta = 0.1;
 
     /**
      * Computes the wave speeds.

@@ -173,12 +173,12 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       l_netUpdates[0][1] += l_sourceL;
       l_netUpdates[1][1] += l_sourceR;
 
-      if (l_ed == 50){
-        std::cout << "hL " << l_hL << ";  hR " << l_hR << std::endl;
-        std::cout << "hL2 " << l_hL2 << "; hR2 " << l_hR2 << std::endl;
-        std::cout << "netUpLeft " << l_netUpdates[0][0] << "; " << l_netUpdates[0][1] << std::endl;
-        std::cout << "netUpRight " << l_netUpdates[1][0] << "; " << l_netUpdates[1][1] << std::endl;  
-      }
+      // if (l_ed == 50){
+      //   std::cout << "hL " << l_hL << ";  hR " << l_hR << std::endl;
+      //   std::cout << "hL2 " << l_hL2 << "; hR2 " << l_hR2 << std::endl;
+      //   std::cout << "netUpLeft " << l_netUpdates[0][0] << "; " << l_netUpdates[0][1] << std::endl;
+      //   std::cout << "netUpRight " << l_netUpdates[1][0] << "; " << l_netUpdates[1][1] << std::endl;  
+      // }
     }
 
 
