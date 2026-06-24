@@ -22,6 +22,8 @@ nicht direkt mit Bathymetry umgehen, doch durch die vorgenommene Erweiterung sol
 Jetzt haben wir das Trocken/Nass Dammbruch Setup und hydrostatische Rekonstruktion verwendet um folgende 
 Simulation zu erzeugen:
 
+.. image:: ../images/dambreak_fwave_vanilla.gif
+
 
 Wie man sieht fließt nur ein Teil des Wassers auf die trockene Fläche und es entsteht ein Bruch beim Übergange.
 Leider bewegt sich die Simulation jetzt nicht mehr weiter und der Wasserstand gleicht sich nicht aus, so wie 
@@ -58,7 +60,7 @@ Dieser Ansatz ist besser geeignet für stark kinematische Zustände, kann aber a
 langsame Wellen nicht so präzise darstellen wie der Fwave Solver. 
 Bei der Anwendung des HLLE Solvers auf unser Trocken/Nass Dammbruch Setup kam folgendes raus: 
 
-.. HLLE gif hier einfügen
+.. image:: ../images/dambreak_hlle_1.gif
 
 Lax-Friedrichs Viskosität 
 -------------------------
@@ -73,6 +75,7 @@ Als wir die Erweiterung des F-wave Solvers mit Lax-Friedrichs Viskosität auf de
 haben erhielten wir folgendes Ergebnis: 
 
 .. Fwave mit fix gif hier einfügen 
+.. image:: ../images/dambreak_fwave_entropie.gif
 
 Manning Reibung
 ---------------
@@ -96,8 +99,13 @@ Somit erhalten wir eine weitere Kontrollschraube in der Simulation.
 Die Manning Reibung schafft es das unphysikalische Verhalten des Fwave Solvers soweit zu stören, 
 dass sich am Ende der Trocken/Nass Dammbruch Simulation das System stabilisiert: 
 
-.. Manning Reibung + Fwave gif hier einfügen 
+.. Manning Reibung + Fwave gif hier einfügen
+.. image:: ../images/dambreak_fwave_nanning.gif
 
+kein Manning:
+
+.. image:: ../images/dambreak_hybrit_1_no_manning.gif
+    
 Der Hybrid
 ----------
 
@@ -112,12 +120,31 @@ kann noch die Manning Reibung angewendet werden.
 Unser Ergebnis ist hier zu sehen: 
 
 .. Hybrid Solver gif hier einfügen
+.. image:: ../images/dambreak_hybrit_1.gif
 
-Zusätzlich haben wir noch das superkritische Setup mit dem neuen Solver simuliert, 
-hier ist die Visualisierung: 
+Zusätzlich haben wir noch weitere Setups mit dem neuen Solver simuliert, 
+hier ist die Visualisierung:
 
-.. Hybrid Solver superkritisch hier einfügen
+reflektion rechts:
+
+.. image:: ../images/dambreak_hybrit_reflecting.gif
 
 
 
+
+supercritical:
+
+.. image:: ../images/supercritical_hybrit.gif
+
+vergleich:
+
+.. image:: ../images/supercritical_flow_real.png
+
+shock-shock:
+
+.. image:: ../images/shockShock_hybrit.gif
+
+shock-shock mit bathymetrie:
+
+.. image:: ../images/shockShock_bath_hybrit.gif
 
