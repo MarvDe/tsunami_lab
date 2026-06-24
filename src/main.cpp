@@ -161,6 +161,7 @@ int main( int   i_argc,
   
   if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
   else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
+  else if (l_solverName.compare("hlle") == 0) l_solverId = tsunami_lab::solvers::HLLE;
   else {
     l_solverName = "fwave_hydrostatic_reconstruction";
     l_solverId = tsunami_lab::solvers::FWAVE_HYDROSTATIC_RECONSTRUCTION;

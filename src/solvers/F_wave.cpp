@@ -18,13 +18,13 @@ void tsunami_lab::solvers::Fwave::waveSpeeds(   t_real   i_hL,
     l_uRoe /= l_hSqrtL + l_hSqrtR;
 
     // also compute speed bounds
-    t_real lambdaL = i_uL - l_hSqrtL * m_gSqrt;
-    t_real lambdaR = i_uR + l_hSqrtR * m_gSqrt;
+    //t_real lambdaL = i_uL - l_hSqrtL * m_gSqrt;
+    //t_real lambdaR = i_uR + l_hSqrtR * m_gSqrt;
 
     // compute wave speeds
     t_real l_ghSqrtRoe = m_gSqrt * std::sqrt(l_hRoe);
-    o_waveSpeedL = std::min(l_uRoe - l_ghSqrtRoe, lambdaL);
-    o_waveSpeedR = std::max(l_uRoe + l_ghSqrtRoe, lambdaR);
+    o_waveSpeedL = l_uRoe - l_ghSqrtRoe; // std::min(l_uRoe - l_ghSqrtRoe, lambdaL);
+    o_waveSpeedR = l_uRoe + l_ghSqrtRoe; // std::max(l_uRoe + l_ghSqrtRoe, lambdaR);
 }
 
 void tsunami_lab::solvers::Fwave::waveStrengths(t_real   i_hL, 
@@ -87,26 +87,26 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
     t_real l_sL;
     t_real l_sR;
 
-    if (i_hL > 1e-12 && i_hR > 1e-12){
+    //if (i_hL > 1e-12 && i_hR > 1e-12){
         waveSpeeds( i_hL,
                 i_hR,
                 l_uL,
                 l_uR,
                 l_sL,
                 l_sR);
-    }
-    else if (i_hR <= 1e-12){ // Einfeldt speeds
-        // right cell dry: use left-state characteristics only
-        t_real l_ghL = m_gSqrt * std::sqrt(i_hL);
-        l_sL = l_uL - l_ghL;
-        l_sR = l_uL + 2.0 * l_ghL;  // <-- this is always > 0, correct
-    }
-    else{
-        // left cell dry: use right-state characteristics only
-        t_real l_ghR = m_gSqrt * std::sqrt(i_hR);
-        l_sL = l_uR - 2.0 * l_ghR;
-        l_sR = l_uR + l_ghR;  
-    }
+    // }
+    // else if (i_hR <= 1e-12){ // Einfeldt speeds
+    //     // right cell dry: use left-state characteristics only
+    //     t_real l_ghL = m_gSqrt * std::sqrt(i_hL);
+    //     l_sL = l_uL - l_ghL;
+    //     l_sR = l_uL + 2.0 * l_ghL;  // <-- this is always > 0, correct
+    // }
+    // else{
+    //     // left cell dry: use right-state characteristics only
+    //     t_real l_ghR = m_gSqrt * std::sqrt(i_hR);
+    //     l_sL = l_uR - 2.0 * l_ghR;
+    //     l_sR = l_uR + l_ghR;  
+    // }
   
     
     //compute wave strengths
