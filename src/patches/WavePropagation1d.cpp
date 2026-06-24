@@ -198,6 +198,9 @@ void tsunami_lab::patches::WavePropagation1d::setGhostOutflow() {
   t_real * l_h = m_h[m_step];
   t_real * l_hu = m_hu[m_step];
 
+  m_ghostL = 0;
+  m_ghostR = 0;
+
   // set left boundary
   if (m_ghostL == 1){
     l_h[0] = l_h[1];

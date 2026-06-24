@@ -328,7 +328,7 @@ int main( int   i_argc,
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 0.2,
                                                    0.1,
-                                                 2 );
+                                                 10 );
   }
   
   // construct solver
@@ -441,7 +441,7 @@ int main( int   i_argc,
   tsunami_lab::t_real l_ySpeedMax = std::sqrt( 9.81f * l_hMax ) + l_vMaxAbs;
 
   // derive constant time step; changes at simulation time are ignored
-  tsunami_lab::t_real l_dt = 0.5 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
+  tsunami_lab::t_real l_dt = 0.1 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
   std::cout << "delta time: " << l_dt << std::endl; 
 
   // derive scaling for a time step
@@ -486,6 +486,11 @@ int main( int   i_argc,
     if( l_timeStep % 1 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
+      float maxHu = 0;
+      for (tsunami_lab::t_idx i=1; i<=l_nx * l_ny; ++i){
+        maxHu = std::max(maxHu,std::abs(l_waveProp->getMomentumX()[i]));
+      }
+      printf("maxHu = %f\n", maxHu);
       if (l_formatId == tsunami_lab::io::CSV){
         std::string l_path = "solution_" + std::to_string(l_nOut) + ".csv";
         std::cout << "  writing wave field to " << l_path << std::endl;

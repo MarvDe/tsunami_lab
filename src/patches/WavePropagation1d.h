@@ -36,8 +36,8 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     t_real * m_bathymetry = nullptr;
 
     // ! ghost cell updating conditions (0 = outflow, 1 = reflecting)
-    t_idx m_ghostL = 0; 
-    t_idx m_ghostR = 0;
+    t_idx m_ghostL = 1; 
+    t_idx m_ghostR = 1;
 
     void HydrostaticReconstruction(    
       t_real i_hL,  t_real i_hR,

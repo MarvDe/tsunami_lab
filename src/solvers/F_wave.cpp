@@ -8,19 +8,32 @@ void tsunami_lab::solvers::Fwave::waveSpeeds(   t_real   i_hL,
                                                 t_real   i_uR, 
                                                 t_real & o_waveSpeedL, 
                                                 t_real & o_waveSpeedR ){
-    //precompute the sqare root ops
+    t_real l_hL_safe = std::max(i_hL, t_real(0));
+    t_real l_hR_safe = std::max(i_hR, t_real(0));
+
+
+    t_real l_cL = (i_hL > 0) ? m_gSqrt * std::sqrt(l_hL_safe) : t_real(0);
+    t_real l_cR = (i_hR > 0) ? m_gSqrt * std::sqrt(l_hR_safe) : t_real(0);
+
+    if (i_hR <= 0){
+        o_waveSpeedL = i_uL - l_cL;
+        o_waveSpeedR = i_uL + 2 * l_cL;
+        return;
+    }
+    if (i_hL <= 0) {
+        o_waveSpeedL = i_uR - 2 * l_cR;
+        o_waveSpeedR = i_uR + l_cR;
+        return;
+    }
+
     t_real l_hSqrtL = std::sqrt(i_hL);
     t_real l_hSqrtR = std::sqrt(i_hR);
-    
-    // compute the Roe averages
-    t_real l_hRoe = 0.5f * (i_hL + i_hR);
-    t_real l_uRoe = i_uL * l_hSqrtL + i_uR * l_hSqrtR;
-    l_uRoe /= l_hSqrtL + l_hSqrtR;
+    t_real l_hRoe   = 0.5f * (i_hL + i_hR);
+    t_real l_uRoe   = (i_uL * l_hSqrtL + i_uR * l_hSqrtR) / (l_hSqrtL + l_hSqrtR);
+    t_real l_cRoe   = m_gSqrt * std::sqrt(l_hRoe);
 
-    // compute wave speeds
-    t_real l_ghSqrtRoe = m_gSqrt * std::sqrt(l_hRoe);
-    o_waveSpeedL = l_uRoe - l_ghSqrtRoe;
-    o_waveSpeedR = l_uRoe + l_ghSqrtRoe;
+    o_waveSpeedL = std::min(l_uRoe - l_cRoe, i_uL - l_cL);
+    o_waveSpeedR = std::max(l_uRoe + l_cRoe, i_uR + l_cR);
 }
 
 void tsunami_lab::solvers::Fwave::waveStrengths(t_real   i_hL, 
@@ -69,6 +82,7 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
                                                 t_real i_bR,
                                                 t_real o_netUpdateL[2],
                                                 t_real o_netUpdateR[2]){
+    
     // calculate particle speed
     t_real l_uL = (i_hL > 1e-12) ? i_huL / i_hL : t_real(0);
     t_real l_uR = (i_hR > 1e-12) ? i_huR / i_hR : t_real(0);
@@ -134,5 +148,54 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
     else if (l_sR < 0){
         o_netUpdateL[0] += l_zR[0];
         o_netUpdateL[1] += l_zR[1];
+    }
+
+    // // --- REFINED ENTROPY FIX (KINETIC SCALING) ---
+    // t_real l_cL = (i_hL > 1e-6) ? m_gSqrt * std::sqrt(i_hL) : t_real(0);
+    // t_real l_cR = (i_hR > 1e-6) ? m_gSqrt * std::sqrt(i_hR) : t_real(0);
+    
+    // // Calculate the jump in characteristic speeds
+    // t_real l_lambdaL1 = l_uL - l_cL;
+    // t_real l_lambdaR1 = l_uR - l_cR;
+    
+    // // Check for sonic point transition (transonic rarefaction)
+    // if (l_lambdaL1 < 0 && l_lambdaR1 > 0) {
+    //     // Calculate the dissipative strength required to bridge the gap
+    //     // This is a local adaptation of the Harten-Hyman idea for F-Waves
+    //     t_real l_d = 0.5 * (l_lambdaR1 - l_lambdaL1);
+        
+    //     // Apply dissipation only to the component of the wave violating entropy
+    //     // We modulate the flux by the local speed deficit
+    //     o_netUpdateL[0] -= l_d * (i_hL - i_hR); 
+    //     o_netUpdateL[1] -= l_d * (i_huL - i_huR);
+        
+    //     o_netUpdateR[0] += l_d * (i_hL - i_hR);
+    //     o_netUpdateR[1] += l_d * (i_huL - i_huR);
+    // }
+
+
+    // --- ENTROPY FIX ---
+    // Break stationary expansion shocks where Delta f = 0 but Delta q != 0
+    t_real l_cL = (i_hL > 0) ? m_gSqrt * std::sqrt(i_hL) : t_real(0);
+    t_real l_cR = (i_hR > 0) ? m_gSqrt * std::sqrt(i_hR) : t_real(0);
+    
+    // Check if either characteristic family represents an expansion fan crossing zero
+    bool l_fan1 = (l_uL - l_cL < 0) && (l_uR - l_cR > 0);
+    bool l_fan2 = (l_uL + l_cL < 0) && (l_uR + l_cR > 0);
+
+    if (l_fan1 || l_fan2) {
+        // Compute the maximum wave speed across the interface
+        t_real l_sMax = std::max(std::abs(l_uL - l_cL), std::abs(l_uR + l_cR));
+        
+        // Calculate a Local Lax-Friedrichs style diffusion term based on the state jump
+        t_real l_diff0 = t_real(0.5) * l_sMax * (i_hR - i_hL);
+        t_real l_diff1 = t_real(0.5) * l_sMax * (i_huR - i_huL);
+        
+        // Apply diffusion symmetrically to the net updates
+        o_netUpdateL[0] -= l_diff0;
+        o_netUpdateL[1] -= l_diff1;
+        
+        o_netUpdateR[0] += l_diff0;
+        o_netUpdateR[1] += l_diff1;
     }
 }
