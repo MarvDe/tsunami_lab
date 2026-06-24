@@ -327,8 +327,8 @@ int main( int   i_argc,
   }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 0.2,
-                                                   0.1,
-                                                 2 );
+                                                   0.0,
+                                                 l_nx / 2 );
   }
   
   // construct solver
@@ -442,6 +442,7 @@ int main( int   i_argc,
 
   // derive constant time step; changes at simulation time are ignored
   tsunami_lab::t_real l_dt = 0.5 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
+  l_dt = 0.1;
   std::cout << "delta time: " << l_dt << std::endl; 
 
   // derive scaling for a time step
@@ -483,7 +484,7 @@ int main( int   i_argc,
   double l_timeMeasure = 0;
 
   while( l_simTime < l_endTime ){
-    if( l_timeStep % 1 == 0 ) {
+    if( l_timeStep % 25 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
       if (l_formatId == tsunami_lab::io::CSV){
