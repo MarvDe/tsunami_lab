@@ -185,7 +185,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
         t_real l_hRoe   = 0.5f * (l_hL + l_hR);
         t_real l_uRoe   = ((l_huL/l_hL) * l_hSqrtL + (l_huR/l_hR) * l_hSqrtR) / (l_hSqrtL + l_hSqrtR);
     
-        l_isSupercritical = std::abs(l_uRoe) / (std::sqrt(9.80665 * l_hRoe)) > 0.8;
+        l_isSupercritical = std::abs(l_uRoe) / (std::sqrt(9.80665 * l_hRoe)) > 1;
       }
 
       if (l_isSupercritical) {
@@ -251,16 +251,17 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       
   }
 
-  // t_real l_dt = 0.1;
-  // const t_real mann = 0.02;
-  // for (t_idx i = 1; i <= m_nCells; i++) {
-  //     if (l_hNew[i] > 1e-6) {
-  //         t_real vel = l_huNew[i] / l_hNew[i];
-  //         t_real denom = 1.0 + 9.81 * l_dt * mann*mann
-  //                       * std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
-  //         l_huNew[i] /= denom;   // semi-implicit: always stable
-  //     }
-  // }
+  // manning friction
+  t_real l_dt = 0.1;
+  const t_real mann = 0.02;
+  for (t_idx i = 1; i <= m_nCells; i++) {
+      if (l_hNew[i] > 1e-6) {
+          t_real vel = l_huNew[i] / l_hNew[i];
+          t_real denom = 1.0 + 9.81 * l_dt * mann*mann
+                        * std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
+          l_huNew[i] /= denom;   // semi-implicit: always stable
+      }
+  }
 }
 
 void tsunami_lab::patches::WavePropagation1d::setGhostOutflow() {

@@ -208,9 +208,9 @@ int main( int   i_argc,
                                                  5 );
   }
   else if (l_setupId == tsunami_lab::setups::SHOCK_SHOCK){
-    l_setup = new tsunami_lab::setups::ShockShock1d( 10,
-                                                 5,
-                                                 50 );
+    l_setup = new tsunami_lab::setups::ShockShock1d( 30,
+                                                 10,
+                                                 150 );
   }
   else if (l_setupId == tsunami_lab::setups::TSUNAMI_EVENT){
 
@@ -484,7 +484,7 @@ int main( int   i_argc,
   double l_timeMeasure = 0;
 
   while( l_simTime < l_endTime ){
-    if( l_timeStep % 10 == 0 ) {
+    if( l_timeStep % 100 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
       float maxHu = 0;

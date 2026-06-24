@@ -6,6 +6,7 @@
 #define TSUNAMI_LAB_SETUPS_SHOCK_SHOCK_H
 
 #include "Setup.h"
+#include <cmath>
 
 namespace tsunami_lab {
     namespace setups {
@@ -66,6 +67,11 @@ public:
      **/
     t_real getBathymetry( t_real,
                           t_real ) const {
+        // float A = 10.0;
+        // float mu = 150.0;
+        // float sigma = 50.0;
+
+        // return A * std::exp(-((x - mu) * (x - mu)) / (2 * sigma * sigma));
         return 0;
     }
 };

@@ -203,26 +203,26 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
 
     // --- ENTROPY FIX ---
     // Break stationary expansion shocks where Delta f = 0 but Delta q != 0
-    // t_real l_cL = (i_hL > 0) ? m_gSqrt * std::sqrt(i_hL) : t_real(0);
-    // t_real l_cR = (i_hR > 0) ? m_gSqrt * std::sqrt(i_hR) : t_real(0);
+    t_real l_cL = (i_hL > 0) ? m_gSqrt * std::sqrt(i_hL) : t_real(0);
+    t_real l_cR = (i_hR > 0) ? m_gSqrt * std::sqrt(i_hR) : t_real(0);
     
-    // // Check if either characteristic family represents an expansion fan crossing zero
-    // bool l_fan1 = (l_uL - l_cL < 0) && (l_uR - l_cR > 0);
-    // bool l_fan2 = (l_uL + l_cL < 0) && (l_uR + l_cR > 0);
+    // Check if either characteristic family represents an expansion fan crossing zero
+    bool l_fan1 = (l_uL - l_cL < 0) && (l_uR - l_cR > 0);
+    bool l_fan2 = (l_uL + l_cL < 0) && (l_uR + l_cR > 0);
 
-    // if (l_fan1 || l_fan2) {
-    //     // Compute the maximum wave speed across the interface
-    //     t_real l_sMax = std::max(std::abs(l_uL - l_cL), std::abs(l_uR + l_cR));
+    if (l_fan1 || l_fan2) {
+        // Compute the maximum wave speed across the interface
+        t_real l_sMax = std::max(std::abs(l_uL - l_cL), std::abs(l_uR + l_cR));
         
-    //     // Calculate a Local Lax-Friedrichs style diffusion term based on the state jump
-    //     t_real l_diff0 = t_real(0.5) * l_sMax * (i_hR - i_hL);
-    //     t_real l_diff1 = t_real(0.5) * l_sMax * (i_huR - i_huL);
+        // Calculate a Local Lax-Friedrichs style diffusion term based on the state jump
+        t_real l_diff0 = t_real(0.5) * l_sMax * (i_hR - i_hL);
+        t_real l_diff1 = t_real(0.5) * l_sMax * (i_huR - i_huL);
         
-    //     // Apply diffusion symmetrically to the net updates
-    //     o_netUpdateL[0] -= l_diff0;
-    //     o_netUpdateL[1] -= l_diff1;
+        // Apply diffusion symmetrically to the net updates
+        o_netUpdateL[0] -= l_diff0;
+        o_netUpdateL[1] -= l_diff1;
         
-    //     o_netUpdateR[0] += l_diff0;
-    //     o_netUpdateR[1] += l_diff1;
-    // }
+        o_netUpdateR[0] += l_diff0;
+        o_netUpdateR[1] += l_diff1;
+    }
 }
