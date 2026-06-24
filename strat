@@ -1,0 +1,654 @@
+[4mGIT-MERGE[24m(1)                                                                            Git Manual                                                                           [4mGIT-MERGE[24m(1)
+
+[1mNAME[0m
+     git-merge - Join two or more development histories together
+
+[1mSYNOPSIS[0m
+     [1mgit merge [22m[[1m-n[22m] [[1m--stat[22m] [[1m--compact-summary[22m] [[1m--no-commit[22m] [[1m--squash[22m] [[1m--[22m[[1mno-[22m][1medit[22m]
+             [[1m--no-verify[22m] [[1m-s [4m[22m<strategy>[24m] [[1m-X [4m[22m<strategy-option>[24m] [[1m-S[22m[[4m<keyid>[24m]]
+             [[1m--[22m[[1mno-[22m][1mallow-unrelated-histories[22m]
+             [[1m--[22m[[1mno-[22m][1mrerere-autoupdate[22m] [[1m-m [4m[22m<msg>[24m] [[1m-F [4m[22m<file>[24m]
+             [[1m--into-name [4m[22m<branch>[24m] [[4m<commit>[24m...]
+     [1mgit merge [22m([1m--continue [22m| [1m--abort [22m| [1m--quit[22m)
+
+[1mDESCRIPTION[0m
+     Incorporates  changes from the named commits (since the time their histories diverged from the current branch) into the current branch. This command is used by [1mgit pull [22mto incorpo‐
+     rate changes from another repository and can be used by hand to merge changes from one branch into another.
+
+     Assume the following history exists and the current branch is [1mmaster[22m:
+
+                   A---B---C topic
+                  /
+             D---E---F---G master
+
+     Then [1mgit merge topic [22mwill replay the changes made on the [1mtopic [22mbranch since it diverged from [1mmaster [22m(i.e., [1mE[22m) until its current commit ([1mC[22m) on top of [1mmaster[22m, and record  the  result
+     in a new commit along with the names of the two parent commits and a log message from the user describing the changes. Before the operation, [1mORIG_HEAD [22mis set to the tip of the cur‐
+     rent branch ([1mG[22m).
+
+                   A---B---C topic
+                  /         \
+             D---E---F---G---H master
+
+     A  merge  stops if there’s a conflict that cannot be resolved automatically or if [1m--no-commit [22mwas provided when initiating the merge. At that point you can run [1mgit merge --abort [22mor
+     [1mgit merge --continue[22m.
+
+     [1mgit merge --abort [22mwill abort the merge process and try to reconstruct the pre-merge state. However, if there were uncommitted changes when the  merge  started  (and  especially  if
+     those changes were further modified after the merge was started), [1mgit merge --abort [22mwill in some cases be unable to reconstruct the original (pre-merge) changes. Therefore:
+
+         [1mWarning[0m
+
+         Running [1mgit merge [22mwith non-trivial uncommitted changes is discouraged: while possible, it may leave you in a state that is hard to back out of in the case of a conflict.
+
+[1mOPTIONS[0m
+     [1m--commit[22m, [1m--no-commit[0m
+         Perform the merge and commit the result. This option can be used to override [1m--no-commit[22m.
+
+         With [1m--no-commit [22mperform the merge and stop just before creating a merge commit, to give the user a chance to inspect and further tweak the merge result before committing.
+
+         Note  that fast-forward updates do not create a merge commit and therefore there is no way to stop those merges with [1m--no-commit[22m. Thus, if you want to ensure your branch is not
+         changed or updated by the merge command, use [1m--no-ff [22mwith [1m--no-commit[22m.
+
+     [1m--edit[22m, [1m-e[22m, [1m--no-edit[0m
+         Invoke an editor before committing successful mechanical merge to further edit the auto-generated merge message, so that the  user  can  explain  and  justify  the  merge.  The
+         [1m--no-edit  [22moption  can be used to accept the auto-generated message (this is generally discouraged). The [1m--edit [22m(or [1m-e[22m) option is still useful if you are giving a draft message
+         with the [1m-m [22moption from the command line and want to edit it in the editor.
+
+         Older scripts may depend on the historical behaviour of not allowing the user to edit the merge log message. They will see an editor opened when they run [1mgit merge[22m. To make  it
+         easier to adjust such scripts to the updated behaviour, the environment variable [1mGIT_MERGE_AUTOEDIT [22mcan be set to [1mno [22mat the beginning of them.
+
+     [1m--cleanup=[4m[22m<mode>[0m
+         This  option determines how the merge message will be cleaned up before committing. See [1mgit-commit[22m(1) for more details. In addition, if the [4m<mode>[24m is given a value of [1mscissors[22m,
+         scissors will be appended to [1mMERGE_MSG [22mbefore being passed on to the commit machinery in the case of a merge conflict.
+
+     [1m--ff[22m, [1m--no-ff[22m, [1m--ff-only[0m
+         Specifies how a merge is handled when the merged-in history is already a descendant of the current history.  [1m--ff [22mis the default  unless  merging  an  annotated  (and  possibly
+         signed) tag that is not stored in its natural place in the [1mrefs/tags/ [22mhierarchy, in which case [1m--no-ff [22mis assumed.
+
+         With  [1m--ff[22m, when possible resolve the merge as a fast-forward (only update the branch pointer to match the merged branch; do not create a merge commit). When not possible (when
+         the merged-in history is not a descendant of the current history), create a merge commit.
+
+         With [1m--no-ff[22m, create a merge commit in all cases, even when the merge could instead be resolved as a fast-forward.
+
+         With [1m--ff-only[22m, resolve the merge as a fast-forward when possible. When not possible, refuse to merge and exit with a non-zero status.
+
+     [1m-S[22m[[4m<key-id>[24m], [1m--gpg-sign[22m[[1m=[4m[22m<key-id>[24m], [1m--no-gpg-sign[0m
+         GPG-sign the resulting merge commit. The [4m<key-id>[24m argument is optional and defaults to the committer identity; if specified, it must be stuck to the  option  without  a  space.
+         [1m--no-gpg-sign [22mis useful to countermand both [1mcommit.gpgSign [22mconfiguration variable, and earlier [1m--gpg-sign[22m.
+
+     [1m--log[22m[[1m=[4m[22m<n>[24m], [1m--no-log[0m
+         In addition to branch names, populate the log message with one-line descriptions from at most [4m<n>[24m actual commits that are being merged. See also [1mgit-fmt-merge-msg[22m(1).
+
+         With [1m--no-log [22mdo not list one-line descriptions from the actual commits being merged.
+
+     [1m--signoff[22m, [1m--no-signoff[0m
+         Add  a  [1mSigned-off-by [22mtrailer by the committer at the end of the commit log message. The meaning of a signoff depends on the project to which you’re committing. For example, it
+         may certify that the committer has the rights to submit the work under the project’s license or agrees to some contributor representation, such as a  Developer  Certificate  of
+         Origin.  (See  [34m[1mhttps://developercertificate.org  [0m[1m[22mfor  the one used by the Linux kernel and Git projects.) Consult the documentation or leadership of the project to which you’re
+         contributing to understand how the signoffs are used in that project.
+
+         The [1m--no-signoff [22moption can be used to countermand an earlier [1m--signoff [22moption on the command line.
+
+         Git does not (and will not) have a configuration variable to enable the [1m--signoff [22mcommand line option by default; see the [1mcommit.signoff [22mentry in [1mgitfaq[22m(7) for more details.
+
+     [1m--stat[22m, [1m-n[22m, [1m--no-stat[0m
+         Show a diffstat at the end of the merge. The diffstat is also controlled by the configuration option merge.stat.
+
+         With [1m-n [22mor [1m--no-stat [22mdo not show a diffstat at the end of the merge.
+
+     [1m--compact-summary[0m
+         Show a compact-summary at the end of the merge.
+
+     [1m--squash[22m, [1m--no-squash[0m
+         Produce the working tree and index state as if a real merge happened (except for the merge information),  but  do  not  actually  make  a  commit,  move  the  [1mHEAD[22m,  or  record
+         [1m$GIT_DIR/MERGE_HEAD  [22m(to cause the next [1mgit commit [22mcommand to create a merge commit). This allows you to create a single commit on top of the current branch whose effect is the
+         same as merging another branch (or more in case of an octopus).
+
+         With [1m--no-squash [22mperform the merge and commit the result. This option can be used to override [1m--squash[22m.
+
+         With [1m--squash[22m, [1m--commit [22mis not allowed, and will fail.
+
+     [1m--verify[22m, [1m--no-verify[0m
+         By default, the pre-merge and commit-msg hooks are run. When [1m--no-verify [22mis given, these are bypassed. See also [1mgithooks[22m(5).
+
+     [1m-s [4m[22m<strategy>[24m, [1m--strategy=[4m[22m<strategy>[0m
+         Use the given merge strategy; can be supplied more than once to specify them in the order they should be tried. If there is no [1m-s [22moption, a built-in list of strategies is  used
+         instead ([1mort [22mwhen merging a single head, [1moctopus [22motherwise).
+
+     [1m-X [4m[22m<option>[24m, [1m--strategy-option=[4m[22m<option>[0m
+         Pass merge strategy specific option through to the merge strategy.
+
+     [1m--verify-signatures[22m, [1m--no-verify-signatures[0m
+         Verify  that  the tip commit of the side branch being merged is signed with a valid key, i.e. a key that has a valid uid: in the default trust model, this means the signing key
+         has been signed by a trusted key. If the tip commit of the side branch is not signed with a valid key, the merge is aborted.
+
+     [1m--summary[22m, [1m--no-summary[0m
+         Synonyms to [1m--stat [22mand [1m--no-stat[22m; these are deprecated and will be removed in the future.
+
+     [1m-q[22m, [1m--quiet[0m
+         Operate quietly. Implies [1m--no-progress[22m.
+
+     [1m-v[22m, [1m--verbose[0m
+         Be verbose.
+
+     [1m--progress[22m, [1m--no-progress[0m
+         Turn progress on/off explicitly. If neither is specified, progress is shown if standard error is connected to a terminal.  Note  that  not  all  merge  strategies  may  support
+         progress reporting.
+
+     [1m--autostash[22m, [1m--no-autostash[0m
+         Automatically  create  a  temporary stash entry before the operation begins, record it in the ref [1mMERGE_AUTOSTASH [22mand apply it after the operation ends. This means that you can
+         run the operation on a dirty worktree. However, use with care: the final stash application after a successful merge might result in non-trivial conflicts.
+
+     [1m--allow-unrelated-histories[0m
+         By default, [1mgit merge [22mcommand refuses to merge histories that do not share a common ancestor. This option can be used to override this safety  when  merging  histories  of  two
+         projects that started their lives independently. As that is a very rare occasion, no configuration variable to enable this by default exists or will be added.
+
+     [1m-m [4m[22m<msg>[0m
+         Set the commit message to be used for the merge commit (in case one is created).
+
+         If [1m--log [22mis specified, a shortlog of the commits being merged will be appended to the specified message.
+
+         The [1mgit fmt-merge-msg [22mcommand can be used to give a good default for automated [1mgit merge [22minvocations. The automated message can include the branch description.
+
+     [1m--into-name [4m[22m<branch>[0m
+         Prepare the default merge message as if merging to the branch [4m<branch>[24m, instead of the name of the real branch to which the merge is made.
+
+     [1m-F [4m[22m<file>[24m, [1m--file=[4m[22m<file>[0m
+         Read the commit message to be used for the merge commit (in case one is created).
+
+         If [1m--log [22mis specified, a shortlog of the commits being merged will be appended to the specified message.
+
+     [1m--rerere-autoupdate[22m, [1m--no-rerere-autoupdate[0m
+         After  the  rerere  mechanism reuses a recorded resolution on the current conflict to update the files in the working tree, allow it to also update the index with the result of
+         resolution.  [1m--no-rerere-autoupdate [22mis a good way to double-check what [1mgit-rerere[22m(1) did and catch potential mismerges, before committing the result to the index with  a  sepa‐
+         rate [1mgit-add[22m(1).
+
+     [1m--overwrite-ignore[22m, [1m--no-overwrite-ignore[0m
+         Silently overwrite ignored files from the merge result. This is the default behavior. Use [1m--no-overwrite-ignore [22mto abort.
+
+     [1m--abort[0m
+         Abort the current conflict resolution process, and try to reconstruct the pre-merge state. If an autostash entry is present, apply it to the worktree.
+
+         If  there  were uncommitted worktree changes present when the merge started, [1mgit merge --abort [22mwill in some cases be unable to reconstruct these changes. It is therefore recom‐
+         mended to always commit or stash your changes before running [1mgit merge[22m.
+
+         [1mgit merge --abort [22mis equivalent to [1mgit reset --merge [22mwhen [1mMERGE_HEAD [22mis present unless [1mMERGE_AUTOSTASH [22mis also present in which case [1mgit merge --abort [22mapplies the  stash  entry
+         to the worktree whereas [1mgit reset --merge [22mwill save the stashed changes in the stash list.
+
+     [1m--quit[0m
+         Forget about the current merge in progress. Leave the index and the working tree as-is. If [1mMERGE_AUTOSTASH [22mis present, the stash entry will be saved to the stash list.
+
+     [1m--continue[0m
+         After a [1mgit merge [22mstops due to conflicts you can conclude the merge by running [1mgit merge --continue [22m(see "HOW TO RESOLVE CONFLICTS" section below).
+
+     [4m<commit>[24m...
+         Commits,  usually other branch heads, to merge into our branch. Specifying more than one commit will create a merge with more than two parents (affectionately called an Octopus
+         merge).
+
+         If no commit is given from the command line, merge the remote-tracking branches that the current branch is configured to use as its upstream. See also the configuration section
+         of this manual page.
+
+         When [1mFETCH_HEAD [22m(and no other commit) is specified, the branches recorded in the [1m.git/FETCH_HEAD [22mfile by the previous invocation of [1mgit fetch [22mfor merging are merged to the cur‐
+         rent branch.
+
+[1mPRE-MERGE CHECKS[0m
+     Before applying outside changes, you should get your own work in good shape and committed locally, so it will not be clobbered if there are conflicts. See  also  [1mgit-stash[22m(1).  [1mgit[0m
+     [1mpull [22mand [1mgit merge [22mwill stop without doing anything when local uncommitted changes overlap with files that [1mgit pull[22m/[1mgit merge [22mmay need to update.
+
+     To avoid recording unrelated changes in the merge commit, [1mgit pull [22mand [1mgit merge [22mwill also abort if there are any changes registered in the index relative to the [1mHEAD [22mcommit. (Spe‐
+     cial narrow exceptions to this rule may exist depending on which merge strategy is in use, but generally, the index must match [1mHEAD[22m.)
+
+     If all named commits are already ancestors of [1mHEAD[22m, [1mgit merge [22mwill exit early with the message "Already up to date."
+
+[1mFAST-FORWARD MERGE[0m
+     Often  the  current branch head is an ancestor of the named commit. This is the most common case especially when invoked from [1mgit pull[22m: you are tracking an upstream repository, you
+     have committed no local changes, and now you want to update to a newer upstream revision. In this case, a new commit is not needed to store the combined history; instead, the  [1mHEAD[0m
+     (along with the index) is updated to point at the named commit, without creating an extra merge commit.
+
+     This behavior can be suppressed with the [1m--no-ff [22moption.
+
+[1mTRUE MERGE[0m
+     Except in a fast-forward merge (see above), the branches to be merged must be tied together by a merge commit that has both of them as its parents.
+
+     A merged version reconciling the changes from all branches to be merged is committed, and your [1mHEAD[22m, index, and working tree are updated to it. It is possible to have modifications
+     in the working tree as long as they do not overlap; the update will preserve them.
+
+     When it is not obvious how to reconcile the changes, the following happens:
+
+      1. The [1mHEAD [22mpointer stays the same.
+
+      2. The [1mMERGE_HEAD [22mref is set to point to the other branch head.
+
+      3. Paths that merged cleanly are updated both in the index file and in your working tree.
+
+      4. For conflicting paths, the index file records up to three versions: stage 1 stores the version from the common ancestor, stage 2 from [1mHEAD[22m, and stage 3 from [1mMERGE_HEAD [22m(you can
+         inspect the stages with [1mgit ls-files -u[22m). The working tree files contain the result of the merge operation; i.e. 3-way merge results with familiar conflict markers [1m<<< === >>>[22m.
+
+       5. A  ref  named  [1mAUTO_MERGE [22mis written, pointing to a tree corresponding to the current content of the working tree (including conflict markers for textual conflicts). Note that
+         this ref is only written when the [1mort [22mmerge strategy is used (the default).
+
+      6. No other changes are made. In particular, the local modifications you had before you started merge will stay the same and the index entries for them stay  as  they  were,  i.e.
+         matching [1mHEAD[22m.
+
+     If you tried a merge which resulted in complex conflicts and want to start over, you can recover with [1mgit merge --abort[22m.
+
+[1mMERGING TAG[0m
+     When  merging  an  annotated (and possibly signed) tag, Git always creates a merge commit even if a fast-forward merge is possible, and the commit message template is prepared with
+     the tag message. Additionally, if the tag is signed, the signature check is reported as a comment in the message template. See also [1mgit-tag[22m(1).
+
+     When you want to just integrate with the work leading to the commit that happens to be tagged, e.g. synchronizing with an upstream release point, you may not want to make an unnec‐
+     essary merge commit.
+
+     In such a case, you can "unwrap" the tag yourself before feeding it to [1mgit merge[22m, or pass [1m--ff-only [22mwhen you do not have any work on your own. e.g.
+
+         git fetch origin
+         git merge v1.2.3^0
+         git merge --ff-only v1.2.3
+
+[1mHOW CONFLICTS ARE PRESENTED[0m
+     During a merge, the working tree files are updated to reflect the result of the merge. Among the changes made to the common ancestor’s version, non-overlapping ones (that  is,  you
+     changed an area of the file while the other side left that area intact, or vice versa) are incorporated in the final result verbatim. When both sides made changes to the same area,
+     however, Git cannot randomly pick one side over the other, and asks you to resolve it by leaving what both sides did to that area.
+
+     By default, Git uses the same style as the one used by the "merge" program from the RCS suite to present such a conflicted hunk, like this:
+
+         Here are lines that are either unchanged from the common
+         ancestor, or cleanly resolved because only one side changed,
+         or cleanly resolved because both sides changed the same way.
+         <<<<<<< yours:sample.txt
+         Conflict resolution is hard;
+         let's go shopping.
+         =======
+         Git makes conflict resolution easy.
+         >>>>>>> theirs:sample.txt
+         And here is another line that is cleanly resolved or unmodified.
+
+     The  area where a pair of conflicting changes happened is marked with markers [1m<<<<<<<[22m, [1m=======[22m, and [1m>>>>>>>[22m. The part before the [1m======= [22mis typically your side, and the part after‐
+     wards is typically their side.
+
+     The default format does not show what the original said in the conflicting area. You cannot tell how many lines are deleted and replaced with Barbie’s remark on your side. The only
+     thing you can tell is that your side wants to say it is hard and you’d prefer to go shopping, while the other side wants to claim it is easy.
+
+     An alternative style can be used by setting the [1mmerge.conflictStyle [22mconfiguration variable to either [1mdiff3 [22mor [1mzdiff3[22m. In [1mdiff3 [22mstyle, the above conflict may look like this:
+
+         Here are lines that are either unchanged from the common
+         ancestor, or cleanly resolved because only one side changed,
+         <<<<<<< yours:sample.txt
+         or cleanly resolved because both sides changed the same way.
+         Conflict resolution is hard;
+         let's go shopping.
+         ||||||| base:sample.txt
+         or cleanly resolved because both sides changed identically.
+         Conflict resolution is hard.
+         =======
+         or cleanly resolved because both sides changed the same way.
+         Git makes conflict resolution easy.
+         >>>>>>> theirs:sample.txt
+         And here is another line that is cleanly resolved or unmodified.
+
+     while in [1mzdiff3 [22mstyle, it may look like this:
+
+         Here are lines that are either unchanged from the common
+         ancestor, or cleanly resolved because only one side changed,
+         or cleanly resolved because both sides changed the same way.
+         <<<<<<< yours:sample.txt
+         Conflict resolution is hard;
+         let's go shopping.
+         ||||||| base:sample.txt
+         or cleanly resolved because both sides changed identically.
+         Conflict resolution is hard.
+         =======
+         Git makes conflict resolution easy.
+         >>>>>>> theirs:sample.txt
+         And here is another line that is cleanly resolved or unmodified.
+
+     In addition to the [1m<<<<<<<[22m, [1m=======[22m, and [1m>>>>>>> [22mmarkers, it uses another [1m||||||| [22mmarker that is followed by the original text. You can tell that the original just stated  a  fact,
+     and your side simply gave in to that statement and gave up, while the other side tried to have a more positive attitude. You can sometimes come up with a better resolution by view‐
+     ing the original.
+
+[1mHOW TO RESOLVE CONFLICTS[0m
+     After seeing a conflict, you can do two things:
+
+     •   Decide  not to merge. The only clean-ups you need are to reset the index file to the [1mHEAD [22mcommit to reverse 2. and to clean up working tree changes made by 2. and 3.; [1mgit merge[0m
+         [1m--abort [22mcan be used for this.
+
+     •   Resolve the conflicts. Git will mark the conflicts in the working tree. Edit the files into shape and [1mgit add [22mthem to the index. Use [1mgit commit [22mor [1mgit merge --continue [22mto  seal
+         the deal. The latter command checks whether there is a (interrupted) merge in progress before calling [1mgit commit[22m.
+
+     You can work through the conflict with a number of tools:
+
+     •   Use a mergetool.  [1mgit mergetool [22mto launch a graphical mergetool which will work through the merge with you.
+
+     •   Look  at  the  diffs.   [1mgit diff [22mwill show a three-way diff, highlighting changes from both the [1mHEAD [22mand [1mMERGE_HEAD [22mversions.  [1mgit diff AUTO_MERGE [22mwill show what changes you’ve
+         made so far to resolve textual conflicts.
+
+     •   Look at the diffs from each branch.  [1mgit log --merge -p [4m[22m<path>[24m will show diffs first for the [1mHEAD [22mversion and then the [1mMERGE_HEAD [22mversion.
+
+     •   Look at the originals.  [1mgit show :1:filename [22mshows the common ancestor, [1mgit show :2:filename [22mshows the [1mHEAD [22mversion, and [1mgit show :3:filename [22mshows the [1mMERGE_HEAD [22mversion.
+
+[1mEXAMPLES[0m
+     •   Merge branches [1mfixes [22mand [1menhancements [22mon top of the current branch, making an octopus merge:
+
+             $ git merge fixes enhancements
+
+     •   Merge branch [1mobsolete [22minto the current branch, using [1mours [22mmerge strategy:
+
+             $ git merge -s ours obsolete
+
+     •   Merge branch [1mmaint [22minto the current branch, but do not make a new commit automatically:
+
+             $ git merge --no-commit maint
+
+         This can be used when you want to include further changes to the merge, or want to write your own merge commit message.
+
+         You should refrain from abusing this option to sneak substantial changes into a merge commit. Small fixups like bumping release/version name would be acceptable.
+
+[1mMERGE STRATEGIES[0m
+     The merge mechanism ([1mgit merge [22mand [1mgit pull [22mcommands) allows the backend [4mmerge[24m [4mstrategies[24m to be chosen with [1m-s [22moption. Some strategies can also take their own options, which can be
+     passed by giving [1m-X[4m[22m<option>[24m arguments to [1mgit merge [22mand/or [1mgit pull[22m.
+
+     [1mort[0m
+         This is the default merge strategy when pulling or merging one branch. This strategy can only resolve two heads using a 3-way merge algorithm. When there is more than one  com‐
+         mon  ancestor that can be used for 3-way merge, it creates a merged tree of the common ancestors and uses that as the reference tree for the 3-way merge. This has been reported
+         to result in fewer merge conflicts without causing mismerges by tests done on actual merge commits taken from Linux 2.6 kernel development history. Additionally  this  strategy
+         can detect and handle merges involving renames. It does not make use of detected copies. The name for this algorithm is an acronym ("Ostensibly Recursive’s Twin") and came from
+         the fact that it was written as a replacement for the previous default algorithm, [1mrecursive[22m.
+
+         In  the  case  where the path is a submodule, if the submodule commit used on one side of the merge is a descendant of the submodule commit used on the other side of the merge,
+         Git attempts to fast-forward to the descendant. Otherwise, Git will treat this case as a conflict, suggesting as a resolution a submodule commit that is descendant of the  con‐
+         flicting ones, if one exists.
+
+         The [1mort [22mstrategy can take the following options:
+
+         [1mours[0m
+             This  option  forces  conflicting hunks to be auto-resolved cleanly by favoring [4mour[24m version. Changes from the other tree that do not conflict with our side are reflected in
+             the merge result. For a binary file, the entire contents are taken from our side.
+
+             This should not be confused with the [1mours [22mmerge strategy, which does not even look at what the other tree contains at all. It discards everything the other  tree  did,  de‐
+             claring [4mour[24m history contains all that happened in it.
+
+         [1mtheirs[0m
+             This is the opposite of [1mours[22m; note that, unlike [1mours[22m, there is no [1mtheirs [22mmerge strategy to confuse this merge option with.
+
+         [1mignore-space-change[22m, [1mignore-all-space[22m, [1mignore-space-at-eol[22m, [1mignore-cr-at-eol[0m
+             Treats  lines with the indicated type of whitespace change as unchanged for the sake of a three-way merge. Whitespace changes mixed with other changes to a line are not ig‐
+             nored. See also [1mgit-diff[22m(1) [1m-b[22m, [1m-w[22m, [1m--ignore-space-at-eol[22m, and [1m--ignore-cr-at-eol[22m.
+
+             •   If [4mtheir[24m version only introduces whitespace changes to a line, [4mour[24m version is used;
+
+             •   If [4mour[24m version introduces whitespace changes but [4mtheir[24m version includes a substantial change, [4mtheir[24m version is used;
+
+             •   Otherwise, the merge proceeds in the usual way.
+
+         [1mrenormalize[0m
+             This runs a virtual check-out and check-in of all three stages of any file which needs a three-way merge. This option is meant to be used when merging branches with differ‐
+             ent clean filters or end-of-line normalization rules. See "Merging branches with differing checkin/checkout attributes" in [1mgitattributes[22m(5) for details.
+
+         [1mno-renormalize[0m
+             Disables the [1mrenormalize [22moption. This overrides the [1mmerge.renormalize [22mconfiguration variable.
+
+         [1mfind-renames[22m[[1m=[4m[22m<n>[24m]
+             Turn on rename detection, optionally setting the similarity threshold. This is the default. This overrides the [1mmerge.renames [22mconfiguration variable.  See  also  [1mgit-diff[22m(1)
+             [1m--find-renames[22m.
+
+         [1mrename-threshold=[4m[22m<n>[0m
+             Deprecated synonym for [1mfind-renames=[4m[22m<n>[24m.
+
+         [1mno-renames[0m
+             Turn off rename detection. This overrides the [1mmerge.renames [22mconfiguration variable. See also [1mgit-diff[22m(1) [1m--no-renames[22m.
+
+         [1mhistogram[0m
+             Deprecated synonym for [1mdiff-algorithm=histogram[22m.
+
+         [1mpatience[0m
+             Deprecated synonym for [1mdiff-algorithm=patience[22m.
+
+         [1mdiff-algorithm=[22m([1mhistogram[22m|[1mminimal[22m|[1mmyers[22m|[1mpatience[22m)
+             Use a different diff algorithm while merging, which can help avoid mismerges that occur due to unimportant matching lines (such as braces from distinct functions). See also
+             [1mgit-diff[22m(1) [1m--diff-algorithm[22m. Note that [1mort [22mdefaults to [1mdiff-algorithm=histogram[22m, while regular diffs currently default to the [1mdiff.algorithm [22mconfig setting.
+
+         [1msubtree[22m[[1m=[4m[22m<path>[24m]
+             This  option  is a more advanced form of [4msubtree[24m strategy, where the strategy makes a guess on how two trees must be shifted to match with each other when merging. Instead,
+             the specified path is prefixed (or stripped from the beginning) to make the shape of two trees to match.
+
+     [1mrecursive[0m
+         This is now a synonym for [1mort[22m. It was an alternative implementation until v2.49.0, but was redirected to mean [1mort [22min v2.50.0. The previous recursive strategy  was  the  default
+         strategy for resolving two heads from Git v0.99.9k until v2.33.0.
+
+     [1mresolve[0m
+         This can only resolve two heads (i.e. the current branch and another branch you pulled from) using a 3-way merge algorithm. It tries to carefully detect criss-cross merge ambi‐
+         guities. It does not handle renames.
+
+     [1moctopus[0m
+         This  resolves  cases with more than two heads, but refuses to do a complex merge that needs manual resolution. It is primarily meant to be used for bundling topic branch heads
+         together. This is the default merge strategy when pulling or merging more than one branch.
+
+     [1mours[0m
+         This resolves any number of heads, but the resulting tree of the merge is always that of the current branch head, effectively ignoring all changes from all other  branches.  It
+         is meant to be used to supersede old development history of side branches. Note that this is different from the [1m-Xours [22moption to the [1mort [22mmerge strategy.
+
+     [1msubtree[0m
+         This  is  a  modified [1mort [22mstrategy. When merging trees A and B, if B corresponds to a subtree of A, B is first adjusted to match the tree structure of A, instead of reading the
+         trees at the same level. This adjustment is also done to the common ancestor tree.
+
+     With the strategies that use 3-way merge (including the default, [1mort[22m), if a change is made on both branches, but later reverted on one of the branches, that change will be  present
+     in  the merged result; some people find this behavior confusing. It occurs because only the heads and the merge base are considered when performing a merge, not the individual com‐
+     mits. The merge algorithm therefore considers the reverted change as no change at all, and substitutes the changed version instead.
+
+[1mCONFIGURATION[0m
+     [1mbranch.[4m[22m<name>[24m[1m.mergeOptions[0m
+         Sets default options for merging into branch [4m<name>[24m. The syntax and supported options are the same as those of [1mgit merge[22m, but option values containing whitespace characters are
+         currently not supported.
+
+     Everything above this line in this section isn’t included from the [1mgit-config[22m(1) documentation. The content that follows is the same as what’s found there:
+
+     [1mmerge.conflictStyle[0m
+         Specify the style in which conflicted hunks are written out to working tree files upon merge. The default is "merge", which shows a [1m<<<<<<< [22mconflict marker, changes made by one
+         side, a [1m======= [22mmarker, changes made by the other side, and then a [1m>>>>>>> [22mmarker. An alternate style, "diff3", adds a [1m||||||| [22mmarker and the original text before  the  [1m=======[0m
+         marker.  The "merge" style tends to produce smaller conflict regions than diff3, both because of the exclusion of the original text, and because when a subset of lines match on
+         the two sides, they are just pulled out of the conflict region. Another alternate style, "zdiff3", is similar to diff3 but removes matching lines on the two sides from the con‐
+         flict region when those matching lines appear near either the beginning or end of a conflict region.
+
+     [1mmerge.defaultToUpstream[0m
+         If merge is called without any commit argument, merge the upstream branches configured for the current branch by using their last observed values stored in their  remote-track‐
+         ing  branches.  The  values  of  the [1mbranch.[22m<current [1mbranch[22m>[1m.merge [22mthat name the branches at the remote named by [1mbranch.[4m[22m<current-branch>[24m[1m.remote [22mare consulted, and then they are
+         mapped via [1mremote.[4m[22m<remote>[24m[1m.fetch [22mto their corresponding remote-tracking branches, and the tips of these tracking branches are merged. Defaults to true.
+
+     [1mmerge.ff[0m
+         By default, Git does not create an extra merge commit when merging a commit that is a descendant of the current commit. Instead, the tip of  the  current  branch  is  fast-for‐
+         warded.  When  set to [1mfalse[22m, this variable tells Git to create an extra merge commit in such a case (equivalent to giving the [1m--no-ff [22moption from the command line). When set to
+         [1monly[22m, only such fast-forward merges are allowed (equivalent to giving the [1m--ff-only [22moption from the command line).
+
+     [1mmerge.verifySignatures[0m
+         If true, this is equivalent to the [1m--verify-signatures [22mcommand line option. See [1mgit-merge[22m(1) for details.
+
+     [1mmerge.branchdesc[0m
+         In addition to branch names, populate the log message with the branch description text associated with them. Defaults to false.
+
+     [1mmerge.log[0m
+         In addition to branch names, populate the log message with at most the specified number of one-line descriptions from the actual commits that  are  being  merged.  Defaults  to
+         false, and true is a synonym for 20.
+
+     [1mmerge.suppressDest[0m
+         By  adding  a glob that matches the names of integration branches to this multi-valued configuration variable, the default merge message computed for merges into these integra‐
+         tion branches will omit "into [4m<branch-name>[24m" from its title.
+
+         An element with an empty value can be used to clear the list of globs accumulated from previous configuration entries. When there is no [1mmerge.suppressDest [22mvariable defined, the
+         default value of [1mmaster [22mis used for backward compatibility.
+
+     [1mmerge.renameLimit[0m
+         The number of files to consider in the exhaustive portion of rename detection during a merge. If not specified, defaults to the value of [1mdiff.renameLimit[22m. If neither  [1mmerge.re‐[0m
+         [1mnameLimit [22mnor [1mdiff.renameLimit [22mare specified, currently defaults to 7000. This setting has no effect if rename detection is turned off.
+
+     [1mmerge.renames[0m
+         Whether Git detects renames. If set to [1mfalse[22m, rename detection is disabled. If set to [1mtrue[22m, basic rename detection is enabled. Defaults to the value of diff.renames.
+
+     [1mmerge.directoryRenames[0m
+         Whether  Git  detects  directory  renames,  affecting what happens at merge time to new files added to a directory on one side of history when that directory was renamed on the
+         other side of history. Possible values are:
+
+         [1mfalse[0m
+             Directory rename detection is disabled, meaning that such new files will be left behind in the old directory.
+
+         [1mtrue[0m
+             Directory rename detection is enabled, meaning that such new files will be moved into the new directory.
+
+         [1mconflict[0m
+             A conflict will be reported for such paths.
+
+         If [1mmerge.renames [22mis [1mfalse[22m, [1mmerge.directoryRenames [22mis ignored and treated as [1mfalse[22m. Defaults to [1mconflict[22m.
+
+     [1mmerge.renormalize[0m
+         Tell Git that canonical representation of files in the repository has changed over time (e.g. earlier commits record text files with [4mCRLF[24m line endings, but recent ones  use  [4mLF[0m
+         line endings). In such a repository, for each file where a three-way content merge is needed, Git can convert the data recorded in commits to a canonical form before performing
+         a merge to reduce unnecessary conflicts. For more information, see section "Merging branches with differing checkin/checkout attributes" in [1mgitattributes[22m(5).
+
+     [1mmerge.stat[0m
+         What, if anything, to print between [1mORIG_HEAD [22mand the merge result at the end of the merge. Possible values are:
+
+         [1mfalse[0m
+             Show nothing.
+
+         [1mtrue[0m
+             Show [1mgit diff --diffstat --summary ORIG_HEAD[22m.
+
+         [1mcompact[0m
+             Show [1mgit diff --compact-summary ORIG_HEAD[22m.
+
+         but any unrecognised value (e.g., a value added by a future version of Git) is taken as [1mtrue [22minstead of triggering an error. Defaults to [1mtrue[22m.
+
+     [1mmerge.autoStash[0m
+         When  set to [1mtrue[22m, automatically create a temporary stash entry before the operation begins, and apply it after the operation ends. This means that you can run merge on a dirty
+         worktree. However, use with care: the final stash application after a successful merge might result in non-trivial conflicts. This option can  be  overridden  by  the  [1m--no-au‐[0m
+         [1mtostash [22mand [1m--autostash [22moptions of [1mgit-merge[22m(1). Defaults to [1mfalse[22m.
+
+     [1mmerge.tool[0m
+         Controls  which  merge  tool  is used by [1mgit-mergetool[22m(1). The list below shows the valid built-in values. Any other value is treated as a custom merge tool and requires that a
+         corresponding [1mmergetool.[4m[22m<tool>[24m[1m.cmd [22mvariable is defined.
+
+     [1mmerge.guitool[0m
+         Controls which merge tool is used by [1mgit-mergetool[22m(1) when the [1m-g[22m/[1m--gui [22mflag is specified. The list below shows the valid built-in values. Any other value is treated as a  cus‐
+         tom merge tool and requires that a corresponding [1mmergetool.[4m[22m<guitool>[24m[1m.cmd [22mvariable is defined.
+
+         [1maraxis[0m
+             Use Araxis Merge (requires a graphical session)
+
+         [1mbc[0m
+             Use Beyond Compare (requires a graphical session)
+
+         [1mbc3[0m
+             Use Beyond Compare (requires a graphical session)
+
+         [1mbc4[0m
+             Use Beyond Compare (requires a graphical session)
+
+         [1mcodecompare[0m
+             Use Code Compare (requires a graphical session)
+
+         [1mdeltawalker[0m
+             Use DeltaWalker (requires a graphical session)
+
+         [1mdiffmerge[0m
+             Use DiffMerge (requires a graphical session)
+
+         [1mdiffuse[0m
+             Use Diffuse (requires a graphical session)
+
+         [1mecmerge[0m
+             Use ECMerge (requires a graphical session)
+
+         [1memerge[0m
+             Use Emacs' Emerge
+
+         [1mexamdiff[0m
+             Use ExamDiff Pro (requires a graphical session)
+
+         [1mguiffy[0m
+             Use Guiffy’s Diff Tool (requires a graphical session)
+
+         [1mgvimdiff[0m
+             Use gVim (requires a graphical session) with a custom layout (see [1mgit help mergetool[22m's [1mBACKEND SPECIFIC HINTS [22msection)
+
+         [1mgvimdiff1[0m
+             Use gVim (requires a graphical session) with a 2 panes layout (LOCAL and REMOTE)
+
+         [1mgvimdiff2[0m
+             Use gVim (requires a graphical session) with a 3 panes layout (LOCAL, MERGED and REMOTE)
+
+         [1mgvimdiff3[0m
+             Use gVim (requires a graphical session) where only the MERGED file is shown
+
+         [1mkdiff3[0m
+             Use KDiff3 (requires a graphical session)
+
+         [1mmeld[0m
+             Use Meld (requires a graphical session) with optional [1mauto merge [22m(see [1mgit help mergetool[22m's [1mCONFIGURATION [22msection)
+
+         [1mnvimdiff[0m
+             Use Neovim with a custom layout (see [1mgit help mergetool[22m's [1mBACKEND SPECIFIC HINTS [22msection)
+
+         [1mnvimdiff1[0m
+             Use Neovim with a 2 panes layout (LOCAL and REMOTE)
+
+         [1mnvimdiff2[0m
+             Use Neovim with a 3 panes layout (LOCAL, MERGED and REMOTE)
+
+         [1mnvimdiff3[0m
+             Use Neovim where only the MERGED file is shown
+
+         [1mopendiff[0m
+             Use FileMerge (requires a graphical session)
+
+         [1mp4merge[0m
+             Use HelixCore P4Merge (requires a graphical session)
+
+         [1msmerge[0m
+             Use Sublime Merge (requires a graphical session)
+
+         [1mtkdiff[0m
+             Use TkDiff (requires a graphical session)
+
+         [1mtortoisemerge[0m
+             Use TortoiseMerge (requires a graphical session)
+
+         [1mvimdiff[0m
+             Use Vim with a custom layout (see [1mgit help mergetool[22m's [1mBACKEND SPECIFIC HINTS [22msection)
+
+         [1mvimdiff1[0m
+             Use Vim with a 2 panes layout (LOCAL and REMOTE)
+
+         [1mvimdiff2[0m
+             Use Vim with a 3 panes layout (LOCAL, MERGED and REMOTE)
+
+         [1mvimdiff3[0m
+             Use Vim where only the MERGED file is shown
+
+         [1mvscode[0m
+             Use Visual Studio Code (requires a graphical session)
+
+         [1mwinmerge[0m
+             Use WinMerge (requires a graphical session)
+
+         [1mxxdiff[0m
+             Use xxdiff (requires a graphical session)
+
+     [1mmerge.verbosity[0m
+         Controls  the amount of output shown by the recursive merge strategy. Level 0 outputs nothing except a final error message if conflicts were detected. Level 1 outputs only con‐
+         flicts, 2 outputs conflicts and file changes. Level 5 and above outputs debugging information. The default is level 2. Can be overridden by the [1mGIT_MERGE_VERBOSITY  [22menvironment
+         variable.
+
+     [1mmerge.[4m[22m<driver>[24m[1m.name[0m
+         Defines a human-readable name for a custom low-level merge driver. See [1mgitattributes[22m(5) for details.
+
+     [1mmerge.[4m[22m<driver>[24m[1m.driver[0m
+         Defines the command that implements a custom low-level merge driver. See [1mgitattributes[22m(5) for details.
+
+     [1mmerge.[4m[22m<driver>[24m[1m.recursive[0m
+         Names a low-level merge driver to be used when performing an internal merge between common ancestors. See [1mgitattributes[22m(5) for details.
+
+[1mSEE ALSO[0m
+     [1mgit-fmt-merge-msg[22m(1), [1mgit-pull[22m(1), [1mgitattributes[22m(5), [1mgit-reset[22m(1), [1mgit-diff[22m(1), [1mgit-ls-files[22m(1), [1mgit-add[22m(1), [1mgit-rm[22m(1), [1mgit-mergetool[22m(1)
+
+[1mGIT[0m
+     Part of the [1mgit[22m(1) suite
+
+Git 2.54.0                                                                              2026-04-19                                                                           [4mGIT-MERGE[24m(1)

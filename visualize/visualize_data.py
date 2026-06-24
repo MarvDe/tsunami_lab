@@ -37,7 +37,7 @@ import pandas as pd
 CSV_PATTERN = "../solution_*.csv"
 HEIGHT_GIF  = "wave_height.gif"
 MOMENTUM_GIF = "wave_momentum.gif"
-FPS = 5                 # frames per second in the output GIFs
+FPS = 24                 # frames per second in the output GIFs
 DPI = 120
 
 

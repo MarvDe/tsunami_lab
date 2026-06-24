@@ -161,6 +161,7 @@ int main( int   i_argc,
   
   if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
   else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
+  else if (l_solverName.compare("hlle") == 0) l_solverId = tsunami_lab::solvers::HLLE;
   else {
     l_solverName = "fwave_hydrostatic_reconstruction";
     l_solverId = tsunami_lab::solvers::FWAVE_HYDROSTATIC_RECONSTRUCTION;
@@ -327,8 +328,8 @@ int main( int   i_argc,
   }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( 0.2,
-                                                   0.1,
-                                                 10 );
+                                                   0.0,
+                                                 l_nx / 2 );
   }
   
   // construct solver
@@ -483,7 +484,7 @@ int main( int   i_argc,
   double l_timeMeasure = 0;
 
   while( l_simTime < l_endTime ){
-    if( l_timeStep % 1 == 0 ) {
+    if( l_timeStep % 25 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
       float maxHu = 0;

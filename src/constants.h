@@ -21,6 +21,7 @@ namespace tsunami_lab {
     enum Ids{
       ROE,
       FWAVE,
+      HLLE,
       FWAVE_HYDROSTATIC_RECONSTRUCTION
     };
   }

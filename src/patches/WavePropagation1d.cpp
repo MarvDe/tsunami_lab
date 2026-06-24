@@ -7,6 +7,7 @@
 #include "WavePropagation1d.h"
 #include "../solvers/Roe.h"
 #include "../solvers/F_wave.h"
+#include "../solvers/hlle.h"
 #include <cmath>
 #include <iostream>
 
@@ -146,6 +147,16 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
                                   l_netUpdates[0],
                                   l_netUpdates[1] );
     }
+    else if (m_solverId == tsunami_lab::solvers::HLLE){
+      solvers::Hlle::netUpdates(
+        l_hL,
+        l_hR,
+        l_huL,
+        l_huR,
+        l_netUpdates[0],
+        l_netUpdates[1] 
+      );
+    }
     // Hydrostatic reconstruction
     else{
 
@@ -169,6 +180,14 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
                                                 t_real(0), t_real(0),
                                                 l_netUpdates[0],
                                                 l_netUpdates[1] );
+      // solvers::Hlle::netUpdates(
+      //   l_hL2,
+      //   l_hR2,
+      //   l_huL2,
+      //   l_huR2,
+      //   l_netUpdates[0],
+      //   l_netUpdates[1] 
+      // );
 
       l_netUpdates[0][1] += l_sourceL;
       l_netUpdates[1][1] += l_sourceR;
@@ -184,14 +203,30 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
 
     // update the cells' quantities
     if (!l_dryL){
+      
       l_hNew[l_ceL]  -= i_scaling * l_netUpdates[0][0];
       l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1];
+      
     }
     if (!l_dryR){
+      
       l_hNew[l_ceR]  -= i_scaling * l_netUpdates[1][0];
       l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1];
-    }
+      
+      }
+      
   }
+
+  // t_real l_dt = 0.1;
+  // const t_real mann = 0.02;
+  // for (t_idx i = 1; i <= m_nCells; i++) {
+  //     if (l_hNew[i] > 1e-6) {
+  //         t_real vel = l_huNew[i] / l_hNew[i];
+  //         t_real denom = 1.0 + 9.81 * l_dt * mann*mann
+  //                       * std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
+  //         l_huNew[i] /= denom;   // semi-implicit: always stable
+  //     }
+  // }
 }
 
 void tsunami_lab::patches::WavePropagation1d::setGhostOutflow() {
