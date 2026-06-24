@@ -74,13 +74,13 @@ void tsunami_lab::solvers::Fwave::netUpdates(   t_real i_hL,
                                                 t_real o_netUpdateL[2],
                                                 t_real o_netUpdateR[2]){
     // calculate particle speed
-    //t_real l_uL = (i_hL > 1e-12) ? i_huL / i_hL : t_real(0);
-    //t_real l_uR = (i_hR > 1e-12) ? i_huR / i_hR : t_real(0);
-    const t_real delta = 1e-3;  // tune to your h scale
-    t_real l_uL = (std::sqrt(2.0) * i_hL * i_huL)
-                / std::sqrt(i_hL*i_hL*i_hL*i_hL + std::max(i_hL*i_hL*i_hL*i_hL, delta*delta*delta*delta));
-    t_real l_uR = (std::sqrt(2.0) * i_hR * i_huR)
-                / std::sqrt(i_hR*i_hR*i_hR*i_hR + std::max(i_hR*i_hR*i_hR*i_hR, delta*delta*delta*delta));
+    t_real l_uL = (i_hL > 1e-12) ? i_huL / i_hL : t_real(0);
+    t_real l_uR = (i_hR > 1e-12) ? i_huR / i_hR : t_real(0);
+    //const t_real delta = 1e-3;  // tune to your h scale
+    //t_real l_uL = (std::sqrt(2.0) * i_hL * i_huL)
+    //            / std::sqrt(i_hL*i_hL*i_hL*i_hL + std::max(i_hL*i_hL*i_hL*i_hL, delta*delta*delta*delta));
+    //t_real l_uR = (std::sqrt(2.0) * i_hR * i_huR)
+    //            / std::sqrt(i_hR*i_hR*i_hR*i_hR + std::max(i_hR*i_hR*i_hR*i_hR, delta*delta*delta*delta));
 
 
     // compute wave speeds

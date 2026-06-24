@@ -217,6 +217,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       
   }
 
+  // MANNING FRICTION
   // t_real l_dt = 0.1;
   // const t_real mann = 0.02;
   // for (t_idx i = 1; i <= m_nCells; i++) {
