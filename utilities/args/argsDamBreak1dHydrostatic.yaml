@@ -7,7 +7,7 @@ args:
     cellSize: 1
     cellx: 20
     celly: 1
-    endTime: 12 # time in s (needs to be updated)
+    endTime: 30 # time in s (needs to be updated)
     stations: ""
     bathymetry:
       - startCoordX: 0 # global coordinates

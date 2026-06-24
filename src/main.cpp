@@ -484,7 +484,7 @@ int main( int   i_argc,
   double l_timeMeasure = 0;
 
   while( l_simTime < l_endTime ){
-    if( l_timeStep % 25 == 0 ) {
+    if( l_timeStep % 10 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
       float maxHu = 0;
