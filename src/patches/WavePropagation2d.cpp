@@ -7,10 +7,12 @@
 #include "WavePropagation2d.h"
 #include "../solvers/Roe.h"
 #include "../solvers/F_wave.h"
+#include "../solvers/hlle.h"
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 
-tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::t_idx i_solverId, tsunami_lab::t_idx i_ghost ): m_solverId(i_solverId) {
+tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghost ): m_solverId(i_solverId) {
   const t_idx l_stride = getStride();
   m_xCells = i_xCells;
   m_yCells = i_yCells;
@@ -200,8 +202,9 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         }
       }
     }
-      
-  } else {
+  
+  
+  } else if (m_solverId == tsunami_lab::solvers::FWAVE) {
     for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
       for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
         // determine left and right cell-id
@@ -337,6 +340,126 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
           }
           l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
         }
+      }
+    }
+  }
+  // Select HLLE solver
+  else if (m_solverId == solvers::HLLE) {
+    for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
+      for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
+        // determine left and right cell-id
+        t_idx l_ceL = l_xed + l_stride * l_yed;
+        t_idx l_ceR = l_xed + 1 + l_stride * l_yed;
+    
+        // extract cell data
+        t_real l_hL = l_hOld[l_ceL];
+        t_real l_hR = l_hOld[l_ceR];
+        t_real l_huL = l_huOld[l_ceL];
+        t_real l_huR = l_huOld[l_ceR];
+        t_real l_bL = m_bathymetry[l_ceL];
+        t_real l_bR = m_bathymetry[l_ceR];
+        
+        // compute net-updates
+        t_real l_netUpdatesX[2][2];
+
+        // 1. reconstruction first, using original cell-centre values
+        t_real l_bHalf = std::max( l_bL, l_bR );
+        t_real l_hL2   = std::max( t_real(0), l_hL + l_bL - l_bHalf );
+        t_real l_hR2   = std::max( t_real(0), l_hR + l_bR - l_bHalf );
+        t_real l_huL2  = ( l_hL > 0 ) ? l_hL2 * ( l_huL / l_hL ) : t_real(0);
+        t_real l_huR2  = ( l_hR > 0 ) ? l_hR2 * ( l_huR / l_hR ) : t_real(0);
+
+        // 2. source corrections (signs now correct)
+        t_real l_sourceL = t_real(0.5) * 9.81 * ( l_hL2 * l_hL2 - l_hL * l_hL );
+        t_real l_sourceR = t_real(0.5) * 9.81 * ( l_hR * l_hR - l_hR2 * l_hR2 );
+
+          if (l_hL2 <= 0 && l_hR2 <= 0) { // both cells dry
+          // skip evaluation
+          continue;
+        }
+        
+        // select HLLE solver
+        solvers::Hlle::netUpdates( l_hL2,
+                                    l_hR2,
+                                    l_huL2,
+                                    l_huR2, //t_real(0), t_real(0), 
+                                    l_netUpdatesX[0],
+                                    l_netUpdatesX[1] );
+
+        l_netUpdatesX[0][1] += l_sourceL;
+        l_netUpdatesX[1][1] += l_sourceR;
+    
+        // update the cells' quantities
+        l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
+        l_huNew[l_ceL] -= i_scaling * l_netUpdatesX[0][1];
+        l_hNew[l_ceR]  -= i_scaling * l_netUpdatesX[1][0];
+        l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
+      }
+    }
+
+    // Y
+    for (t_idx l_yed = 0; l_yed < m_yCells+1; l_yed++){
+      for( t_idx l_xed = 1; l_xed < m_xCells+1; l_xed++ ) {
+        // determine left and right cell-id
+  
+        t_idx l_ceU = l_xed + l_stride * l_yed;
+        t_idx l_ceB = l_xed + l_stride * (l_yed + 1);
+        // extract cell data
+        t_real l_hU = l_hOld[l_ceU];
+        t_real l_hB = l_hOld[l_ceB];
+        t_real l_hvU = l_hvOld[l_ceU];
+        t_real l_hvB = l_hvOld[l_ceB];
+        t_real l_bU = m_bathymetry[l_ceU];
+        t_real l_bB = m_bathymetry[l_ceB];
+        
+        // compute net-updates
+        t_real l_netUpdatesY[2][2];
+
+        // 1. reconstruction first, using original cell-centre values
+        t_real l_bHalf = std::max( l_bU, l_bB );
+        t_real l_hU2   = std::max( t_real(0), l_hU + l_bU - l_bHalf );
+        t_real l_hB2   = std::max( t_real(0), l_hB + l_bB - l_bHalf );
+        t_real l_hvU2  = ( l_hU > 0 ) ? l_hU2 * ( l_hvU / l_hU ) : t_real(0);
+        t_real l_hvB2  = ( l_hB > 0 ) ? l_hB2 * ( l_hvB / l_hB ) : t_real(0);
+
+        // 2. source corrections (signs now correct)
+        t_real l_sourceU = t_real(0.5) * 9.81 * ( l_hU2 * l_hU2 - l_hU * l_hU );
+        t_real l_sourceB = t_real(0.5) * 9.81 * ( l_hB * l_hB - l_hB2 * l_hB2 );
+  
+        if (l_hU2 <= 0 && l_hB2 <= 0) { // both cells dry
+          // skip evaluation
+          continue;
+        }
+        // select HLLE solver 
+        solvers::Hlle::netUpdates( l_hU2,
+                                    l_hB2,
+                                    l_hvU2,
+                                    l_hvB2, //t_real(0), t_real(0), 
+                                    l_netUpdatesY[0],
+                                    l_netUpdatesY[1] );
+    
+        // update the cells' quantities
+        l_netUpdatesY[0][1] += l_sourceU;
+        l_netUpdatesY[1][1] += l_sourceB;
+
+        l_hNew[l_ceU]  -= i_scaling * l_netUpdatesY[0][0];
+        l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
+    
+        l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
+        l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
+        
+      }
+    }
+
+      // manning friction
+    t_real l_dt = 0.1;
+    const t_real mann = 0.02;
+    for (t_idx i = 1; i <= m_xCells * m_yCells; i++) {
+      if (l_hNew[i] > 1e-6) {
+          t_real speed = std::sqrt(l_huNew[i]*l_huNew[i] + l_hvNew[i]*l_hvNew[i]);  // 2D speed magnitude
+          t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / std::pow(l_hNew[i], 4.0/3.0);
+          l_huNew[i] /= denom;   // semi-implicit: always stable
+          l_hvNew[i] /= denom;
       }
     }
   }

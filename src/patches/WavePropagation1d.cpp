@@ -11,7 +11,7 @@
 #include <cmath>
 #include <iostream>
 
-tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId ): m_solverId(i_solverId) {
+tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId ): m_solverId(i_solverId) {
   m_nCells = i_nCells;
 
   // allocate memory including a single ghost cell on each side
@@ -35,7 +35,7 @@ tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsun
   }
 }
 
-tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId, tsunami_lab::t_idx i_ghostL, tsunami_lab::t_idx i_ghostR ): m_solverId(i_solverId), m_ghostL(i_ghostL), m_ghostR(i_ghostR) {
+tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghostL, tsunami_lab::t_idx i_ghostR ): m_solverId(i_solverId), m_ghostL(i_ghostL), m_ghostR(i_ghostR) {
   m_nCells = i_nCells;
 
   // allocate memory including a single ghost cell on each side
@@ -102,6 +102,8 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     // compute net-updates
     t_real l_netUpdates[2][2];
 
+    
+
     bool l_dryL = false, l_dryR = false;
     if (m_solverId != tsunami_lab::solvers::FWAVE_HYDROSTATIC_RECONSTRUCTION){
       // check for dry cells
@@ -137,7 +139,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     
     }
     // select fwave solver
-    else if (m_solverId == tsunami_lab::solvers::FWAVE){
+    else if (m_solverId == tsunami_lab::solvers::FWAVE){ // (l_hL > 1e-6 || l_hR > 1e-6) ||
       solvers::Fwave::netUpdates( l_hL,
                                   l_hR,
                                   l_huL,
@@ -174,23 +176,55 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       // 3. skip only if both reconstructed heights are negligible
       if( l_hL2 <= 0 && l_hR2 <= 0 ) continue;
 
-      // 4. call solver
-      tsunami_lab::solvers::Fwave::netUpdates(  l_hL2, l_hR2,
-                                                l_huL2, l_huR2,
-                                                t_real(0), t_real(0),
-                                                l_netUpdates[0],
-                                                l_netUpdates[1] );
-      // solvers::Hlle::netUpdates(
-      //   l_hL2,
-      //   l_hR2,
-      //   l_huL2,
-      //   l_huR2,
-      //   l_netUpdates[0],
-      //   l_netUpdates[1] 
-      // );
+      bool l_isSupercritical = false;
+      bool l_isDry = l_hL <= 1e-4 || l_hR <= 1e-4;
 
-      l_netUpdates[0][1] += l_sourceL;
-      l_netUpdates[1][1] += l_sourceR;
+      if (!l_isDry){
+        t_real l_hSqrtL = std::sqrt(l_hL);
+        t_real l_hSqrtR = std::sqrt(l_hR);
+        t_real l_hRoe   = 0.5f * (l_hL + l_hR);
+        t_real l_uRoe   = ((l_huL/l_hL) * l_hSqrtL + (l_huR/l_hR) * l_hSqrtR) / (l_hSqrtL + l_hSqrtR);
+    
+        l_isSupercritical = std::abs(l_uRoe) / (std::sqrt(9.80665 * l_hRoe)) > 1;
+      }
+
+      if (l_isSupercritical) {
+        solvers::Hlle::netUpdates(
+          l_hL2,
+          l_hR2,
+          l_huL2,
+          l_huR2,
+          l_netUpdates[0],
+          l_netUpdates[1] 
+        );
+        l_netUpdates[0][1] += l_sourceL;
+        l_netUpdates[1][1] += l_sourceR;
+      } else if (l_isDry) {
+        tsunami_lab::solvers::Fwave::netUpdates(  l_hL2, l_hR2,
+                                                  l_huL2, l_huR2,
+                                                  t_real(0), t_real(0),
+                                                  l_netUpdates[0],
+                                                  l_netUpdates[1] );
+        l_netUpdates[0][1] += l_sourceL;
+        l_netUpdates[1][1] += l_sourceR;
+      } else {
+        tsunami_lab::solvers::Fwave::netUpdates(  l_hL, l_hR,
+                                                  l_huL, l_huR,
+                                                  l_bL, l_bR,
+                                                  l_netUpdates[0],
+                                                  l_netUpdates[1] );
+      }
+
+      // 4. call solver
+
+      // solvers::Roe::netUpdates( l_hL2,
+      //                           l_hR2,
+      //                           l_huL2,
+      //                           l_huR2,
+      //                           l_netUpdates[0],
+      //                           l_netUpdates[1] );
+
+      
 
       // if (l_ed == 50){
       //   std::cout << "hL " << l_hL << ";  hR " << l_hR << std::endl;
@@ -217,22 +251,25 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       
   }
 
-  // MANNING FRICTION
-  // t_real l_dt = 0.1;
-  // const t_real mann = 0.02;
-  // for (t_idx i = 1; i <= m_nCells; i++) {
-  //     if (l_hNew[i] > 1e-6) {
-  //         t_real vel = l_huNew[i] / l_hNew[i];
-  //         t_real denom = 1.0 + 9.81 * l_dt * mann*mann
-  //                       * std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
-  //         l_huNew[i] /= denom;   // semi-implicit: always stable
-  //     }
-  // }
+  // manning friction
+  t_real l_dt = 0.1;
+  const t_real mann = 0.02;
+  for (t_idx i = 1; i <= m_nCells; i++) {
+      if (l_hNew[i] > 1e-6) {
+          t_real vel = l_huNew[i] / l_hNew[i];
+          t_real denom = 1.0 + 9.81 * l_dt * mann*mann
+                        * std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
+          l_huNew[i] /= denom;   // semi-implicit: always stable
+      }
+  }
 }
 
 void tsunami_lab::patches::WavePropagation1d::setGhostOutflow() {
   t_real * l_h = m_h[m_step];
   t_real * l_hu = m_hu[m_step];
+
+  m_ghostL = 0;
+  m_ghostR = 0;
 
   // set left boundary
   if (m_ghostL == 1){

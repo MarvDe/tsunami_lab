@@ -1,0 +1,21 @@
+args:
+  - solverName: "fwave_hydrostatic_reconstruction"
+    formatName: "csv"
+    setupName: "damBreak"
+    startCoordX: 0 # global coordinates
+    startCoordY: 0 # of simulation
+    cellSize: 1
+    cellx: 20
+    celly: 1
+    endTime: 50 # time in s (needs to be updated)
+    stations: ""
+    bathymetry:
+      - startCoordX: 0 # global coordinates
+        startCoordY: 0 # of bathymetry data
+        cellSize: 250 # in m
+        filePath: ""
+    displacement: 
+      - startCoordX: 0 # global coordinates
+        startCoordY: 0 # of bathymetry data
+        cellSize: 0 # in m
+        filePath: ""

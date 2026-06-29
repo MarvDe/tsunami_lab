@@ -36,13 +36,13 @@ int main( int   i_argc,
   tsunami_lab::t_idx l_ny = 1;
   
   // id of solver
-  tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::FWAVE;
+  tsunami_lab::solvers::Ids l_solverId = tsunami_lab::solvers::FWAVE;
 
   // id of setup
-  tsunami_lab::t_idx l_setupId = tsunami_lab::setups::TSUNAMI_EVENT;
+  tsunami_lab::setups::Ids l_setupId = tsunami_lab::setups::TSUNAMI_EVENT;
 
   // id of output format
-  tsunami_lab::t_idx l_formatId = tsunami_lab::io::CSV;
+  tsunami_lab::io::Ids l_formatId = tsunami_lab::io::CSV;
   
   // set cell size
   tsunami_lab::t_real l_dxy = 1;
@@ -208,9 +208,9 @@ int main( int   i_argc,
                                                  5 );
   }
   else if (l_setupId == tsunami_lab::setups::SHOCK_SHOCK){
-    l_setup = new tsunami_lab::setups::ShockShock1d( 10,
-                                                 5,
-                                                 50 );
+    l_setup = new tsunami_lab::setups::ShockShock1d( 30,
+                                                 10,
+                                                 150 );
   }
   else if (l_setupId == tsunami_lab::setups::TSUNAMI_EVENT){
 
@@ -442,8 +442,7 @@ int main( int   i_argc,
   tsunami_lab::t_real l_ySpeedMax = std::sqrt( 9.81f * l_hMax ) + l_vMaxAbs;
 
   // derive constant time step; changes at simulation time are ignored
-  tsunami_lab::t_real l_dt = 0.5 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
-  l_dt = 0.1;
+  tsunami_lab::t_real l_dt = 0.1 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
   std::cout << "delta time: " << l_dt << std::endl; 
 
   // derive scaling for a time step
@@ -485,9 +484,14 @@ int main( int   i_argc,
   double l_timeMeasure = 0;
 
   while( l_simTime < l_endTime ){
-    if( l_timeStep % 1 == 0 ) {
+    if( l_timeStep % 25 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
+      float maxHu = 0;
+      for (tsunami_lab::t_idx i=1; i<=l_nx * l_ny; ++i){
+        maxHu = std::max(maxHu,std::abs(l_waveProp->getMomentumX()[i]));
+      }
+      printf("maxHu = %f\n", maxHu);
       if (l_formatId == tsunami_lab::io::CSV){
         std::string l_path = "solution_" + std::to_string(l_nOut) + ".csv";
         std::cout << "  writing wave field to " << l_path << std::endl;

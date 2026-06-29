@@ -11,13 +11,21 @@ tsunami_lab::setups::ShockShock1d::ShockShock1d(t_real i_height,
                                                 m_momentum(i_momentum),
                                                 m_locationDiscontinuity(i_locationDiscontinuity) {}
 
-tsunami_lab::t_real tsunami_lab::setups::ShockShock1d::getHeight(   t_real,
-                                                                    t_real ) const {
+tsunami_lab::t_real tsunami_lab::setups::ShockShock1d::getHeight(   t_real ,
+                                                                    t_real  ) const {
+    // if (i_x > 60 && i_x < 240) {
+    //     return 0;
+    // }
+    // return m_height -getBathymetry(i_x, i_y);
+
     return m_height;
 }
 
 tsunami_lab::t_real tsunami_lab::setups::ShockShock1d::getMomentumX(t_real i_x,
-                                                                    t_real) const {
+                                                                    t_real) const{
+    // if (i_x > 100 && i_x < 200) {
+    //     return 0;
+    // }
     if (i_x < m_locationDiscontinuity){
         return m_momentum;
     }
