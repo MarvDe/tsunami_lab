@@ -35,6 +35,7 @@ void tsunami_lab::solvers::Hlle::netUpdates(
   t_real i_hL,   t_real i_hR,
   t_real i_huL,  t_real i_huR,
   t_real,        t_real,
+  t_real,        t_real,
   t_real o_netUpdateL[2],
   t_real o_netUpdateR[2] 
 ){
@@ -89,3 +90,60 @@ void tsunami_lab::solvers::Hlle::netUpdates(
   }
 }
 
+void tsunami_lab::solvers::Hlle::netUpdatesDiag(
+    t_real i_hL, t_real i_hR,
+    t_real i_huL, t_real i_huR,
+    t_real i_hvL, t_real i_hvR,
+    t_real o_netUpdateL[3], t_real o_netUpdateR[3])
+{
+    t_real l_uL = (i_hL > 1e-12) ? i_huL / i_hL : t_real(0);
+    t_real l_uR = (i_hR > 1e-12) ? i_huR / i_hR : t_real(0);
+    t_real l_hL = (i_hL > 0) ? i_hL : t_real(0);
+    t_real l_hR = (i_hR > 0) ? i_hR : t_real(0);
+
+    t_real l_sL = 0, l_sR = 0;
+
+    if (l_hL <= 1e-12 && l_hR <= 1e-12) {
+        for (int c = 0; c < 3; c++) o_netUpdateL[c] = o_netUpdateR[c] = 0;
+        return;
+    } else if (l_hL <= 1e-12) {
+        t_real l_ghR = m_gSqrt * std::sqrt(l_hR);
+        l_sL = l_uR - 2.0 * l_ghR;
+        l_sR = l_uR + l_ghR;
+    } else if (l_hR <= 1e-12) {
+        t_real l_ghL = m_gSqrt * std::sqrt(l_hL);
+        l_sL = l_uL - l_ghL;
+        l_sR = l_uL + 2.0 * l_ghL;
+    } else {
+        waveSpeeds(l_hL, l_hR, l_uL, l_uR, l_sL, l_sR);
+    }
+
+    t_real l_fL[2] = { i_huL, l_hL*l_uL*l_uL + t_real(0.5)*m_g*l_hL*l_hL };
+    t_real l_fR[2] = { i_huR, l_hR*l_uR*l_uR + t_real(0.5)*m_g*l_hR*l_hR };
+    t_real l_fL_hv = i_hvL * l_uL;
+    t_real l_fR_hv = i_hvR * l_uR;
+
+    if (l_sL >= 0) {
+        o_netUpdateL[0] = 0; o_netUpdateL[1] = 0; o_netUpdateL[2] = 0;
+        o_netUpdateR[0] = l_fR[0] - l_fL[0];
+        o_netUpdateR[1] = l_fR[1] - l_fL[1];
+        o_netUpdateR[2] = l_fR_hv - l_fL_hv;
+    } else if (l_sR <= 0) {
+        o_netUpdateL[0] = l_fR[0] - l_fL[0];
+        o_netUpdateL[1] = l_fR[1] - l_fL[1];
+        o_netUpdateL[2] = l_fR_hv - l_fL_hv;
+        o_netUpdateR[0] = 0; o_netUpdateR[1] = 0; o_netUpdateR[2] = 0;
+    } else {
+        t_real denom = t_real(1) / (l_sR - l_sL);
+        t_real l_fHll = (l_sR*l_fL_hv - l_sL*l_fR_hv
+                         + l_sL*l_sR*(i_hvR - i_hvL)) * denom;
+        for (int c = 0; c < 2; c++) {
+            t_real delta_U = (c == 0) ? (l_hR - l_hL) : (i_huR - i_huL);
+            t_real delta_F = l_fR[c] - l_fL[c];
+            o_netUpdateL[c] = l_sL * (l_sR*delta_U - delta_F) * denom;
+            o_netUpdateR[c] = l_sR * (delta_F - l_sL*delta_U) * denom;
+        }
+        o_netUpdateL[2] = l_fHll - l_fL_hv;
+        o_netUpdateR[2] = l_fR_hv - l_fHll;
+    }
+}

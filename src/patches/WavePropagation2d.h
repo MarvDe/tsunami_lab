@@ -20,8 +20,8 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
     //! current step which indicates the active values in the arrays below
     unsigned short m_step = 0;
 
-    // flag to choose solver, 0=Roe, 1=F_wave
-    tsunami_lab::t_idx m_solverId = 0;
+    // flag to choose solver
+    tsunami_lab::solvers::Ids m_solverId = tsunami_lab::solvers::FWAVE;
 
     //! number of cells discretizing the computational domain
     t_idx m_xCells = 0;
@@ -46,10 +46,10 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
      *
      * @param i_xCells number of cells.
      * @param i_yCells number of cells.
-     * @param i_solverId flag to choose solver, 0=Roe, 1=F_wave.
+     * @param i_solverId flag to choose solver.
      * @param i_ghost ghost cell updating condition (0 = outflow, 1 = reflecting)
      **/
-    WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::t_idx i_solverId, t_idx i_ghost = 0 );
+    WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, t_idx i_ghost = 0 );
 
     /**
      * Destructor which frees all allocated memory.

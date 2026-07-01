@@ -75,6 +75,8 @@ class tsunami_lab::solvers::Roe{
                             t_real i_huR,
                             t_real, // placeholder for wavepropagation
                             t_real,
+                            t_real,
+                            t_real,
                             t_real o_netUpdateL[2],
                             t_real o_netUpdateR[2] );
 };

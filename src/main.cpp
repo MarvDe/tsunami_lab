@@ -36,13 +36,13 @@ int main( int   i_argc,
   tsunami_lab::t_idx l_ny = 1;
   
   // id of solver
-  tsunami_lab::t_idx l_solverId = tsunami_lab::solvers::FWAVE;
+  tsunami_lab::solvers::Ids l_solverId = tsunami_lab::solvers::FWAVE;
 
   // id of setup
-  tsunami_lab::t_idx l_setupId = tsunami_lab::setups::TSUNAMI_EVENT;
+  tsunami_lab::setups::Ids l_setupId = tsunami_lab::setups::TSUNAMI_EVENT;
 
   // id of output format
-  tsunami_lab::t_idx l_formatId = tsunami_lab::io::CSV;
+  tsunami_lab::io::Ids l_formatId = tsunami_lab::io::CSV;
   
   // set cell size
   tsunami_lab::t_real l_dxy = 1;
@@ -261,10 +261,10 @@ int main( int   i_argc,
           //l_bathymetry[j + l_cellsX*i] = 10;
         }
 
-        l_bathymetry[j + l_cellsX * i] = 0;
+        l_bathymetry[j + l_cellsX * i] = -50;
       }
     }
-    l_setup = new tsunami_lab::setups::CircularDamBreak2d(0.1,
+    l_setup = new tsunami_lab::setups::CircularDamBreak2d(50,
                                                           l_bathymetry,
                                                           10,
                                                           l_nx,
@@ -485,7 +485,7 @@ int main( int   i_argc,
   double l_timeMeasure = 0;
 
   while( l_simTime < l_endTime ){
-    if( l_timeStep % 100 == 0 ) {
+    if( l_timeStep % 25 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
       float maxHu = 0;

@@ -12,7 +12,7 @@
 #include <cmath>
 #include <iostream>
 
-tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId ): m_solverId(i_solverId) {
+tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId ): m_solverId(i_solverId) {
   m_nCells = i_nCells;
 
   // allocate memory including a single ghost cell on each side
@@ -36,7 +36,7 @@ tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsun
   }
 }
 
-tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId, tsunami_lab::t_idx i_ghostL, tsunami_lab::t_idx i_ghostR ): m_solverId(i_solverId), m_ghostL(i_ghostL), m_ghostR(i_ghostR) {
+tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghostL, tsunami_lab::t_idx i_ghostR ): m_solverId(i_solverId), m_ghostL(i_ghostL), m_ghostR(i_ghostR) {
   m_nCells = i_nCells;
 
   // allocate memory including a single ghost cell on each side
@@ -156,6 +156,8 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
                   l_huR,
                   l_bL,
                   l_bR,
+                  l_huL,
+                  l_huR,
                   l_netUpdates[0],
                   l_netUpdates[1] );
 
@@ -228,38 +230,4 @@ void tsunami_lab::patches::WavePropagation1d::setBathymetry( t_idx i_ix,
   if (i_ix == m_nCells - 1){
     m_bathymetry[m_nCells + 1] = i_height;
   }
-}
-
-void tsunami_lab::patches::WavePropagation1d::HydrostaticReconstruction(
-    t_real i_hL,  t_real i_hR,
-    t_real i_huL, t_real i_huR,
-    t_real i_bL,  t_real i_bR,
-    t_real o_netUpdateL[2],
-    t_real o_netUpdateR[2] )
-{
-    // 1. upwind bed level at the interface
-    t_real l_bHalf = std::max( i_bL, i_bR );
-
-    // 2. reconstructed water heights (dry-cell clipping)
-    t_real l_hL = std::max( t_real(0), i_hL + i_bL - l_bHalf );
-    t_real l_hR = std::max( t_real(0), i_hR + i_bR - l_bHalf );
-
-    // 3. reconstructed momenta (velocity stays, height changes)
-    t_real l_huL = ( i_hL > 0 ) ? l_hL * ( i_huL / i_hL ) : t_real(0);
-    t_real l_huR = ( i_hR > 0 ) ? l_hR * ( i_huR / i_hR ) : t_real(0);
-
-    // 4. call your existing solver with reconstructed states
-    //    bed is flat at z_half on both sides, so pass 0/0 or equal values
-    tsunami_lab::solvers::Fwave::netUpdates( l_hL, l_hR,
-                                             l_huL, l_huR,
-                                             t_real(0), t_real(0),
-                                             o_netUpdateL,
-                                             o_netUpdateR );
-
-    // 5. source term correction (distribute bathymetry jump to each side)
-    t_real l_sourceL = t_real(0.5) * 9.81 * ( l_hL * l_hL - i_hL * i_hL );
-    t_real l_sourceR = t_real(0.5) * 9.81 * ( i_hR * i_hR - l_hR * l_hR );
-
-    o_netUpdateL[1] += l_sourceL;
-    o_netUpdateR[1] -= l_sourceR;
 }

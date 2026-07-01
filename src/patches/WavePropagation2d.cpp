@@ -12,8 +12,9 @@
 #include <cmath>
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 
-tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::t_idx i_solverId, tsunami_lab::t_idx i_ghost ): m_solverId(i_solverId) {
+tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghost ): m_solverId(i_solverId) {
   const t_idx l_stride = getStride();
   m_xCells = i_xCells;
   m_yCells = i_yCells;
@@ -105,7 +106,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       t_real l_bR = m_bathymetry[l_ceR];
       
       // compute net-updates
-      t_real l_netUpdatesX[2][2];
+      t_real l_netUpdatesX[2][3]= {};
 
       // check for dry cells
       bool l_dryL = false, l_dryR = false;
@@ -136,42 +137,60 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
                     l_huR,
                     l_bL,
                     l_bR,
+                    l_hvOld[l_ceL],
+                    l_hvOld[l_ceR],
                     l_netUpdatesX[0],
                     l_netUpdatesX[1] );
   
       // update the cells' quantities
-      if (!l_dryL){
+      if (m_solverId != solvers::HYBRID){
+        if (!l_dryL){
+          l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
+          if (l_hNew[l_ceL] <= 1e-6f ){
+            l_hNew[l_ceL] = 1e-6f;
+            l_huNew[l_ceL] = 0;
+          }
+          l_huNew[l_ceL] -= i_scaling * l_netUpdatesX[0][1];
+          l_hvNew[l_ceL] -= i_scaling * l_netUpdatesX[0][2];
+        }
+        if (!l_dryR){
+          l_hNew[l_ceR]  -= i_scaling * l_netUpdatesX[1][0];
+          if (l_hNew[l_ceR] <= 1e-6f ){
+            l_hNew[l_ceR] = 1e-6f;
+            l_huNew[l_ceR] = 0;
+          }
+          l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
+          l_hvNew[l_ceR] -= i_scaling * l_netUpdatesX[1][2];
+        }
+      } else {
         l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
-        if (l_hNew[l_ceL] <= 1e-6f ){
-          l_hNew[l_ceL] = 1e-6f;
-          l_huNew[l_ceL] = 0;
-        }
         l_huNew[l_ceL] -= i_scaling * l_netUpdatesX[0][1];
-      }
-      if (!l_dryR){
+        l_hvNew[l_ceL] -= i_scaling * l_netUpdatesX[0][2];
+
         l_hNew[l_ceR]  -= i_scaling * l_netUpdatesX[1][0];
-        if (l_hNew[l_ceR] <= 1e-6f ){
-          l_hNew[l_ceR] = 1e-6f;
-          l_huNew[l_ceR] = 0;
-        }
         l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
+        l_hvNew[l_ceR] -= i_scaling * l_netUpdatesX[1][2];
       }
 
-      if (m_solverId == tsunami_lab::solvers::HYBRID) {
-        // manning friction
-        t_real l_dt = 0.1;
-        const t_real mann = 0.02;
-        for (t_idx i = 1; i <= m_xCells; i++) {
-            if (l_hNew[i] > 1e-6) {
-                t_real vel = l_huNew[i] / l_hNew[i];
-                t_real denom = 1.0 + 9.81 * l_dt * mann*mann
-                              * std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
-                l_huNew[i] /= denom;   // semi-implicit: always stable
-            }
-        }
-      }
     }
   }
+  // if (m_solverId == tsunami_lab::solvers::HYBRID) {
+  //   // manning friction
+  //   t_real l_dt = 0.1;
+  //   const t_real mann = 0.02;
+  //   for (t_idx i = 1; i <= m_xCells; i++) {
+  //       if (l_hNew[i] > 1e-6) {
+  //           // t_real vel = l_huNew[i] / l_hNew[i];
+  //           // t_real denom = 1.0 + 9.81 * l_dt * mann*mann* std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
+
+  //           t_real speed = std::sqrt(l_huNew[i] * l_huNew[i] + l_hvNew[i] * l_hvNew[i]);
+  //           t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / std::pow(l_hNew[i], 4.0/3.0);
+
+  //           l_huNew[i] /= denom;   // semi-implicit: always stable
+  //           l_hvNew[i] /= denom;
+  //       }
+  //   }
+  // }
 
   // Y
   for (t_idx l_yed = 0; l_yed < m_yCells+1; l_yed++){
@@ -189,7 +208,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       t_real l_bB = m_bathymetry[l_ceB];
       
       // compute net-updates
-      t_real l_netUpdatesY[2][2];
+      t_real l_netUpdatesY[2][3] = {};
       
       // check for dry cells
       bool l_dryU = false, l_dryB = false;
@@ -220,38 +239,58 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
                     l_hvB,
                     l_bU,
                     l_bB,
+                    l_huOld[l_ceU],
+                    l_huOld[l_ceB],
                     l_netUpdatesY[0],
                     l_netUpdatesY[1] );
   
       // update the cells' quantities
-      if (!l_dryU){
-        l_hNew[l_ceU]  -= i_scaling * l_netUpdatesY[0][0];
-        if (l_hNew[l_ceU] <= 1e-6f ){
-          l_hNew[l_ceU] = 1e-6f;
-          l_hvNew[l_ceU] = 0;
+      if (m_solverId != solvers::HYBRID){
+        if (!l_dryU){
+          l_hNew[l_ceU]  -= i_scaling * l_netUpdatesY[0][0];
+          if (l_hNew[l_ceU] <= 1e-6f ){
+            l_hNew[l_ceU] = 1e-6f;
+            l_hvNew[l_ceU] = 0;
+          }
+          l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
+          l_huNew[l_ceU] -= i_scaling * l_netUpdatesY[0][2];
         }
+        if (!l_dryB){
+          l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
+          if (l_hNew[l_ceB] <= 1e-6f ){
+            l_hNew[l_ceB] = 1e-6f;
+            l_hvNew[l_ceB] = 0;
+          }
+          l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
+          l_huNew[l_ceB] -= i_scaling * l_netUpdatesY[1][2];
+        }
+      } else {
+        l_hNew[l_ceU] -= i_scaling * l_netUpdatesY[0][0];
         l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
-      }
-      if (!l_dryB){
+        l_huNew[l_ceU] -= i_scaling * l_netUpdatesY[0][2];
+
         l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
-        if (l_hNew[l_ceB] <= 1e-6f ){
-          l_hNew[l_ceB] = 1e-6f;
-          l_hvNew[l_ceB] = 0;
-        }
         l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
+        l_huNew[l_ceB] -= i_scaling * l_netUpdatesY[1][2];
+        // if (l_netUpdatesY[1][2] != 0 ) printf("%f", l_netUpdatesY[1][2]);
       }
 
-      if (m_solverId == tsunami_lab::solvers::HYBRID) {
-        // manning friction
-        t_real l_dt = 0.1;
-        const t_real mann = 0.02;
-        for (t_idx i = 1; i <= m_yCells; i++) {
-            if (l_hNew[i] > 1e-6) {
-                t_real vel = l_huNew[i] / l_hNew[i];
-                t_real denom = 1.0 + 9.81 * l_dt * mann*mann
-                              * std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
-                l_huNew[i] /= denom;   // semi-implicit: always stable
-            }
+    }
+  }
+  if (m_solverId == tsunami_lab::solvers::HYBRID) {
+    // manning friction
+    t_real l_dt = 0.1;
+    const t_real mann = 0.02;
+    for (t_idx l_iy = 1; l_iy < m_yCells + 1; l_iy++){
+      for (t_idx l_ix = 1; l_ix < m_xCells + 1; l_ix++){
+        t_idx l_ce = l_ix + l_iy * l_stride;
+
+        if (l_hNew[l_ce] > 1e-6f) {
+          t_real speed = std::sqrt(l_huNew[l_ce] * l_huNew[l_ce] + l_hvNew[l_ce] * l_hvNew[l_ce]);
+          t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / std::pow(l_hNew[l_ce], 4.0/3.0);
+
+          l_huNew[l_ce] /= denom;
+          l_hvNew[l_ce] /= denom;
         }
       }
     }

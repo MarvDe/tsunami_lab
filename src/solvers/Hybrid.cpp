@@ -12,8 +12,10 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
                                                 t_real i_huR,
                                                 t_real i_bL,
                                                 t_real i_bR,
-                                                t_real o_netUpdateL[2],
-                                                t_real o_netUpdateR[2]){
+                                                t_real i_hvL,
+                                                t_real i_hvR,
+                                                t_real o_netUpdateL[3],
+                                                t_real o_netUpdateR[3]){
     t_real l_hL2;
     t_real l_hR2;
     t_real l_huL2;
@@ -36,12 +38,7 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
                                 l_sourceR
                             );
 
-    // 3. skip only if both reconstructed heights are negligible
-    if( l_hL2 <= 0 && l_hR2 <= 0 ) {
-        o_netUpdateL = {0};
-        o_netUpdateR = {0};
-        return;
-    }
+    
 
     bool l_isSupercritical = false;
     bool l_isDry = i_hL <= 1e-4 || i_hR <= 1e-4;
@@ -55,13 +52,15 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
         l_isSupercritical = std::abs(l_uRoe) / (std::sqrt(9.80665 * l_hRoe)) > 1;
     }
     if (l_isSupercritical) {
-        solvers::Hlle::netUpdates(
+        t_real l_hvL2  = ( i_hL > 0 ) ? l_hL2 * ( i_hvL / i_hL ) : t_real(0);
+        t_real l_hvR2  = ( i_hR > 0 ) ? l_hR2 * ( i_hvR / i_hR ) : t_real(0);
+        solvers::Hlle::netUpdatesDiag(
           l_hL2,
           l_hR2,
           l_huL2,
           l_huR2,
-          0,
-          0,
+          l_hvL2,
+          l_hvR2,
           o_netUpdateL,
           o_netUpdateR 
         );
@@ -73,6 +72,8 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
             l_hR2,
             l_huL2,
             l_huR2,
+            t_real(0),
+            t_real(0),
             t_real(0),
             t_real(0),
             o_netUpdateL,
@@ -88,6 +89,8 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
             i_huR,
             i_bL,
             i_bR,
+            t_real(0),
+            t_real(0),
             o_netUpdateL,
             o_netUpdateR
         );

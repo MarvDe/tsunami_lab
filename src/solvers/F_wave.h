@@ -87,6 +87,8 @@ class tsunami_lab::solvers::Fwave {
                             t_real i_huR,
                             t_real i_bL,
                             t_real i_bR,
+                            t_real,
+                            t_real,
                             t_real o_netUpdateL[2],
                             t_real o_netUpdateR[2] );
 };

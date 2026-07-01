@@ -21,7 +21,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     unsigned short m_step = 0;
 
     // flag to choose solver, 0=Roe, 1=F_wave
-    tsunami_lab::t_idx m_solverId = 0;
+    tsunami_lab::solvers::Ids m_solverId = tsunami_lab::solvers::FWAVE;
 
     //! number of cells discretizing the computational domain
     t_idx m_nCells = 0;
@@ -51,19 +51,19 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * Constructs the 1d wave propagation solver.
      *
      * @param i_nCells number of cells.
-     * @param i_solver_id flag to choose solver, 0=Roe, 1=F_wave.
+     * @param i_solver_id flag to choose solver.
      **/
-    WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId );
+    WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId );
 
     /**
      * Constructs the 1d wave propagation solver.
      *
      * @param i_nCells number of cells.
-     * @param i_solver_id flag to choose solver, 0=Roe, 1=F_wave.
+     * @param i_solver_id flag to choose solver.
      * @param i_ghostL type of boundary for left ghost cell.
      * @param i_ghostR type of boundary for right ghost cell.
      **/
-    WavePropagation1d( t_idx i_nCells, tsunami_lab::t_idx i_solverId, t_idx i_ghostL, t_idx i_ghostR );
+    WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, t_idx i_ghostL, t_idx i_ghostR );
 
     /**
      * Destructor which frees all allocated memory.
