@@ -356,11 +356,13 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         t_real l_hR = l_hOld[l_ceR];
         t_real l_huL = l_huOld[l_ceL];
         t_real l_huR = l_huOld[l_ceR];
+        t_real l_hvL = l_hvOld[l_ceL];
+        t_real l_hvR = l_hvOld[l_ceR];
         t_real l_bL = m_bathymetry[l_ceL];
         t_real l_bR = m_bathymetry[l_ceR];
         
         // compute net-updates
-        t_real l_netUpdatesX[2][2];
+        t_real l_netUpdatesX[2][3];
 
         // 1. reconstruction first, using original cell-centre values
         t_real l_bHalf = std::max( l_bL, l_bR );
@@ -368,12 +370,14 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         t_real l_hR2   = std::max( t_real(0), l_hR + l_bR - l_bHalf );
         t_real l_huL2  = ( l_hL > 0 ) ? l_hL2 * ( l_huL / l_hL ) : t_real(0);
         t_real l_huR2  = ( l_hR > 0 ) ? l_hR2 * ( l_huR / l_hR ) : t_real(0);
+        t_real l_hvL2  = ( l_hL > 0 ) ? l_hL2 * ( l_hvL / l_hL ) : t_real(0);
+        t_real l_hvR2  = ( l_hR > 0 ) ? l_hR2 * ( l_hvR / l_hR ) : t_real(0);
 
         // 2. source corrections (signs now correct)
         t_real l_sourceL = t_real(0.5) * 9.81 * ( l_hL2 * l_hL2 - l_hL * l_hL );
         t_real l_sourceR = t_real(0.5) * 9.81 * ( l_hR * l_hR - l_hR2 * l_hR2 );
 
-          if (l_hL2 <= 0 && l_hR2 <= 0) { // both cells dry
+        if (l_hL2 <= 0 && l_hR2 <= 0) { // both cells dry
           // skip evaluation
           continue;
         }
@@ -383,6 +387,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
                                     l_hR2,
                                     l_huL2,
                                     l_huR2, //t_real(0), t_real(0), 
+                                    l_hvL2,
+                                    l_hvR2,
                                     l_netUpdatesX[0],
                                     l_netUpdatesX[1] );
 
@@ -392,8 +398,11 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         // update the cells' quantities
         l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
         l_huNew[l_ceL] -= i_scaling * l_netUpdatesX[0][1];
+        l_hvNew[l_ceL] -= i_scaling * l_netUpdatesX[0][2];
+
         l_hNew[l_ceR]  -= i_scaling * l_netUpdatesX[1][0];
         l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
+        l_hvNew[l_ceR] -= i_scaling * l_netUpdatesX[1][2];
       }
     }
 
@@ -409,11 +418,13 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         t_real l_hB = l_hOld[l_ceB];
         t_real l_hvU = l_hvOld[l_ceU];
         t_real l_hvB = l_hvOld[l_ceB];
+        t_real l_huU = l_huOld[l_ceU];
+        t_real l_huB = l_huOld[l_ceB];
         t_real l_bU = m_bathymetry[l_ceU];
         t_real l_bB = m_bathymetry[l_ceB];
         
         // compute net-updates
-        t_real l_netUpdatesY[2][2];
+        t_real l_netUpdatesY[2][3];
 
         // 1. reconstruction first, using original cell-centre values
         t_real l_bHalf = std::max( l_bU, l_bB );
@@ -421,6 +432,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         t_real l_hB2   = std::max( t_real(0), l_hB + l_bB - l_bHalf );
         t_real l_hvU2  = ( l_hU > 0 ) ? l_hU2 * ( l_hvU / l_hU ) : t_real(0);
         t_real l_hvB2  = ( l_hB > 0 ) ? l_hB2 * ( l_hvB / l_hB ) : t_real(0);
+        t_real l_huU2  = ( l_hU > 0 ) ? l_hU2 * ( l_huU / l_hU ) : t_real(0);
+        t_real l_huB2  = ( l_hB > 0 ) ? l_hB2 * ( l_huB / l_hB ) : t_real(0);
 
         // 2. source corrections (signs now correct)
         t_real l_sourceU = t_real(0.5) * 9.81 * ( l_hU2 * l_hU2 - l_hU * l_hU );
@@ -430,11 +443,14 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
           // skip evaluation
           continue;
         }
+
         // select HLLE solver 
         solvers::Hlle::netUpdates( l_hU2,
                                     l_hB2,
                                     l_hvU2,
                                     l_hvB2, //t_real(0), t_real(0), 
+                                    l_huU2,
+                                    l_huB2,
                                     l_netUpdatesY[0],
                                     l_netUpdatesY[1] );
     
@@ -444,14 +460,16 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
 
         l_hNew[l_ceU]  -= i_scaling * l_netUpdatesY[0][0];
         l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
+        l_huNew[l_ceU] -= i_scaling * l_netUpdatesY[0][2];
     
         l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
         l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
+        l_huNew[l_ceB] -= i_scaling * l_netUpdatesY[1][2];
         
       }
     }
 
-      // manning friction
+    // manning friction
     t_real l_dt = 0.1;
     const t_real mann = 0.02;
     for (t_idx i = 1; i <= m_xCells * m_yCells; i++) {

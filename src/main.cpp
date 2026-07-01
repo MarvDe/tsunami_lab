@@ -260,7 +260,7 @@ int main( int   i_argc,
           //l_bathymetry[j + l_cellsX*i] = 10;
         }
 
-        l_bathymetry[j + l_cellsX * i] = -50;
+        l_bathymetry[j + l_cellsX * i] = 0;
       }
     }
     l_setup = new tsunami_lab::setups::CircularDamBreak2d(50,
