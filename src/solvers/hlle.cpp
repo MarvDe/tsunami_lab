@@ -42,8 +42,8 @@ void tsunami_lab::solvers::Hlle::netUpdates(
   t_real l_uR = (i_hR > 1e-12) ? i_huR / i_hR : t_real(0);
 
   // 2. Enforce zero height for dry beds to prevent sqrt(negative)
-  t_real l_hL = (i_hL > 0) ? i_hL : t_real(0);
-  t_real l_hR = (i_hR > 0) ? i_hR : t_real(0);
+  t_real l_hL = (i_hL > 1e-12) ? i_hL : t_real(0);
+  t_real l_hR = (i_hR > 1e-12) ? i_hR : t_real(0);
 
   t_real l_sL = 0;
   t_real l_sR = 0;
@@ -93,22 +93,23 @@ void tsunami_lab::solvers::Hlle::netUpdates(
     t_real i_huL, t_real i_huR,
     t_real i_hvL, t_real i_hvR,
     t_real o_netUpdateL[3], t_real o_netUpdateR[3])
-{
-    t_real l_uL = (i_hL > 1e-12) ? i_huL / i_hL : t_real(0);
-    t_real l_uR = (i_hR > 1e-12) ? i_huR / i_hR : t_real(0);
-    t_real l_hL = (i_hL > 0) ? i_hL : t_real(0);
-    t_real l_hR = (i_hR > 0) ? i_hR : t_real(0);
+{   
+    t_real l_epsilon = 1e-12;
+    t_real l_uL = (i_hL > l_epsilon) ? i_huL / i_hL : t_real(0);
+    t_real l_uR = (i_hR > l_epsilon) ? i_huR / i_hR : t_real(0);
+    t_real l_hL = (i_hL > l_epsilon) ? i_hL : t_real(0);
+    t_real l_hR = (i_hR > l_epsilon) ? i_hR : t_real(0);
 
     t_real l_sL = 0, l_sR = 0;
 
-    if (l_hL <= 1e-12 && l_hR <= 1e-12) {
+    if (l_hL <= l_epsilon && l_hR <= l_epsilon) {
         for (int c = 0; c < 3; c++) o_netUpdateL[c] = o_netUpdateR[c] = 0;
         return;
-    } else if (l_hL <= 1e-12) {
+    } else if (l_hL <= l_epsilon) {
         t_real l_ghR = m_gSqrt * std::sqrt(l_hR);
         l_sL = l_uR - 2.0 * l_ghR;
         l_sR = l_uR + l_ghR;
-    } else if (l_hR <= 1e-12) {
+    } else if (l_hR <= l_epsilon) {
         t_real l_ghL = m_gSqrt * std::sqrt(l_hL);
         l_sL = l_uL - l_ghL;
         l_sR = l_uL + 2.0 * l_ghL;

@@ -246,6 +246,9 @@ int main( int   i_argc,
     l_dxy = 1;
     l_nx = l_cellsX;
     l_ny = l_cellsY;
+    int l_cx = l_cellsX / 2;
+    int l_cy = l_cellsY / 2;
+    int l_minRadius = 30;
     tsunami_lab::t_real l_bathymetry[l_cellsX*l_cellsY];
     for (int i = 0; i < l_cellsY; i++){
       for (int j = 0; j < l_cellsX; j++){
@@ -259,8 +262,14 @@ int main( int   i_argc,
         if (j > 20 && j < 25 && (i < 40 || i > 60)){
           //l_bathymetry[j + l_cellsX*i] = 10;
         }
-
-        l_bathymetry[j + l_cellsX * i] = 0;
+        if ((j - l_cy) * (j - l_cy) + (i - l_cx) * (i - l_cx) >= l_minRadius * l_minRadius){
+          float l_dist = std::sqrt((j - l_cy) * (j - l_cy) + (i - l_cx) * (i - l_cx));
+          l_bathymetry[j + l_cellsX * i] = (l_dist - l_minRadius) / 1 - 5;
+        }
+        else{
+          l_bathymetry[j + l_cellsX * i] = -5;
+        }
+        //l_bathymetry[j + l_cellsX * i] = 0;
       }
     }
     l_setup = new tsunami_lab::setups::CircularDamBreak2d(50,
