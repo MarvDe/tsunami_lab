@@ -8,6 +8,7 @@
 #include "../solvers/Roe.h"
 #include "../solvers/F_wave.h"
 #include "../solvers/hlle.h"
+#include "../solvers/Hybrid.h"
 #include <cmath>
 #include <iostream>
 
@@ -85,6 +86,27 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     l_huNew[l_ce] = l_huOld[l_ce];
   }
 
+  auto l_netUpdatesfun = solvers::Roe::netUpdates;
+
+  switch (m_solverId) {
+    case solvers::FWAVE:
+      l_netUpdatesfun = solvers::Fwave::netUpdates;
+      break;
+    case solvers::HLLE:
+      l_netUpdatesfun = solvers::Hlle::netUpdates;
+      break;
+    case solvers::ROE:
+      l_netUpdatesfun = solvers::Roe::netUpdates;
+      break;
+    case solvers::HYBRID:
+      l_netUpdatesfun = solvers::Hybrid::netUpdates;
+      break;
+    default:
+      // already set.
+      // l_netUpdatesfun = solvers::Roe::netUpdates;
+      break;
+  }
+
   // iterate over edges and update with Riemann solutions
   for( t_idx l_ed = 0; l_ed < m_nCells+1; l_ed++ ) {
     // determine left and right cell-id
@@ -105,7 +127,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     
 
     bool l_dryL = false, l_dryR = false;
-    if (m_solverId != tsunami_lab::solvers::FWAVE_HYDROSTATIC_RECONSTRUCTION){
+    if (m_solverId != tsunami_lab::solvers::HYBRID){
       // check for dry cells
       if (l_hL <= 1e-6f && l_hR <= 1e-6f) { // both cells dry
         // skip evaluation
@@ -128,112 +150,14 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     }
 
  
-    // select roe solver 
-    if (m_solverId == tsunami_lab::solvers::ROE){
-      solvers::Roe::netUpdates( l_hL,
-                                l_hR,
-                                l_huL,
-                                l_huR,
-                                l_netUpdates[0],
-                                l_netUpdates[1] );
-    
-    }
-    // select fwave solver
-    else if (m_solverId == tsunami_lab::solvers::FWAVE){ // (l_hL > 1e-6 || l_hR > 1e-6) ||
-      solvers::Fwave::netUpdates( l_hL,
-                                  l_hR,
-                                  l_huL,
-                                  l_huR,
-                                  l_bL,
-                                  l_bR,
-                                  l_netUpdates[0],
-                                  l_netUpdates[1] );
-    }
-    else if (m_solverId == tsunami_lab::solvers::HLLE){
-      solvers::Hlle::netUpdates(
-        l_hL,
-        l_hR,
-        l_huL,
-        l_huR,
-        l_netUpdates[0],
-        l_netUpdates[1] 
-      );
-    }
-    // Hydrostatic reconstruction
-    else{
-
-      // 1. reconstruction first, using original cell-centre values
-      t_real l_bHalf = std::max( l_bL, l_bR );
-      t_real l_hL2   = std::max( t_real(0), l_hL + l_bL - l_bHalf );
-      t_real l_hR2   = std::max( t_real(0), l_hR + l_bR - l_bHalf );
-      t_real l_huL2  = ( l_hL > 0 ) ? l_hL2 * ( l_huL / l_hL ) : t_real(0);
-      t_real l_huR2  = ( l_hR > 0 ) ? l_hR2 * ( l_huR / l_hR ) : t_real(0);
-
-      // 2. source corrections (signs now correct)
-      t_real l_sourceL = t_real(0.5) * 9.81 * ( l_hL2 * l_hL2 - l_hL * l_hL );
-      t_real l_sourceR = t_real(0.5) * 9.81 * ( l_hR * l_hR - l_hR2 * l_hR2 );
-
-      // 3. skip only if both reconstructed heights are negligible
-      if( l_hL2 <= 0 && l_hR2 <= 0 ) continue;
-
-      bool l_isSupercritical = false;
-      bool l_isDry = l_hL <= 1e-4 || l_hR <= 1e-4;
-
-      if (!l_isDry){
-        t_real l_hSqrtL = std::sqrt(l_hL);
-        t_real l_hSqrtR = std::sqrt(l_hR);
-        t_real l_hRoe   = 0.5f * (l_hL + l_hR);
-        t_real l_uRoe   = ((l_huL/l_hL) * l_hSqrtL + (l_huR/l_hR) * l_hSqrtR) / (l_hSqrtL + l_hSqrtR);
-    
-        l_isSupercritical = std::abs(l_uRoe) / (std::sqrt(9.80665 * l_hRoe)) > 1;
-      }
-
-      if (l_isSupercritical) {
-        solvers::Hlle::netUpdates(
-          l_hL2,
-          l_hR2,
-          l_huL2,
-          l_huR2,
-          l_netUpdates[0],
-          l_netUpdates[1] 
-        );
-        l_netUpdates[0][1] += l_sourceL;
-        l_netUpdates[1][1] += l_sourceR;
-      } else if (l_isDry) {
-        tsunami_lab::solvers::Fwave::netUpdates(  l_hL2, l_hR2,
-                                                  l_huL2, l_huR2,
-                                                  t_real(0), t_real(0),
-                                                  l_netUpdates[0],
-                                                  l_netUpdates[1] );
-        l_netUpdates[0][1] += l_sourceL;
-        l_netUpdates[1][1] += l_sourceR;
-      } else {
-        tsunami_lab::solvers::Fwave::netUpdates(  l_hL, l_hR,
-                                                  l_huL, l_huR,
-                                                  l_bL, l_bR,
-                                                  l_netUpdates[0],
-                                                  l_netUpdates[1] );
-      }
-
-      // 4. call solver
-
-      // solvers::Roe::netUpdates( l_hL2,
-      //                           l_hR2,
-      //                           l_huL2,
-      //                           l_huR2,
-      //                           l_netUpdates[0],
-      //                           l_netUpdates[1] );
-
-      
-
-      // if (l_ed == 50){
-      //   std::cout << "hL " << l_hL << ";  hR " << l_hR << std::endl;
-      //   std::cout << "hL2 " << l_hL2 << "; hR2 " << l_hR2 << std::endl;
-      //   std::cout << "netUpLeft " << l_netUpdates[0][0] << "; " << l_netUpdates[0][1] << std::endl;
-      //   std::cout << "netUpRight " << l_netUpdates[1][0] << "; " << l_netUpdates[1][1] << std::endl;  
-      // }
-    }
-
+    l_netUpdatesfun( l_hL,
+                  l_hR,
+                  l_huL,
+                  l_huR,
+                  l_bL,
+                  l_bR,
+                  l_netUpdates[0],
+                  l_netUpdates[1] );
 
     // update the cells' quantities
     if (!l_dryL){
@@ -247,20 +171,21 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       l_hNew[l_ceR]  -= i_scaling * l_netUpdates[1][0];
       l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1];
       
-      }
-      
-  }
+    }
 
-  // manning friction
-  t_real l_dt = 0.1;
-  const t_real mann = 0.02;
-  for (t_idx i = 1; i <= m_nCells; i++) {
-      if (l_hNew[i] > 1e-6) {
+    if (m_solverId == tsunami_lab::solvers::HYBRID) {
+      // manning friction
+      t_real l_dt = 0.1;
+      const t_real mann = 0.02;
+      for (t_idx i = 1; i <= m_nCells; i++) {
+        if (l_hNew[i] > 1e-6) {
           t_real vel = l_huNew[i] / l_hNew[i];
           t_real denom = 1.0 + 9.81 * l_dt * mann*mann
                         * std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
           l_huNew[i] /= denom;   // semi-implicit: always stable
+        }
       }
+    }
   }
 }
 

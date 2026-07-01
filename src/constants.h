@@ -22,7 +22,8 @@ namespace tsunami_lab {
       ROE,
       FWAVE,
       HLLE,
-      FWAVE_HYDROSTATIC_RECONSTRUCTION
+      FWAVE_HYDROSTATIC_RECONSTRUCTION,
+      HYBRID,
     };
   }
 

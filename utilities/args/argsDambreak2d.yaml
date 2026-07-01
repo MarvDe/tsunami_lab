@@ -1,13 +1,13 @@
-args:
+﻿args:
   - solverName: "hybrid"
-    formatName: "csv"
-    setupName: "damBreak"
+    formatName: "nc"
+    setupName: "damBreak2d"
     startCoordX: 0 # global coordinates
     startCoordY: 0 # of simulation
     cellSize: 1
-    cellx: 20
-    celly: 1
-    endTime: 50 # time in s (needs to be updated)
+    cellx: 100
+    celly: 100
+    endTime: 2 # time in s (needs to be updated)
     stations: ""
     bathymetry:
       - startCoordX: 0 # global coordinates

@@ -110,6 +110,8 @@ TEST_CASE( "Test the derivation of the Roe net-updates.", "[RoeUpdates]" ) {
                                          9,
                                          -30,
                                          27,
+                                         0,
+                                         0,
                                          l_netUpdatesL,
                                          l_netUpdatesR );
 
@@ -159,6 +161,8 @@ TEST_CASE( "Test the derivation of the Roe net-updates.", "[RoeUpdates]" ) {
                                          8,
                                          0,
                                          0,
+                                         0,
+                                         0,
                                          l_netUpdatesL,
                                          l_netUpdatesR ); 
 
@@ -177,6 +181,8 @@ TEST_CASE( "Test the derivation of the Roe net-updates.", "[RoeUpdates]" ) {
    */
   tsunami_lab::solvers::Roe::netUpdates( 10,
                                          10,
+                                         0,
+                                         0,
                                          0,
                                          0,
                                          l_netUpdatesL,

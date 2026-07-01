@@ -162,6 +162,7 @@ int main( int   i_argc,
   if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
   else if (l_solverName.compare("fwave") == 0) l_solverId = tsunami_lab::solvers::FWAVE;
   else if (l_solverName.compare("hlle") == 0) l_solverId = tsunami_lab::solvers::HLLE;
+  else if (l_solverName.compare("hybrid") == 0) l_solverId = tsunami_lab::solvers::HYBRID;
   else {
     l_solverName = "fwave_hydrostatic_reconstruction";
     l_solverId = tsunami_lab::solvers::FWAVE_HYDROSTATIC_RECONSTRUCTION;
@@ -260,10 +261,10 @@ int main( int   i_argc,
           //l_bathymetry[j + l_cellsX*i] = 10;
         }
 
-        l_bathymetry[j + l_cellsX * i] = -50;
+        l_bathymetry[j + l_cellsX * i] = 0;
       }
     }
-    l_setup = new tsunami_lab::setups::CircularDamBreak2d(50,
+    l_setup = new tsunami_lab::setups::CircularDamBreak2d(0.1,
                                                           l_bathymetry,
                                                           10,
                                                           l_nx,
