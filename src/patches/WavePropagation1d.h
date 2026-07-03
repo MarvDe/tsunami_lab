@@ -39,6 +39,8 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     t_idx m_ghostL = 1; 
     t_idx m_ghostR = 1;
 
+    t_real m_dt = 0.1;
+
     void HydrostaticReconstruction(    
       t_real i_hL,  t_real i_hR,
       t_real i_huL, t_real i_huR,
@@ -76,6 +78,8 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * @param i_scaling scaling of the time step (dt / dx).
      **/
     void timeStep( t_real i_scaling );
+
+    void setTimeStep( t_real i_dt ); 
 
     /**
      * Sets the values of the ghost cells according to outflow boundary conditions.

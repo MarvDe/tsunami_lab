@@ -39,6 +39,9 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
 
     //! ghost cell updating condition (0 = outflow, 1 = reflecting)
     t_idx m_ghost = 0;
+
+    // timestep
+    t_real m_dt = 0.1;
     
     public:
     /**
@@ -67,6 +70,8 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
      * Sets the values of the ghost cells according to outflow boundary conditions.
      **/
     void setGhostOutflow();
+
+    void setTimeStep(t_real i_dt);
 
     /**
      * Gets the stride in y-direction. x-direction is stride-1.

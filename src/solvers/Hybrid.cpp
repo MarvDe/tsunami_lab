@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+inline float Q_rsqrt( float number );
+
 
 void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
                                                 t_real i_hR,

@@ -177,7 +177,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
 
     if (m_solverId == tsunami_lab::solvers::HYBRID) {
       // manning friction
-      t_real l_dt = 0.1;
+      t_real l_dt = m_dt;
       const t_real mann = 0.02;
       for (t_idx i = 1; i <= m_nCells; i++) {
         if (l_hNew[i] > 1e-6) {
@@ -189,6 +189,10 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       }
     }
   }
+}
+
+void tsunami_lab::patches::WavePropagation1d::setTimeStep(t_real i_dt) {
+  m_dt = i_dt;
 }
 
 void tsunami_lab::patches::WavePropagation1d::setGhostOutflow() {

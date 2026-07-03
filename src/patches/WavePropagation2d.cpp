@@ -14,7 +14,7 @@
 #include <algorithm>
 #include <cmath>
 
-tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghost ): m_solverId(i_solverId) {
+tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghost ) : m_solverId(i_solverId) {
   const t_idx l_stride = getStride();
   m_xCells = i_xCells;
   m_yCells = i_yCells;
@@ -279,7 +279,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   }
   if (m_solverId == tsunami_lab::solvers::HYBRID) {
     // manning friction
-    t_real l_dt = 0.1;
+    t_real l_dt = m_dt;
     const t_real mann = 0.02;
     for (t_idx l_iy = 1; l_iy < m_yCells + 1; l_iy++){
       for (t_idx l_ix = 1; l_ix < m_xCells + 1; l_ix++){
@@ -295,6 +295,10 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       }
     }
   }
+}
+
+void tsunami_lab::patches::WavePropagation2d::setTimeStep(t_real i_dt){
+  m_dt = i_dt;
 }
 
 void tsunami_lab::patches::WavePropagation2d::setGhostOutflow() {

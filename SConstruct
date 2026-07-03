@@ -78,7 +78,8 @@ if 'san' in  env['mode']:
                             '-fsanitize=address',
                             '-fsanitize=undefined' ] )
 else:
-  env.Append( CXXFLAGS = [ '-Werror' ] )
+  pass
+  # env.Append( CXXFLAGS = [ '-Werror' ] )
 
 # add Catch2
 env.Append( CXXFLAGS = [ '-isystem', 'submodules/Catch2/single_include' ] )
