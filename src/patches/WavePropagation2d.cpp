@@ -297,7 +297,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   }
 }
 
-void tsunami_lab::patches::WavePropagation2d::setTimeStep(t_real i_dt){
+void tsunami_lab::patches::WavePropagation2d::setDt(t_real i_dt){
   m_dt = i_dt;
 }
 

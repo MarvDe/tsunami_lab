@@ -79,7 +79,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      **/
     void timeStep( t_real i_scaling );
 
-    void setTimeStep( t_real i_dt ); 
+    void setDt( t_real i_dt ); 
 
     /**
      * Sets the values of the ghost cells according to outflow boundary conditions.

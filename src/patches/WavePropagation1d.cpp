@@ -191,7 +191,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
   }
 }
 
-void tsunami_lab::patches::WavePropagation1d::setTimeStep(t_real i_dt) {
+void tsunami_lab::patches::WavePropagation1d::setDt(t_real i_dt) {
   m_dt = i_dt;
 }
 

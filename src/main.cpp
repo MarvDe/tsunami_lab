@@ -446,7 +446,7 @@ int main( int   i_argc,
   tsunami_lab::t_real l_dt = 0.1 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
   std::cout << "delta time: " << l_dt << std::endl; 
 
-  l_waveProp->setTimeStep(l_dt);
+  l_waveProp->setDt(l_dt);
 
   // derive scaling for a time step
   tsunami_lab::t_real l_scaling = l_dt / l_dxy;

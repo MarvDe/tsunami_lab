@@ -71,7 +71,7 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
      **/
     void setGhostOutflow();
 
-    void setTimeStep(t_real i_dt);
+    void setDt(t_real i_dt);
 
     /**
      * Gets the stride in y-direction. x-direction is stride-1.
