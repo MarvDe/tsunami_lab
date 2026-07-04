@@ -42,14 +42,14 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
 
     bool l_isSupercritical = false;
     bool l_isDry = i_hL <= 1e-4 || i_hR <= 1e-4;
-    
-    t_real l_hSqrtL = std::sqrt(i_hL);
-    t_real l_hSqrtR = std::sqrt(i_hR);
-    t_real l_hRoe   = 0.5f * (i_hL + i_hR);
-    t_real l_uRoe   = ((i_huL/i_hL) * l_hSqrtL + (i_huR/i_hR) * l_hSqrtR) / (l_hSqrtL + l_hSqrtR);
-    if (!l_isDry){
 
-        l_isSupercritical = std::abs(l_uRoe) / (std::sqrt(9.80665 * l_hRoe)) > 1;
+    const t_real l_hSqrtL = std::sqrt(i_hL);
+    const t_real l_hSqrtR = std::sqrt(i_hR);
+    const t_real l_hRoe   = 0.5f * (i_hL + i_hR);
+    t_real l_uRoe = 0;
+    if (!l_isDry){
+        l_uRoe = ((i_huL/i_hL) * l_hSqrtL + (i_huR/i_hR) * l_hSqrtR) / (l_hSqrtL + l_hSqrtR);
+        l_isSupercritical = l_uRoe * l_uRoe > 9.80665 * l_hRoe;
     }
     if (l_isSupercritical) {
         t_real l_hvL2  = ( i_hL > 0 ) ? l_hL2 * ( i_hvL / i_hL ) : t_real(0);

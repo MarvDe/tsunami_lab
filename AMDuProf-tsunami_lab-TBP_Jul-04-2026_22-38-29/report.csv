@@ -1,0 +1,77 @@
+
+"AMD uProf (Version:5.3.518.0)"
+PERFORMANCE ANALYSIS REPORT
+
+EXECUTION
+Target Path:,"./build/tsunami_lab"
+Command Line Arguments:,"args=utilities/args/argsDambreak1d.yml "
+Working Directory:,"/home/philipp/uni/tsunami_lab"
+Environment Variables:
+CPU Details:,"Family(0x1a), Model(0x60), Number of Cores(16)"
+Operating System:,"Linux Arch Linux-64 Kernel:7.0.9-arch1-1"
+Profile Command:,"./AMDuProfCLI profile ./build/tsunami_lab args=utilities/args/argsDambreak1d.yml"
+
+PROFILE DETAILS
+Profile Session Type:,"Time-based Sampling"
+Profile Scope:,"Single Application"
+CPU Mask:,"0-15"
+CPU Affinity Mask:,"0-15"
+Profile Start Time:,"Sat Jul  4 22:38:29 2026"
+Profile End Time:,"Sat Jul  4 22:38:38 2026"
+Profile Duration:,"8.761 seconds"
+Data Folder:,"/home/philipp/uni/tsunami_lab/AMDuProf-tsunami_lab-TBP_Jul-04-2026_22-38-29"
+Virtual Machine:,"No"
+Call Stack Sampling:,"False"
+Selected View:,"Time based hotspots"
+
+MONITORED EVENTS
+TBP Events:,Name,Interval,Description
+,"CPU_TIME","1.000 milliseconds","CPU Time is the time in which the CPU core is executing the code."
+
+
+APPLICATION PERFORMANCE SNAPSHOT
+Thread Count,"10"
+
+
+"10 HOTTEST FUNCTIONS (Sort Event - CPU_TIME)"
+FUNCTION,"CPU_TIME" (seconds),Module
+"tsunami_lab::solvers::Fwave::netUpdates(float, float, float, float, float, float, float, float, bool, float*, float*)",17.8930,"/home/philipp/uni/tsunami_lab/build/tsunami_lab"
+"tsunami_lab::patches::WavePropagation2d::timeStep(float) [clone ._omp_fn.0]",11.7640,"/home/philipp/uni/tsunami_lab/build/tsunami_lab"
+"tsunami_lab::solvers::Hybrid::netUpdates(float, float, float, float, float, float, float, float, bool, float*, float*)",7.6440,"/home/philipp/uni/tsunami_lab/build/tsunami_lab"
+"main._omp_fn.0.lto_priv.0",3.8090,"/home/philipp/uni/tsunami_lab/build/tsunami_lab"
+"libgomp.so.1.0.0!0x25e52",1.1680,"/usr/lib/libgomp.so.1.0.0"
+"tsunami_lab::setups::TsunamiEvent2d::getHeight(float, float) const",1.0540,"/home/philipp/uni/tsunami_lab/build/tsunami_lab"
+"powf32x",1.0430,"/usr/lib/libm.so.6"
+"tsunami_lab::setups::TsunamiEvent2d::getBathymetry(float, float) const",0.6090,"/home/philipp/uni/tsunami_lab/build/tsunami_lab"
+"libgomp.so.1.0.0!0x25c72",0.4330,"/usr/lib/libgomp.so.1.0.0"
+"roundf32",0.3540,"/usr/lib/libm.so.6"
+
+"10 HOTTEST PROCESSES (Sort Event - CPU_TIME)"
+PROCESS,"CPU_TIME" (seconds)
+"/home/philipp/uni/tsunami_lab/build/tsunami_lab (PID:1352065)",50.8040
+"sh (PID:1352074)",0.0010
+
+"10 HOTTEST MODULES (Sort Event - CPU_TIME)"
+MODULE,"CPU_TIME" (seconds)
+"/home/philipp/uni/tsunami_lab/build/tsunami_lab",43.2060
+"/usr/lib/libm.so.6",4.8230
+"/usr/lib/libgomp.so.1.0.0",1.6350
+"/usr/lib/libz.so.1.3.2",0.4710
+"/usr/lib/libc.so.6",0.3810
+"[kernel.kallsyms]_text",0.1850
+"/usr/lib/libhdf5.so.320.1.1",0.0980
+"/usr/lib/ld-linux-x86-64.so.2",0.0030
+"/usr/lib/libcrypto.so.3",0.0020
+"/usr/lib/libnetcdf.so.22",0.0010
+
+"10 HOTTEST THREADS (Sort Event - CPU_TIME)"
+THREAD,"CPU_TIME" (seconds),THREAD ID
+"Thread-1352079 (PID:1352065)",7.1580,"1352079"
+"Thread-1352077 (PID:1352065)",7.1110,"1352077"
+"Thread-1352081 (PID:1352065)",7.0640,"1352081"
+"Thread-1352083 (PID:1352065)",6.9930,"1352083"
+"tsunami_lab (PID:1352065)",6.5170,"1352065"
+"Thread-1352078 (PID:1352065)",5.4280,"1352078"
+"Thread-1352080 (PID:1352065)",5.2870,"1352080"
+"Thread-1352082 (PID:1352065)",5.2460,"1352082"
+"sh (PID:1352074)",0.0010,"1352074"

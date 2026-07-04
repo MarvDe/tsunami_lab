@@ -182,9 +182,11 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       const t_real mann = 0.02;
       for (t_idx i = 1; i <= m_nCells; i++) {
         if (l_hNew[i] > 1e-6) {
-          t_real vel = l_huNew[i] / l_hNew[i];
+          const t_real l_h = l_hNew[i];
+          t_real vel = l_huNew[i] / l_h;
+          const t_real h43 = l_h * std::cbrt(l_h);
           t_real denom = 1.0 + 9.81 * l_dt * mann*mann
-                        * std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
+                        * std::abs(vel) / h43;
           l_huNew[i] /= denom;   // semi-implicit: always stable
         }
       }

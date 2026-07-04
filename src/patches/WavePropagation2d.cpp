@@ -16,10 +16,10 @@
 #include <omp.h>
 
 tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix, t_real i_manningFactor, tsunami_lab::t_idx i_ghost ) : m_solverId(i_solverId), m_manningFactor(i_manningFactor), m_useEntropyFix(i_useEntropyFix) {
-  const t_idx l_stride = getStride();
   m_xCells = i_xCells;
   m_yCells = i_yCells;
   m_ghost = i_ghost;
+  const t_idx l_stride = getStride();
 
   // allocate memory including a single ghost cell on each side
   for( unsigned short l_st = 0; l_st < 2; l_st++ ) {
@@ -63,11 +63,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   t_real * l_huNew = m_hu[m_step];
   t_real * l_hvNew = m_hv[m_step];
 
-  // init new cell quantities
   const t_idx n = (m_yCells + 2) * l_stride;
-  std::copy_n(l_hOld, n, l_hNew);
-  std::copy_n(l_huOld, n, l_huNew);
-  std::copy_n(l_hvOld, n, l_hvNew);
 
   auto l_netUpdates = solvers::Roe::netUpdates;
 
@@ -93,11 +89,18 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
 
   #pragma omp parallel 
   {
+    // init new cell quantities
+    #pragma omp for simd
+    for (t_idx l_ce = 0; l_ce < n; ++l_ce) {
+      l_hNew[l_ce] = l_hOld[l_ce];
+      l_huNew[l_ce] = l_huOld[l_ce];
+      l_hvNew[l_ce] = l_hvOld[l_ce];
+    }
+
     // iterate over edges and update with Riemann solutions
     // X
     #pragma omp for
     for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
-      #pragma omp simd
       for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
         // determine left and right cell-id
         t_idx l_ceL = l_xed + l_stride * l_yed;
@@ -200,10 +203,10 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
     // }
     #pragma omp barrier
     // Y
-    #pragma omp for
-    for (t_idx l_yed = 0; l_yed < m_yCells+1; l_yed++){
-      #pragma omp simd
-      for( t_idx l_xed = 1; l_xed < m_xCells+1; l_xed++ ) {
+    for (t_idx l_parity = 0; l_parity < 2; ++l_parity) {
+      #pragma omp for
+      for (t_idx l_yed = l_parity; l_yed < m_yCells+1; l_yed += 2){
+        for( t_idx l_xed = 1; l_xed < m_xCells+1; l_xed++ ) {
         // determine left and right cell-id
   
         t_idx l_ceU = l_xed + l_stride * l_yed;
@@ -285,6 +288,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
           // if (l_netUpdatesY[1][2] != 0 ) printf("%f", l_netUpdatesY[1][2]);
         }
   
+        }
       }
     }
     #pragma omp barrier
@@ -299,8 +303,10 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
           t_idx l_ce = l_ix + l_iy * l_stride;
 
           if (l_hNew[l_ce] > 1e-6f) {
-            t_real speed = std::sqrt(l_huNew[l_ce] * l_huNew[l_ce] + l_hvNew[l_ce] * l_hvNew[l_ce]);
-            t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / std::pow(l_hNew[l_ce], 4.0/3.0);
+            const t_real l_h = l_hNew[l_ce];
+            const t_real speed = std::sqrt(l_huNew[l_ce] * l_huNew[l_ce] + l_hvNew[l_ce] * l_hvNew[l_ce]);
+            const t_real h43 = l_h * std::cbrt(l_h);
+            const t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / h43;
 
             l_huNew[l_ce] /= denom;
             l_hvNew[l_ce] /= denom;

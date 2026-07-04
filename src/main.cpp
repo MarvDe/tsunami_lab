@@ -507,7 +507,7 @@ int main( int   i_argc,
   tsunami_lab::t_real l_vMaxAbs = 0;
 
   // set up solver
-  #pragma omp parallel for
+  #pragma omp parallel for reduction(max:l_hMax,l_uMaxAbs,l_vMaxAbs)
   for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ ) {
     tsunami_lab::t_real l_y = l_cy * l_dxy; 
 
