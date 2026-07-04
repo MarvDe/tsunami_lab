@@ -21,6 +21,21 @@ tsunami_lab::t_real tsunami_lab::setups::ShockShock1d::getHeight(   t_real,
     return m_height;
 }
 
+tsunami_lab::io::SetupDef tsunami_lab::setups::ShockShock1d::getSetupDef() {
+  return {
+    "shockShock",
+    {
+      {"waterHeight", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(30)},
+      {"waterMomentum", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(10)},
+      {"locationDiscontinuity", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(150)}
+    },
+    "setup:\n"
+    " waterHeight: ${float}\n"
+    " waterMomentum: ${float}\n"
+    " locationDiscontinuity: ${float}\n"
+  };
+}
+
 tsunami_lab::t_real tsunami_lab::setups::ShockShock1d::getMomentumX(t_real i_x,
                                                                     t_real) const{
     // if (i_x > 100 && i_x < 200) {

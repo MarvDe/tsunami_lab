@@ -101,6 +101,7 @@ int main( int   i_argc,
   std::string l_solverName = "fwave";
   std::string l_setupName = "damBreak";
   std::string l_formatName = "NONE";
+  tsunami_lab::io::SetupArgs l_setupArgs;
 
   if (l_setupFile.compare("") != 0){
     l_parser.parseFile( l_setupFile,
@@ -118,7 +119,8 @@ int main( int   i_argc,
                         l_upper,
                         l_checkPointFilePath,
                         l_appendFile,
-                        l_outputResolution
+                        l_outputResolution,
+                        l_setupArgs
                         );
   }
   else {
@@ -204,14 +206,14 @@ int main( int   i_argc,
   // construct setup
   tsunami_lab::setups::Setup *l_setup;
   if (l_setupId == tsunami_lab::setups::RARE_RARE){
-    l_setup = new tsunami_lab::setups::RareRare1d( 10,
-                                                 5,
-                                                 5 );
+    l_setup = new tsunami_lab::setups::RareRare1d(l_setupArgs.get<tsunami_lab::t_real>("waterHeight"),
+                                                  l_setupArgs.get<tsunami_lab::t_real>("waterMomentum"),
+                                                  l_setupArgs.get<tsunami_lab::t_real>("locationDiscontinuity"));
   }
   else if (l_setupId == tsunami_lab::setups::SHOCK_SHOCK){
-    l_setup = new tsunami_lab::setups::ShockShock1d( 30,
-                                                 10,
-                                                 150 );
+    l_setup = new tsunami_lab::setups::ShockShock1d(l_setupArgs.get<tsunami_lab::t_real>("waterHeight"),
+                                                    l_setupArgs.get<tsunami_lab::t_real>("waterMomentum"),
+                                                    l_setupArgs.get<tsunami_lab::t_real>("locationDiscontinuity"));
   }
   else if (l_setupId == tsunami_lab::setups::TSUNAMI_EVENT){
 
@@ -247,26 +249,32 @@ int main( int   i_argc,
     l_dxy = 1;
     l_nx = l_cellsX;
     l_ny = l_cellsY;
+    bool l_bathymetryCup = false;
+    bool l_bathymetryCap = false;
+    bool l_bathymetryConst = false;
+    if (l_setupArgs.get<bool>("bathymetryCup")){
+      l_bathymetryCup = true;
+    } else if (l_setupArgs.get<bool>("bathymetryCap")){
+      l_bathymetryCap = true;
+    } else {
+      l_bathymetryConst = true;
+    }
+    
     tsunami_lab::t_real l_bathymetry[l_cellsX*l_cellsY];
     for (int i = 0; i < l_cellsY; i++){
       for (int j = 0; j < l_cellsX; j++){
-        l_bathymetry[j + l_cellsX*i] =  50 -( (i-l_cellsY/2)*(i-l_cellsY/2) + (j-l_cellsX/2)*(j-l_cellsX/2) ) * 0.01;
-        //l_bathymetry[j+ l_cellsX*i] = std::sin(j*0.1);
-        //l_bathymetry[j + l_cellsX*i] -= 30;
-        //tsunami_lab::t_real l_cx = l_cellsX / 2 - j + 30;
-        //tsunami_lab::t_real l_cy = l_cellsY / 2 - i + 30;
-        //tsunami_lab::t_real l_r = std::sqrt(l_cx * l_cx + l_cy * l_cy);
-        //l_r <= 20 && l_cx < 10 && l_cy < 10
-        if (j > 20 && j < 25 && (i < 40 || i > 60)){
-          //l_bathymetry[j + l_cellsX*i] = 10;
+        if (l_bathymetryCap) {
+          l_bathymetry[j + l_cellsX*i] =  50 -( (i-l_cellsY/2)*(i-l_cellsY/2) + (j-l_cellsX/2)*(j-l_cellsX/2) ) * 0.01;
+        } else if (l_bathymetryCup) {
+          l_bathymetry[j + l_cellsX*i] =  ( (i-l_cellsY/2)*(i-l_cellsY/2) + (j-l_cellsX/2)*(j-l_cellsX/2) ) * 0.01;
+        } else {
+          l_bathymetry[j + l_cellsX * i] = -50;
         }
-
-        // l_bathymetry[j + l_cellsX * i] = -50;
       }
     }
-    l_setup = new tsunami_lab::setups::CircularDamBreak2d(100,
+    l_setup = new tsunami_lab::setups::CircularDamBreak2d(l_setupArgs.get<tsunami_lab::t_real>("innerWaterHeight"),
                                                           l_bathymetry,
-                                                          10,
+                                                          l_setupArgs.get<tsunami_lab::t_real>("innerWateRadius"),
                                                           l_nx,
                                                           l_ny,
                                                           1);
@@ -306,11 +314,11 @@ int main( int   i_argc,
     delete[] l_displacement;
   }
   else if (l_setupId == tsunami_lab::setups::CHECK_POINT){
-    //l_checkPointFilePath = "utilities/solution.nc";
+    l_checkPointFilePath = l_setupArgs.get<tsunami_lab::t_real>("inputFile");
     //l_solverId = tsunami_lab::solvers::FWAVE;
     //l_formatId = tsunami_lab::io::NC;
     //l_endTime = 20;
-    //l_appendFile = true;
+    l_appendFile = l_setupArgs.get<tsunami_lab::t_real>("appendFile");
     l_setup = new tsunami_lab::setups::CheckPoint(  l_checkPointFilePath,
                                                     l_simTime,
                                                     l_timeStep,
@@ -328,9 +336,10 @@ int main( int   i_argc,
     std::cout << "dxy: " << l_dxy << std::endl;
   }
   else{
-    l_setup = new tsunami_lab::setups::DamBreak1d( 0.2,
-                                                   0.0,
-                                                 l_nx / 2 );
+    l_setup = new tsunami_lab::setups::DamBreak1d( l_setupArgs.get<tsunami_lab::t_real>("heightLeft"),
+                                                   l_setupArgs.get<tsunami_lab::t_real>("heightRight"),
+                                                   l_setupArgs.get<tsunami_lab::t_real>("locationDam"));
+    printf("heightL: %f\n", l_setupArgs.get<tsunami_lab::t_real>("heightLeft"));
   }
   
   // construct solver

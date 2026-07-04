@@ -7,6 +7,7 @@
 #ifndef TSUNAMI_LAB_SETUPS_DAM_BREAK_1D_H
 #define TSUNAMI_LAB_SETUPS_DAM_BREAK_1D_H
 
+#include "../io/SetupConfig.h"
 #include "Setup.h"
 
 namespace tsunami_lab {
@@ -40,6 +41,11 @@ class tsunami_lab::setups::DamBreak1d: public Setup {
     DamBreak1d( t_real i_heightLeft,
                 t_real i_heightRight,
                 t_real i_locationDam );
+
+    /**
+     * Gets the yaml argument definition of the setup.
+     **/
+    static tsunami_lab::io::SetupDef getSetupDef();
 
     /**
      * Gets the water height at a given point.

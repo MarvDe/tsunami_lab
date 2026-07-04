@@ -12,6 +12,16 @@ t_real setups::ArtificialTsunami2d::getHeight(  t_real i_x,
     return l_out;
 }
 
+tsunami_lab::io::SetupDef tsunami_lab::setups::ArtificialTsunami2d::getSetupDef() {
+  return {
+    "artificialTsunami",
+    {
+      
+    },
+    "setup:\n"
+  };
+}
+
 t_real setups::ArtificialTsunami2d::getBathymetry(  t_real i_x,
                                                     t_real i_y) const {
     return -100 + getDisplacement(i_x, i_y);

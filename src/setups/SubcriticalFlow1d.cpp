@@ -7,6 +7,17 @@ tsunami_lab::t_real tsunami_lab::setups::SubcriticalFlow1d::getHeight(t_real i_x
     return - tsunami_lab::setups::SubcriticalFlow1d::getBathymetry(i_x, 0);
 }
 
+tsunami_lab::io::SetupDef tsunami_lab::setups::SubcriticalFlow1d::getSetupDef() {
+  return {
+    "subcriticalFlow",
+    {
+        
+    },
+    "setup:\n"
+    " # no args\n"
+  };
+}
+
 tsunami_lab::t_real tsunami_lab::setups::SubcriticalFlow1d::getBathymetry(t_real i_x, t_real) const {
     if (i_x > 8 && i_x < 12){
             return -1.8 - 0.05 * (i_x - 10) * (i_x - 10);

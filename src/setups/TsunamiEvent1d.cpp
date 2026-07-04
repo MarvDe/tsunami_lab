@@ -12,7 +12,18 @@ tsunami_lab::setups::TsunamiEvent1d::TsunamiEvent1d(t_idx i_cellx, t_real const 
         m_bIn[l_i] = i_bIn[l_i];
     }
     m_delta = 20;
-}   
+}
+
+tsunami_lab::io::SetupDef tsunami_lab::setups::TsunamiEvent1d::getSetupDef() {
+  return {
+    "tsunamiEvent",
+    {
+     
+    },
+    "setup:\n"
+    " # no args\n"
+  };
+}
 
 tsunami_lab::t_real tsunami_lab::setups::TsunamiEvent1d::getHeight( t_real i_x,
                                                                     t_real ) const {

@@ -1,0 +1,22 @@
+args:
+  - solverName: hybrid
+    setupName: damBreak
+    formatName: NONE
+    startCoordX: 0
+    startCoordY: 0
+    cellSize: 1
+    cellx: 100
+    celly: 1
+    endTime: 3
+    timeSteps: 0
+    useEntropyFix: false
+    manningFactor: 0
+    stations: ""
+    outputResolution: 1
+    bathymetry: ""
+    displacement: ""
+
+setup:
+  heightLeft: 0.25
+  heightRight: 0.0
+  locationDam: 50

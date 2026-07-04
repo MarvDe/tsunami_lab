@@ -3,8 +3,13 @@
 #define TSUNAMI_LAB_IO_PARSER_H
 
 #include "../constants.h"
+#include "SetupConfig.h"
 #include <string>
 #include <unordered_map>
+
+namespace YAML {
+  class Node;
+}
 
 namespace tsunami_lab {
   namespace io {
@@ -91,8 +96,15 @@ class tsunami_lab::io::Parser{
                     tsunami_lab::t_real &o_upper,
                     std::string &o_checkPointFile,
                     bool &o_appendFile,
-                    tsunami_lab::t_idx &o_outRes
+                    tsunami_lab::t_idx &o_outRes,
+                    SetupArgs &o_setupArgs
                   );
+
+    ArgValue parseSetupValue(const YAML::Node &node, ArgType type);
+
+    static const std::unordered_map<std::string, tsunami_lab::io::SetupDef> SETUP_DEFS;
 };
+
+
 
 #endif

@@ -49,6 +49,17 @@ setups::TsunamiEvent2d::~TsunamiEvent2d(){
     delete[] m_displacement;
 }
 
+tsunami_lab::io::SetupDef tsunami_lab::setups::TsunamiEvent2d::getSetupDef() {
+  return {
+    "tsunamiEvent2d",
+    {
+
+    },
+    "setup:\n"
+    " # no args\n"
+  };
+}
+
 t_real setups::TsunamiEvent2d::getHeight( t_real i_x, t_real i_y ) const {
     
     t_idx l_bIx = (t_idx) std::clamp<t_real>( std::round((i_x + m_left - m_leftBat) / m_dxyBat), 0, m_cellsXBat -1 );

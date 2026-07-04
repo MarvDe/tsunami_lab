@@ -25,6 +25,11 @@ public:
     SupercriticalFlow1d();
 
     /**
+     * Gets the yaml argument definition of the setup.
+     **/
+    static tsunami_lab::io::SetupDef getSetupDef();
+
+    /**
      * Gets the water height at a given point.
      *
      * @param i_x x-coordinate of the queried point.

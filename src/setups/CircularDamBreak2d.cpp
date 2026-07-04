@@ -28,6 +28,25 @@ tsunami_lab::setups::CircularDamBreak2d::CircularDamBreak2d(  t_real i_heightCir
   }
 }
 
+tsunami_lab::io::SetupDef tsunami_lab::setups::CircularDamBreak2d::getSetupDef() {
+  return {
+    "damBreak2d",
+    {
+      {"bathymetryCup", tsunami_lab::io::ArgType::Bool, false, false},
+      {"bathymetryCap", tsunami_lab::io::ArgType::Bool, false, false},
+      {"bathymetryConst", tsunami_lab::io::ArgType::Bool, false, true},
+      {"innerWaterHeight", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(50)},
+      {"innerWaterRadius", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(10)}
+    },
+    "setup:\n"
+    " bathymetryCup: ${bool}\n"
+    " bathymetryCap: ${bool}\n"
+    " bathymetryConst: ${bool}\n"
+    " innerWaterHeight: ${float}\n"
+    " innerWaterRadius: ${float}\n"
+  };
+}
+
 tsunami_lab::setups::CircularDamBreak2d::~CircularDamBreak2d(){
   delete[] m_bathymetry;
 }

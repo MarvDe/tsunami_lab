@@ -1,8 +1,53 @@
 #include "Parser.h"
+#include "../setups/DamBreak1d.h"
+#include "../setups/ArtificialTsunami2d.h"
+#include "../setups/CheckPoint.h"
+#include "../setups/CircularDamBreak2d.h"
+#include "../setups/RareRare1d.h"
+#include "../setups/ShockShock1d.h"
+#include "../setups/SubcriticalFlow1d.h"
+#include "../setups/SupercriticalFlow1d.h"
+#include "../setups/TsunamiEvent1d.h"
+#include "../setups/TsunamiEvent2d.h"
+
 #include <cstdlib>
 #include <string.h>
 #include <iostream>
+#include <stdexcept>
+#include <sstream>
 #include <yaml-cpp/yaml.h>
+
+namespace {
+    std::unordered_map<std::string, tsunami_lab::io::SetupDef> createSetupDefs() {
+        tsunami_lab::io::SetupDef l_damBreak = tsunami_lab::setups::DamBreak1d::getSetupDef();
+        tsunami_lab::io::SetupDef l_artificialTsunami2d = tsunami_lab::setups::ArtificialTsunami2d::getSetupDef();
+        tsunami_lab::io::SetupDef l_checkPoint = tsunami_lab::setups::CheckPoint::getSetupDef();
+        tsunami_lab::io::SetupDef l_circularDamBreak2d = tsunami_lab::setups::CircularDamBreak2d::getSetupDef();
+        tsunami_lab::io::SetupDef l_rareRare = tsunami_lab::setups::RareRare1d::getSetupDef();
+        tsunami_lab::io::SetupDef l_shockShock = tsunami_lab::setups::ShockShock1d::getSetupDef();
+        tsunami_lab::io::SetupDef l_subcritical = tsunami_lab::setups::SubcriticalFlow1d::getSetupDef();
+        tsunami_lab::io::SetupDef l_supercritical = tsunami_lab::setups::SupercriticalFlow1d::getSetupDef();
+        tsunami_lab::io::SetupDef l_tsunamiEvent1d = tsunami_lab::setups::TsunamiEvent1d::getSetupDef();
+        tsunami_lab::io::SetupDef l_tsunamiEvent2d = tsunami_lab::setups::TsunamiEvent2d::getSetupDef();
+
+
+        return {
+            {l_damBreak.name, l_damBreak},
+            {l_artificialTsunami2d.name, l_artificialTsunami2d},
+            {l_checkPoint.name, l_artificialTsunami2d},
+            {l_checkPoint.name, l_checkPoint},
+            {l_circularDamBreak2d.name, l_circularDamBreak2d},
+            {l_rareRare.name, l_rareRare},
+            {l_shockShock.name, l_shockShock},
+            {l_subcritical.name, l_subcritical},
+            {l_supercritical.name, l_supercritical},
+            {l_tsunamiEvent1d.name, l_tsunamiEvent1d},
+            {l_tsunamiEvent2d.name, l_tsunamiEvent2d}
+        };
+    }
+}
+
+const std::unordered_map<std::string, tsunami_lab::io::SetupDef> tsunami_lab::io::Parser::SETUP_DEFS = createSetupDefs();
 
 tsunami_lab::io::Parser::Parser(int i_argc, char *i_argv[]){
     // parsing arguments
@@ -46,6 +91,17 @@ float tsunami_lab::io::Parser::get(const std::string &i_name, float i_fallback){
     return std::stof(l_item->second);
 }
 
+tsunami_lab::io::ArgValue tsunami_lab::io::Parser::parseSetupValue(  const YAML::Node &node,
+                                                                    tsunami_lab::io::ArgType type) {
+    switch (type) {
+        case tsunami_lab::io::ArgType::Bool: return node.as<bool>();
+        case tsunami_lab::io::ArgType::Int: return node.as<tsunami_lab::t_idx>();
+        case tsunami_lab::io::ArgType::String: return node.as<std::string>();
+        case tsunami_lab::io::ArgType::Real: return node.as<tsunami_lab::t_real>();
+    }
+    throw std::runtime_error("unknown argument type");
+}
+
 void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         std::string &o_solverName,
                                         std::string &o_setupName,
@@ -61,9 +117,11 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         tsunami_lab::t_real &o_upper,
                                         std::string &o_checkPointFile,
                                         bool &o_appendFile,
-                                        tsunami_lab::t_idx &o_outRes
+                                        tsunami_lab::t_idx &o_outRes,
+                                        tsunami_lab::io::SetupArgs &o_setupArgs
                                     ){
     YAML::Node l_file;
+    printf("start parseFile\n");
     try {
         l_file = YAML::LoadFile(i_file);
 
@@ -72,26 +130,69 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_solverName = args["solverName"].as<std::string>();
         o_left = args["startCoordX"].as<tsunami_lab::t_real>();
         o_upper = args["startCoordY"].as<tsunami_lab::t_real>();
-        o_setupName = args["setupName"].as<std::string>();
-        if (o_setupName.compare("checkPoint") == 0 ){
-            o_checkPointFile = args["checkPointFile"].as<std::string>();
-            o_appendFile = args["appendFile"].as<bool>();
-            return;
-        }
         o_formatName = args["formatName"].as<std::string>();
         o_dxy = args["cellSize"].as<tsunami_lab::t_real>();
         o_nx = args["cellx"].as<tsunami_lab::t_idx>();
         o_ny = args["celly"].as<tsunami_lab::t_idx>();
         o_endTime = args["endTime"].as<tsunami_lab::t_real>();
+        t_idx l_timeSteps = args["timeSteps"].as<tsunami_lab::t_idx>();
         o_stationsFilePath = args["stations"].as<std::string>();
-        o_displacementNCFilePath = args["displacement"][0]["filePath"].as<std::string>();
-        o_bathymetryNCFilePath = args["bathymetry"][0]["filePath"].as<std::string>();
-        o_outRes = args["outputResolution"].as<tsunami_lab::t_idx>();
+        o_displacementNCFilePath = args["displacement"].as<std::string>();
+        o_bathymetryNCFilePath = args["bathymetry"].as<std::string>();
+        o_setupName = args["setupName"].as<std::string>();
+        
+        //setup args
+        o_setupArgs.name = o_setupName;
+        o_setupArgs.values.clear();
+        auto l_setupNode = l_file["setup"];
+
+        if (true) {
+            auto l_setupDefIt = SETUP_DEFS.find(o_setupName);
+            if (l_setupDefIt == SETUP_DEFS.end()) {
+                std::cerr << "Unknown setup in yaml: " << o_setupName << std::endl;
+                return;
+            }
+
+            const tsunami_lab::io::SetupDef &l_setupDef = l_setupDefIt->second;
+
+            for (const tsunami_lab::io::SetupArgDef &l_argDef : l_setupDef.args) {
+                YAML::Node l_valueNode = l_setupNode[l_argDef.name];
+
+                if (l_valueNode) {
+                    o_setupArgs.values[l_argDef.name] = parseSetupValue(l_valueNode, l_argDef.type);
+                }
+                else if (l_argDef.fallback.has_value()) {
+                    o_setupArgs.values[l_argDef.name] = l_argDef.fallback.value();
+                }
+                else if (l_argDef.required) {
+                    throw std::runtime_error("Missing required setup argument '"
+                                                + l_argDef.name
+                                                + "' for setup '"
+                                                + o_setupName
+                                                + "'."
+                                                + "\n");
+                }
+            }
+        }
+
+        if (o_setupName.compare("checkPoint") == 0 ){
+            o_checkPointFile = args["checkPointFile"].as<std::string>();
+            o_appendFile = args["appendFile"].as<bool>();
+            return;
+        }
+        
+        // tweaks
+        // o_outRes = args["outputResolution"].as<tsunami_lab::t_idx>();
+        // bool l_useEntropieFix = args["useEntropyFix"].as<bool>();
+        // t_real l_manningFactor = args["manningFactor"].as<bool>();
+        
+
     } catch (YAML::Exception& e){
         std::cerr << "YAML Error: " << e.what() << std::endl;
         std::cerr << "Line: " << e.mark.line
                   << ", Column: " << e.mark.column << std::endl;
         return;
     }
+    printf("end parseFile\n");
 
 }

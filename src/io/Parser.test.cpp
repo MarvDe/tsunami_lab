@@ -1,7 +1,7 @@
 #include <catch2/catch.hpp>
 #define private public
 #include "Parser.h"
-#undef public
+#undef private
 
 TEST_CASE( "Test argument parsing.", "[Parser]" ){
     /*

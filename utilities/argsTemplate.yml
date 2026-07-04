@@ -1,0 +1,13 @@
+args:
+  solverName: fwave
+  setupName: damBreak
+  formatName: csv
+  cellSize: 1.0
+  cellx: 100
+  celly: 1
+  endTime: 3.0
+
+setup:
+  heightLeft: 0.2
+  heightRight: 0.0
+  locationDam: 50.0
