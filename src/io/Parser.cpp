@@ -48,19 +48,61 @@ namespace {
 }
 
 const std::unordered_map<std::string, tsunami_lab::io::SetupDef> tsunami_lab::io::Parser::SETUP_DEFS = createSetupDefs();
+const std::unordered_map<std::string, bool> tsunami_lab::io::Parser::knownFlags = {
+    {"help", false}, // flagName, hasValue
+    {"h", false},
+    {"printSetups", false},
+    {"printSetup", true},
+    {"args", true},
+};
 
 tsunami_lab::io::Parser::Parser(int i_argc, char *i_argv[]){
     // parsing arguments
     for (int l_flagIndex{1}; l_flagIndex < i_argc; l_flagIndex++){
-
         std::string l_currentFlag = i_argv[l_flagIndex];
         t_idx l_pos =  l_currentFlag.find('=');        
         
         if (l_pos != std::string::npos){
             std::string l_argName = l_currentFlag.substr(0, l_pos);
             std::string l_argValue =  l_currentFlag.substr(l_pos + 1);
-
-            m_args[l_argName] = l_argValue;
+            auto l_flag = knownFlags.find(l_argName);
+            if (l_flag != knownFlags.end()){
+                if (l_flag -> second){
+                    m_args[l_argName] = l_argValue;
+                } else {
+                    throw std::runtime_error(
+                        "flag '" +
+                        l_argName +
+                        "' has no value!\n"
+                    );
+                }
+            } else {
+                throw std::runtime_error(
+                    "flag '" +
+                    l_argName +
+                    "' does not exist!\n"
+                );
+            }
+            
+        } else {
+            auto l_flag = knownFlags.find(l_currentFlag);
+            if (l_flag != knownFlags.end()){
+                if (!l_flag -> second){
+                    m_args[l_currentFlag] = "";
+                } else {
+                    throw std::runtime_error(
+                        "flag '" +
+                        l_currentFlag +
+                        "' needs a value!\n"
+                    );
+                }
+            } else {
+                throw std::runtime_error(
+                    "flag '" +
+                    l_currentFlag +
+                    "' does not exist!\n"
+                );
+            }
         }
 
     }

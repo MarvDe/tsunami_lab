@@ -6,6 +6,7 @@
 #include "SetupConfig.h"
 #include <string>
 #include <unordered_map>
+#include <set>
 
 namespace YAML {
   class Node;
@@ -103,6 +104,8 @@ class tsunami_lab::io::Parser{
     ArgValue parseSetupValue(const YAML::Node &node, ArgType type);
 
     static const std::unordered_map<std::string, tsunami_lab::io::SetupDef> SETUP_DEFS;
+
+    static const std::unordered_map<std::string, bool> knownFlags;
 };
 
 

@@ -22,12 +22,129 @@
 #include "io/Stations.h"
 #include "io/NetCdf.h"
 #include <cstdlib>
+#include <algorithm>
 #include <iostream>
 #include <cmath>
 #include <fstream>
 #include <limits>
+#include <sstream>
 #include <string>
+#include <vector>
 #include <chrono>
+
+namespace {
+  std::string setupArgTypeToString( tsunami_lab::io::ArgType i_type ) {
+    switch( i_type ) {
+      case tsunami_lab::io::ArgType::Bool:   return "bool";
+      case tsunami_lab::io::ArgType::Int:    return "int";
+      case tsunami_lab::io::ArgType::Real:   return "real";
+      case tsunami_lab::io::ArgType::String: return "string";
+    }
+
+    return "unknown";
+  }
+
+  std::string setupArgValueToString( tsunami_lab::io::ArgValue const &i_value ) {
+    std::ostringstream l_stream;
+
+    std::visit( [&l_stream]( auto const &i_current ) {
+      l_stream << i_current;
+    }, i_value );
+
+    return l_stream.str();
+  }
+
+  std::vector<std::string> getSortedSetupNames() {
+    std::vector<std::string> l_setupNames;
+    l_setupNames.reserve( tsunami_lab::io::Parser::SETUP_DEFS.size() );
+
+    for( auto const &l_setupDef: tsunami_lab::io::Parser::SETUP_DEFS ) {
+      l_setupNames.push_back( l_setupDef.first );
+    }
+
+    std::sort( l_setupNames.begin(), l_setupNames.end() );
+    return l_setupNames;
+  }
+
+  void printHelp( char const *i_programName ) {
+    std::cout << "\n"
+              << "Usage:\n"
+              << "  " << i_programName << " [command]\n"
+              << "  " << i_programName << " [key=value ...]\n\n"
+              << "Simulate one- and two-dimensional tsunami scenarios.\n\n"
+              << "Commands:\n"
+              << "  <no arguments>               Print this help and exit.\n"
+              << "  help, -h, --help             Print this help and exit.\n"
+              << "  printSetups                  List all available setups.\n"
+              << "  printSetup=<name>            Print setup-specific YAML arguments.\n"
+              << "  printSetupInfo=<name>        Same as printSetup=<name>.\n\n"
+              << "Configuration:\n"
+              << "  args=<file>                  Read simulation arguments from a YAML file.\n\n"
+              << "Common key=value arguments:\n"
+              << "  solver=<name>                Solver: roe, fwave, hlle, hybrid,\n"
+              << "                               fwave_hydrostatic_reconstruction. Default: roe.\n"
+              << "  setup=<name>                 Setup name. Default: damBreak.\n"
+              << "  format=<name>                Output format: csv, nc, NONE. Default: csv.\n"
+              << "  cellx=<n>                    Number of cells in x-direction. Default: 1.\n"
+              << "  celly=<n>                    Number of cells in y-direction. Default: 1.\n"
+              << "  endtime=<t>                  End time of the simulation. Default: 3.0.\n"
+              << "  dxy=<dx>                     Cell size. Default: 1.\n"
+              << "  left=<x>                     X-coordinate of the upper-left cell. Default: 0.\n"
+              << "  upper=<y>                    Y-coordinate of the upper-left cell. Default: 0.\n"
+              << "  stations=<file>              YAML file with station definitions.\n"
+              << "  res=<n>                      Output resolution. Default: 1.\n\n"
+              << "Examples:\n"
+              << "  " << i_programName << " help\n"
+              << "  " << i_programName << " printSetups\n"
+              << "  " << i_programName << " printSetup=damBreak\n"
+              << "  " << i_programName << " args=utilities/args/argsDambreak1d.yml\n"
+              << "  " << i_programName << " setup=damBreak solver=fwave cellx=100 endtime=3\n";
+  }
+
+  void printSetups() {
+    std::cout << "\nAvailable setups:\n";
+
+    for( std::string const &l_setupName: getSortedSetupNames() ) {
+      std::cout << "  " << l_setupName << "\n";
+    }
+  }
+
+  void printSetupInfo( std::string const &i_setupName ) {
+    auto l_setupDef = tsunami_lab::io::Parser::SETUP_DEFS.find( i_setupName );
+
+    if( l_setupDef == tsunami_lab::io::Parser::SETUP_DEFS.end() ) {
+      std::cerr << "Unknown setup: " << i_setupName << "\n";
+      printSetups();
+      return;
+    }
+
+    std::cout << "\nSetup: " << l_setupDef->second.name << "\n";
+
+    if( l_setupDef->second.args.empty() ) {
+      std::cout << "  No setup-specific arguments.\n";
+      return;
+    }
+
+    std::cout << "YAML setup arguments:\n";
+    for( tsunami_lab::io::SetupArgDef const &l_arg: l_setupDef->second.args ) {
+      std::cout << "  " << l_arg.name
+                << " (" << setupArgTypeToString( l_arg.type ) << ")";
+
+      if( l_arg.required ) {
+        std::cout << ", required";
+      }
+      else {
+        std::cout << ", optional";
+      }
+
+      if( l_arg.fallback.has_value() ) {
+        std::cout << ", default: " << setupArgValueToString( l_arg.fallback.value() );
+      }
+
+      std::cout << "\n";
+    }
+  }
+}
 
 int main( int   i_argc,
           char *i_argv[] ) {
@@ -95,6 +212,27 @@ int main( int   i_argc,
 
   // parse runtime arguments
   auto l_parser = tsunami_lab::io::Parser(i_argc, i_argv);
+
+  bool l_printHelp = i_argc == 1 || l_parser.get("help", "null").empty() || l_parser.get("h", "null").empty(); // || hasRuntimeArg( i_argc, i_argv, "help", "h" );
+  if (l_printHelp) {
+    printHelp( i_argv[0] );
+
+    return 0;
+  }
+
+  bool l_printSetups = l_parser.get("printSetups","null").empty(); //hasRuntimeArg( i_argc, i_argv, "printSetups" );
+  if (l_printSetups) {
+    printSetups();
+
+    return 0;
+  }
+
+  std::string l_setupInfo = l_parser.get("printSetup", "");//getRuntimeArgValue( i_argc, i_argv, "printSetupInfo", "printSetup" );
+
+  if (!l_setupInfo.empty()) {
+    printSetupInfo( l_setupInfo );
+    return 0;
+  }
 
   std::string l_setupFile = l_parser.get("args", "");
 
