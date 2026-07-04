@@ -5,9 +5,6 @@
 
 #include <iostream>
 
-inline float Q_rsqrt( float number );
-
-
 void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
                                                 t_real i_hR,
                                                 t_real i_huL,
@@ -46,11 +43,11 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
     bool l_isSupercritical = false;
     bool l_isDry = i_hL <= 1e-4 || i_hR <= 1e-4;
     
+    t_real l_hSqrtL = std::sqrt(i_hL);
+    t_real l_hSqrtR = std::sqrt(i_hR);
+    t_real l_hRoe   = 0.5f * (i_hL + i_hR);
+    t_real l_uRoe   = ((i_huL/i_hL) * l_hSqrtL + (i_huR/i_hR) * l_hSqrtR) / (l_hSqrtL + l_hSqrtR);
     if (!l_isDry){
-        t_real l_hSqrtL = std::sqrt(i_hL);
-        t_real l_hSqrtR = std::sqrt(i_hR);
-        t_real l_hRoe   = 0.5f * (i_hL + i_hR);
-        t_real l_uRoe   = ((i_huL/i_hL) * l_hSqrtL + (i_huR/i_hR) * l_hSqrtR) / (l_hSqrtL + l_hSqrtR);
 
         l_isSupercritical = std::abs(l_uRoe) / (std::sqrt(9.80665 * l_hRoe)) > 1;
     }
@@ -77,8 +74,10 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
             l_huR2,
             t_real(0),
             t_real(0),
-            t_real(0),
-            t_real(0),
+            l_hSqrtL,
+            l_hSqrtR,
+            l_hRoe,
+            l_uRoe,
             i_useEntropyFix,
             o_netUpdateL,
             o_netUpdateR

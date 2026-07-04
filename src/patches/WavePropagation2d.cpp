@@ -15,7 +15,7 @@
 #include <cmath>
 #include <omp.h>
 
-tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix, t_real i_manningFactor, tsunami_lab::t_idx i_ghost ) : m_manningFactor(i_manningFactor), m_useEntropyFix(i_useEntropyFix), m_solverId(i_solverId) {
+tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix, t_real i_manningFactor, tsunami_lab::t_idx i_ghost ) : m_solverId(i_solverId), m_manningFactor(i_manningFactor), m_useEntropyFix(i_useEntropyFix) {
   const t_idx l_stride = getStride();
   m_xCells = i_xCells;
   m_yCells = i_yCells;
@@ -71,7 +71,6 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
 
   auto l_netUpdates = solvers::Roe::netUpdates;
 
-  tsunami_lab::solvers::Fwave* l_fwave;
 
   switch (m_solverId) {
     case solvers::FWAVE:
@@ -91,217 +90,227 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       // l_netUpdates = solvers::Roe::netUpdates;
       break;
   }
-  
-  // iterate over edges and update with Riemann solutions
-  // X
-  #pragma omp parallel for 
-  for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
-    for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
-      // determine left and right cell-id
-      t_idx l_ceL = l_xed + l_stride * l_yed;
-      t_idx l_ceR = l_xed + 1 + l_stride * l_yed;
-  
-      // extract cell data
-      t_real l_hL = l_hOld[l_ceL];
-      t_real l_hR = l_hOld[l_ceR];
-      t_real l_huL = l_huOld[l_ceL];
-      t_real l_huR = l_huOld[l_ceR];
-      t_real l_bL = m_bathymetry[l_ceL];
-      t_real l_bR = m_bathymetry[l_ceR];
-      
-      // compute net-updates
-      t_real l_netUpdatesX[2][3]= {};
 
-      // check for dry cells
-      bool l_dryL = false, l_dryR = false;
-      if (m_solverId != solvers::HYBRID){
-        if (l_hL <= 0 && l_hR <= 0) { // both cells dry
-          // skip evaluation
-          continue;
-        }
-        else if (l_hL <= 0){               // left cell dry
-          // set reflecting boundary conditions left
-          l_dryL = true;
-          l_hL = l_hR;
-          l_huL = -l_huR;
-          l_bL  = l_bR;
-        }
-        else if (l_hR <= 0){      // right cell dry
-          // set reflecting boundary conditions right
-          l_dryR = true;
-          l_hR = l_hL;
-          l_huR = -l_huL;
-          l_bR  = l_bL;
-        }
-      }
-      
-      l_netUpdates( l_hL,
-                    l_hR,
-                    l_huL,
-                    l_huR,
-                    l_bL,
-                    l_bR,
-                    l_hvOld[l_ceL],
-                    l_hvOld[l_ceR],
-                    m_useEntropyFix,
-                    l_netUpdatesX[0],
-                    l_netUpdatesX[1] );
+  #pragma omp parallel 
+  {
+    // iterate over edges and update with Riemann solutions
+    // X
+    #pragma omp for
+    for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
+      #pragma omp simd
+      for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
+        // determine left and right cell-id
+        t_idx l_ceL = l_xed + l_stride * l_yed;
+        t_idx l_ceR = l_xed + 1 + l_stride * l_yed;
+    
+        // extract cell data
+        t_real l_hL = l_hOld[l_ceL];
+        t_real l_hR = l_hOld[l_ceR];
+        t_real l_huL = l_huOld[l_ceL];
+        t_real l_huR = l_huOld[l_ceR];
+        t_real l_bL = m_bathymetry[l_ceL];
+        t_real l_bR = m_bathymetry[l_ceR];
+        
+        // compute net-updates
+        t_real l_netUpdatesX[2][3]= {};
   
-      // update the cells' quantities
-      if (m_solverId != solvers::HYBRID){
-        if (!l_dryL){
-          l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
-          if (l_hNew[l_ceL] <= 1e-6f ){
-            l_hNew[l_ceL] = 1e-6f;
-            l_huNew[l_ceL] = 0;
+        // check for dry cells
+        bool l_dryL = false, l_dryR = false;
+        if (m_solverId != solvers::HYBRID){
+          if (l_hL <= 0 && l_hR <= 0) { // both cells dry
+            // skip evaluation
+            continue;
           }
+          else if (l_hL <= 0){               // left cell dry
+            // set reflecting boundary conditions left
+            l_dryL = true;
+            l_hL = l_hR;
+            l_huL = -l_huR;
+            l_bL  = l_bR;
+          }
+          else if (l_hR <= 0){      // right cell dry
+            // set reflecting boundary conditions right
+            l_dryR = true;
+            l_hR = l_hL;
+            l_huR = -l_huL;
+            l_bR  = l_bL;
+          }
+        }
+        
+        l_netUpdates( l_hL,
+                      l_hR,
+                      l_huL,
+                      l_huR,
+                      l_bL,
+                      l_bR,
+                      l_hvOld[l_ceL],
+                      l_hvOld[l_ceR],
+                      m_useEntropyFix,
+                      l_netUpdatesX[0],
+                      l_netUpdatesX[1] );
+    
+        // update the cells' quantities
+        if (m_solverId != solvers::HYBRID){
+          if (!l_dryL){
+            l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
+            if (l_hNew[l_ceL] <= 1e-6f ){
+              l_hNew[l_ceL] = 1e-6f;
+              l_huNew[l_ceL] = 0;
+            }
+            l_huNew[l_ceL] -= i_scaling * l_netUpdatesX[0][1];
+            l_hvNew[l_ceL] -= i_scaling * l_netUpdatesX[0][2];
+          }
+          if (!l_dryR){
+            l_hNew[l_ceR]  -= i_scaling * l_netUpdatesX[1][0];
+            if (l_hNew[l_ceR] <= 1e-6f ){
+              l_hNew[l_ceR] = 1e-6f;
+              l_huNew[l_ceR] = 0;
+            }
+            l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
+            l_hvNew[l_ceR] -= i_scaling * l_netUpdatesX[1][2];
+          }
+        } else {
+          l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
           l_huNew[l_ceL] -= i_scaling * l_netUpdatesX[0][1];
           l_hvNew[l_ceL] -= i_scaling * l_netUpdatesX[0][2];
-        }
-        if (!l_dryR){
+  
           l_hNew[l_ceR]  -= i_scaling * l_netUpdatesX[1][0];
-          if (l_hNew[l_ceR] <= 1e-6f ){
-            l_hNew[l_ceR] = 1e-6f;
-            l_huNew[l_ceR] = 0;
-          }
           l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
           l_hvNew[l_ceR] -= i_scaling * l_netUpdatesX[1][2];
         }
-      } else {
-        l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
-        l_huNew[l_ceL] -= i_scaling * l_netUpdatesX[0][1];
-        l_hvNew[l_ceL] -= i_scaling * l_netUpdatesX[0][2];
-
-        l_hNew[l_ceR]  -= i_scaling * l_netUpdatesX[1][0];
-        l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
-        l_hvNew[l_ceR] -= i_scaling * l_netUpdatesX[1][2];
-      }
-
-    }
-  }
-  // if (m_solverId == tsunami_lab::solvers::HYBRID) {
-  //   // manning friction
-  //   t_real l_dt = 0.1;
-  //   const t_real mann = 0.02;
-  //   for (t_idx i = 1; i <= m_xCells; i++) {
-  //       if (l_hNew[i] > 1e-6) {
-  //           // t_real vel = l_huNew[i] / l_hNew[i];
-  //           // t_real denom = 1.0 + 9.81 * l_dt * mann*mann* std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
-
-  //           t_real speed = std::sqrt(l_huNew[i] * l_huNew[i] + l_hvNew[i] * l_hvNew[i]);
-  //           t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / std::pow(l_hNew[i], 4.0/3.0);
-
-  //           l_huNew[i] /= denom;   // semi-implicit: always stable
-  //           l_hvNew[i] /= denom;
-  //       }
-  //   }
-  // }
-
-  // Y
-  #pragma omp parallel for
-  for (t_idx l_yed = 0; l_yed < m_yCells+1; l_yed++){
-    for( t_idx l_xed = 1; l_xed < m_xCells+1; l_xed++ ) {
-      // determine left and right cell-id
-
-      t_idx l_ceU = l_xed + l_stride * l_yed;
-      t_idx l_ceB = l_xed + l_stride * (l_yed + 1);
-      // extract cell data
-      t_real l_hU = l_hOld[l_ceU];
-      t_real l_hB = l_hOld[l_ceB];
-      t_real l_hvU = l_hvOld[l_ceU];
-      t_real l_hvB = l_hvOld[l_ceB];
-      t_real l_bU = m_bathymetry[l_ceU];
-      t_real l_bB = m_bathymetry[l_ceB];
-      
-      // compute net-updates
-      t_real l_netUpdatesY[2][3] = {};
-      
-      // check for dry cells
-      bool l_dryU = false, l_dryB = false;
-      if (m_solverId != solvers::HYBRID){
-        if (l_hU <= 0 && l_hB <= 0) { // both cells dry
-          // skip evaluation
-          continue;
-        }
-        else if (l_hU <= 0){               // left cell dry
-          // set reflecting boundary conditions left
-          l_dryU = true;
-          l_hU = l_hB;
-          l_hvU = -l_hvB;
-          l_bU  = l_bB;
-
-        }
-        else if (l_hB <= 0){      // right cell dry
-          // set reflecting boundary conditions right
-          l_dryB = true;
-          l_hB = l_hU;
-          l_hvB = -l_hvU;
-          l_bB  = l_bU;
-        }
-      }
-      l_netUpdates( l_hU,
-                    l_hB,
-                    l_hvU,
-                    l_hvB,
-                    l_bU,
-                    l_bB,
-                    l_huOld[l_ceU],
-                    l_huOld[l_ceB],
-                    m_useEntropyFix,
-                    l_netUpdatesY[0],
-                    l_netUpdatesY[1] );
   
-      // update the cells' quantities
-      if (m_solverId != solvers::HYBRID){
-        if (!l_dryU){
-          l_hNew[l_ceU]  -= i_scaling * l_netUpdatesY[0][0];
-          if (l_hNew[l_ceU] <= 1e-6f ){
-            l_hNew[l_ceU] = 1e-6f;
-            l_hvNew[l_ceU] = 0;
+      }
+    }
+    // if (m_solverId == tsunami_lab::solvers::HYBRID) {
+    //   // manning friction
+    //   t_real l_dt = 0.1;
+    //   const t_real mann = 0.02;
+    //   for (t_idx i = 1; i <= m_xCells; i++) {
+    //       if (l_hNew[i] > 1e-6) {
+    //           // t_real vel = l_huNew[i] / l_hNew[i];
+    //           // t_real denom = 1.0 + 9.81 * l_dt * mann*mann* std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
+  
+    //           t_real speed = std::sqrt(l_huNew[i] * l_huNew[i] + l_hvNew[i] * l_hvNew[i]);
+    //           t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / std::pow(l_hNew[i], 4.0/3.0);
+  
+    //           l_huNew[i] /= denom;   // semi-implicit: always stable
+    //           l_hvNew[i] /= denom;
+    //       }
+    //   }
+    // }
+    #pragma omp barrier
+    // Y
+    #pragma omp for
+    for (t_idx l_yed = 0; l_yed < m_yCells+1; l_yed++){
+      #pragma omp simd
+      for( t_idx l_xed = 1; l_xed < m_xCells+1; l_xed++ ) {
+        // determine left and right cell-id
+  
+        t_idx l_ceU = l_xed + l_stride * l_yed;
+        t_idx l_ceB = l_xed + l_stride * (l_yed + 1);
+        // extract cell data
+        t_real l_hU = l_hOld[l_ceU];
+        t_real l_hB = l_hOld[l_ceB];
+        t_real l_hvU = l_hvOld[l_ceU];
+        t_real l_hvB = l_hvOld[l_ceB];
+        t_real l_bU = m_bathymetry[l_ceU];
+        t_real l_bB = m_bathymetry[l_ceB];
+        
+        // compute net-updates
+        t_real l_netUpdatesY[2][3] = {};
+        
+        // check for dry cells
+        bool l_dryU = false, l_dryB = false;
+        if (m_solverId != solvers::HYBRID){
+          if (l_hU <= 0 && l_hB <= 0) { // both cells dry
+            // skip evaluation
+            continue;
           }
+          else if (l_hU <= 0){               // left cell dry
+            // set reflecting boundary conditions left
+            l_dryU = true;
+            l_hU = l_hB;
+            l_hvU = -l_hvB;
+            l_bU  = l_bB;
+  
+          }
+          else if (l_hB <= 0){      // right cell dry
+            // set reflecting boundary conditions right
+            l_dryB = true;
+            l_hB = l_hU;
+            l_hvB = -l_hvU;
+            l_bB  = l_bU;
+          }
+        }
+        l_netUpdates( l_hU,
+                      l_hB,
+                      l_hvU,
+                      l_hvB,
+                      l_bU,
+                      l_bB,
+                      l_huOld[l_ceU],
+                      l_huOld[l_ceB],
+                      m_useEntropyFix,
+                      l_netUpdatesY[0],
+                      l_netUpdatesY[1] );
+    
+        // update the cells' quantities
+        if (m_solverId != solvers::HYBRID){
+          if (!l_dryU){
+            l_hNew[l_ceU]  -= i_scaling * l_netUpdatesY[0][0];
+            if (l_hNew[l_ceU] <= 1e-6f ){
+              l_hNew[l_ceU] = 1e-6f;
+              l_hvNew[l_ceU] = 0;
+            }
+            l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
+            l_huNew[l_ceU] -= i_scaling * l_netUpdatesY[0][2];
+          }
+          if (!l_dryB){
+            l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
+            if (l_hNew[l_ceB] <= 1e-6f ){
+              l_hNew[l_ceB] = 1e-6f;
+              l_hvNew[l_ceB] = 0;
+            }
+            l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
+            l_huNew[l_ceB] -= i_scaling * l_netUpdatesY[1][2];
+          }
+        } else {
+          l_hNew[l_ceU] -= i_scaling * l_netUpdatesY[0][0];
           l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
           l_huNew[l_ceU] -= i_scaling * l_netUpdatesY[0][2];
-        }
-        if (!l_dryB){
+  
           l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
-          if (l_hNew[l_ceB] <= 1e-6f ){
-            l_hNew[l_ceB] = 1e-6f;
-            l_hvNew[l_ceB] = 0;
-          }
           l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
           l_huNew[l_ceB] -= i_scaling * l_netUpdatesY[1][2];
+          // if (l_netUpdatesY[1][2] != 0 ) printf("%f", l_netUpdatesY[1][2]);
         }
-      } else {
-        l_hNew[l_ceU] -= i_scaling * l_netUpdatesY[0][0];
-        l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
-        l_huNew[l_ceU] -= i_scaling * l_netUpdatesY[0][2];
-
-        l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
-        l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
-        l_huNew[l_ceB] -= i_scaling * l_netUpdatesY[1][2];
-        // if (l_netUpdatesY[1][2] != 0 ) printf("%f", l_netUpdatesY[1][2]);
+  
       }
-
     }
-  }
-  if (m_solverId == tsunami_lab::solvers::HYBRID && m_manningFactor > 0) {
-    // manning friction
-    t_real l_dt = m_dt;
-    const t_real mann = m_manningFactor;
-    for (t_idx l_iy = 1; l_iy < m_yCells + 1; l_iy++){
-      for (t_idx l_ix = 1; l_ix < m_xCells + 1; l_ix++){
-        t_idx l_ce = l_ix + l_iy * l_stride;
+    #pragma omp barrier
+    if (m_solverId == tsunami_lab::solvers::HYBRID && m_manningFactor > 0) {
+      // manning friction
+      t_real l_dt = m_dt;
+      const t_real mann = m_manningFactor;
+      #pragma omp for
+      for (t_idx l_iy = 1; l_iy < m_yCells + 1; l_iy++){
+        #pragma omp simd
+        for (t_idx l_ix = 1; l_ix < m_xCells + 1; l_ix++){
+          t_idx l_ce = l_ix + l_iy * l_stride;
 
-        if (l_hNew[l_ce] > 1e-6f) {
-          t_real speed = std::sqrt(l_huNew[l_ce] * l_huNew[l_ce] + l_hvNew[l_ce] * l_hvNew[l_ce]);
-          t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / std::pow(l_hNew[l_ce], 4.0/3.0);
+          if (l_hNew[l_ce] > 1e-6f) {
+            t_real speed = std::sqrt(l_huNew[l_ce] * l_huNew[l_ce] + l_hvNew[l_ce] * l_hvNew[l_ce]);
+            t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / std::pow(l_hNew[l_ce], 4.0/3.0);
 
-          l_huNew[l_ce] /= denom;
-          l_hvNew[l_ce] /= denom;
+            l_huNew[l_ce] /= denom;
+            l_hvNew[l_ce] /= denom;
+          }
         }
       }
     }
   }
+
+
 }
 
 void tsunami_lab::patches::WavePropagation2d::setDt(t_real i_dt){

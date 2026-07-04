@@ -43,9 +43,10 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
     // timestep
     t_real m_dt = 0.1;
 
+    t_real m_manningFactor = 0;
+    
     bool m_useEntropyFix = true;
     
-    t_real m_manningFactor = 0;
     
     public:
     /**
