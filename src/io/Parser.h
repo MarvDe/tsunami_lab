@@ -101,6 +101,7 @@ class tsunami_lab::io::Parser{
                     tsunami_lab::t_real &o_manningFactor,
                     bool &o_useEntropyfix,
                     tsunami_lab::t_idx &o_timeSteps,
+                    tsunami_lab::t_idx &o_outputInterval,
                     SetupArgs &o_setupArgs
                   );
 

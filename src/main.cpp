@@ -243,6 +243,7 @@ int main( int   i_argc,
   bool l_useEntropyFix;
   tsunami_lab::t_real l_manningFactor;
   tsunami_lab::t_idx l_maxTimeStep;
+  tsunami_lab::t_idx l_outputInterval = 10;
 
   if (l_setupFile.compare("") != 0){
     l_parser.parseFile( l_setupFile,
@@ -264,6 +265,7 @@ int main( int   i_argc,
                         l_manningFactor,
                         l_useEntropyFix,
                         l_maxTimeStep,
+                        l_outputInterval,
                         l_setupArgs
                         );
   }
@@ -638,7 +640,7 @@ int main( int   i_argc,
 
   double l_timeMeasure = 0;
   while( l_simTime < l_endTime && (l_maxTimeStep == 0 || l_maxTimeStep > l_timeStep)){
-    if( l_timeStep % 25 == 0 ) {
+    if( l_timeStep % l_outputInterval == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
       float maxHu = 0;

@@ -163,6 +163,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         tsunami_lab::t_real &o_manningFactor,
                                         bool &o_useEntropyfix,
                                         tsunami_lab::t_idx &o_timeSteps,
+                                        tsunami_lab::t_idx &o_outputInterval,
                                         tsunami_lab::io::SetupArgs &o_setupArgs
                                     ){
     YAML::Node l_file;
@@ -181,6 +182,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_ny = args["celly"].as<tsunami_lab::t_idx>();
         o_endTime = args["endTime"].as<tsunami_lab::t_real>();
         o_timeSteps = args["timeSteps"].as<tsunami_lab::t_idx>();
+        o_outputInterval = args["outputInterval"].as<tsunami_lab::t_idx>();
         o_stationsFilePath = args["stations"].as<std::string>();
         o_displacementNCFilePath = args["displacement"].as<std::string>();
         o_bathymetryNCFilePath = args["bathymetry"].as<std::string>();
@@ -234,6 +236,30 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         std::cerr << "YAML Error: " << e.what() << std::endl;
         std::cerr << "Line: " << e.mark.line
                   << ", Column: " << e.mark.column << std::endl;
+        std::cerr   << "\n\nexample yaml configuration:\n\n"
+                    << "args:\n"
+                    << "  - solverName: hybrid\n"
+                    << "    setupName: damBreak\n"
+                    << "    formatName: NONE\n"
+                    << "    startCoordX: 0\n"
+                    << "    startCoordY: 0\n"
+                    << "    cellSize: 1\n"
+                    << "    cellx: 100\n"
+                    << "    celly: 1\n"
+                    << "    endTime: 3\n"
+                    << "    timeSteps: 0\n"
+                    << "    outputInterval: 25\n"
+                    << "    useEntropyFix: false\n"
+                    << "    manningFactor: 0.02\n"
+                    << "    stations: ''\n"
+                    << "    outputResolution: 1\n"
+                    << "    bathymetry: ''\n"
+                    << "    displacement: ''\n\n"
+                    << "setup:\n"
+                    << "    heightLeft: 0.25\n"
+                    << "    heightRight: 0.0\n"
+                    << "    locationDam: 50\n\n\n";
+        throw std::runtime_error("YAML Error");
         return;
     }
     printf("end parseFile\n");

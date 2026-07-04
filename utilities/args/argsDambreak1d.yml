@@ -9,9 +9,10 @@ args:
     celly: 1
     endTime: 3
     timeSteps: 0
+    outputInterval: 25
     useEntropyFix: false
     manningFactor: 0.02
-    stations: ""
+    stations:
     outputResolution: 1
     bathymetry: ""
     displacement: ""
