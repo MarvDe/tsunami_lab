@@ -240,6 +240,9 @@ int main( int   i_argc,
   std::string l_setupName = "damBreak";
   std::string l_formatName = "NONE";
   tsunami_lab::io::SetupArgs l_setupArgs;
+  bool l_useEntropyFix;
+  tsunami_lab::t_real l_manningFactor;
+  tsunami_lab::t_idx l_maxTimeStep;
 
   if (l_setupFile.compare("") != 0){
     l_parser.parseFile( l_setupFile,
@@ -258,6 +261,9 @@ int main( int   i_argc,
                         l_checkPointFilePath,
                         l_appendFile,
                         l_outputResolution,
+                        l_manningFactor,
+                        l_useEntropyFix,
+                        l_maxTimeStep,
                         l_setupArgs
                         );
   }
@@ -389,13 +395,10 @@ int main( int   i_argc,
     l_ny = l_cellsY;
     bool l_bathymetryCup = false;
     bool l_bathymetryCap = false;
-    bool l_bathymetryConst = false;
     if (l_setupArgs.get<bool>("bathymetryCup")){
       l_bathymetryCup = true;
     } else if (l_setupArgs.get<bool>("bathymetryCap")){
       l_bathymetryCap = true;
-    } else {
-      l_bathymetryConst = true;
     }
     
     tsunami_lab::t_real l_bathymetry[l_cellsX*l_cellsY];
@@ -488,10 +491,12 @@ int main( int   i_argc,
       l_setupId == tsunami_lab::setups::CHECK_POINT ){
     l_waveProp = new tsunami_lab::patches::WavePropagation2d( l_nx,
                                                               l_ny,
-                                                              l_solverId);
+                                                              l_solverId,
+                                                              l_useEntropyFix,
+                                                              l_manningFactor);
   } 
   else {
-    l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId, l_outflowTypeL, l_outflowTypeR );
+    l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId, l_outflowTypeL, l_outflowTypeR , l_useEntropyFix);
   }
 
   // maximum observed height in the setup
@@ -632,8 +637,7 @@ int main( int   i_argc,
   // iterate over time
 
   double l_timeMeasure = 0;
-
-  while( l_simTime < l_endTime ){
+  while( l_simTime < l_endTime && (l_maxTimeStep == 0 || l_maxTimeStep > l_timeStep)){
     if( l_timeStep % 25 == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;

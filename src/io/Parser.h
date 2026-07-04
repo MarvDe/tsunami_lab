@@ -98,6 +98,9 @@ class tsunami_lab::io::Parser{
                     std::string &o_checkPointFile,
                     bool &o_appendFile,
                     tsunami_lab::t_idx &o_outRes,
+                    tsunami_lab::t_real &o_manningFactor,
+                    bool &o_useEntropyfix,
+                    tsunami_lab::t_idx &o_timeSteps,
                     SetupArgs &o_setupArgs
                   );
 

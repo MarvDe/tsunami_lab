@@ -43,6 +43,7 @@ class tsunami_lab::solvers::Hybrid {
                             t_real i_bR,
                             t_real i_hvL,
                             t_real i_hvR,
+                            bool,
                             t_real o_netUpdateL[2],
                             t_real o_netUpdateR[2] );
     

@@ -65,6 +65,7 @@ void tsunami_lab::solvers::Roe::netUpdates( t_real i_hL,
                                             t_real,
                                             t_real,
                                             t_real,
+                                            bool,
                                             t_real o_netUpdateL[2],
                                             t_real o_netUpdateR[2] ) {
   // compute particle velocities

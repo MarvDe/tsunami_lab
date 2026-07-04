@@ -42,6 +42,10 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
 
     // timestep
     t_real m_dt = 0.1;
+
+    bool m_useEntropyFix = true;
+    
+    t_real m_manningFactor = 0;
     
     public:
     /**
@@ -52,7 +56,7 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
      * @param i_solverId flag to choose solver.
      * @param i_ghost ghost cell updating condition (0 = outflow, 1 = reflecting)
      **/
-    WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, t_idx i_ghost = 0 );
+    WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix = true, t_real i_manningFactor = 0.02, t_idx i_ghost = 0);
 
     /**
      * Destructor which frees all allocated memory.

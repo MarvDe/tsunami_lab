@@ -14,7 +14,7 @@
 #include <algorithm>
 #include <cmath>
 
-tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghost ) : m_solverId(i_solverId) {
+tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix, t_real i_manningFactor, tsunami_lab::t_idx i_ghost ) : m_manningFactor(i_manningFactor), m_useEntropyFix(i_useEntropyFix), m_solverId(i_solverId) {
   const t_idx l_stride = getStride();
   m_xCells = i_xCells;
   m_yCells = i_yCells;
@@ -70,9 +70,13 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
 
   auto l_netUpdates = solvers::Roe::netUpdates;
 
+  tsunami_lab::solvers::Fwave* l_fwave;
+
   switch (m_solverId) {
     case solvers::FWAVE:
-      l_netUpdates = solvers::Fwave::netUpdates;
+      l_fwave = new tsunami_lab::solvers::Fwave();
+      l_fwave->m_useEntropyFix = m_useEntropyFix;
+      l_netUpdates = l_fwave->netUpdates;
       break;
     case solvers::HLLE:
       l_netUpdates = solvers::Hlle::netUpdates;
@@ -139,6 +143,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
                     l_bR,
                     l_hvOld[l_ceL],
                     l_hvOld[l_ceR],
+                    m_useEntropyFix,
                     l_netUpdatesX[0],
                     l_netUpdatesX[1] );
   
@@ -241,6 +246,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
                     l_bB,
                     l_huOld[l_ceU],
                     l_huOld[l_ceB],
+                    m_useEntropyFix,
                     l_netUpdatesY[0],
                     l_netUpdatesY[1] );
   
@@ -277,10 +283,10 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
 
     }
   }
-  if (m_solverId == tsunami_lab::solvers::HYBRID) {
+  if (m_solverId == tsunami_lab::solvers::HYBRID && m_manningFactor > 0) {
     // manning friction
     t_real l_dt = m_dt;
-    const t_real mann = 0.02;
+    const t_real mann = m_manningFactor;
     for (t_idx l_iy = 1; l_iy < m_yCells + 1; l_iy++){
       for (t_idx l_ix = 1; l_ix < m_xCells + 1; l_ix++){
         t_idx l_ce = l_ix + l_iy * l_stride;

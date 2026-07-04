@@ -160,6 +160,9 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         std::string &o_checkPointFile,
                                         bool &o_appendFile,
                                         tsunami_lab::t_idx &o_outRes,
+                                        tsunami_lab::t_real &o_manningFactor,
+                                        bool &o_useEntropyfix,
+                                        tsunami_lab::t_idx &o_timeSteps,
                                         tsunami_lab::io::SetupArgs &o_setupArgs
                                     ){
     YAML::Node l_file;
@@ -177,7 +180,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_nx = args["cellx"].as<tsunami_lab::t_idx>();
         o_ny = args["celly"].as<tsunami_lab::t_idx>();
         o_endTime = args["endTime"].as<tsunami_lab::t_real>();
-        t_idx l_timeSteps = args["timeSteps"].as<tsunami_lab::t_idx>();
+        o_timeSteps = args["timeSteps"].as<tsunami_lab::t_idx>();
         o_stationsFilePath = args["stations"].as<std::string>();
         o_displacementNCFilePath = args["displacement"].as<std::string>();
         o_bathymetryNCFilePath = args["bathymetry"].as<std::string>();
@@ -188,32 +191,30 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_setupArgs.values.clear();
         auto l_setupNode = l_file["setup"];
 
-        if (true) {
-            auto l_setupDefIt = SETUP_DEFS.find(o_setupName);
-            if (l_setupDefIt == SETUP_DEFS.end()) {
-                std::cerr << "Unknown setup in yaml: " << o_setupName << std::endl;
-                return;
+        auto l_setupDefIt = SETUP_DEFS.find(o_setupName);
+        if (l_setupDefIt == SETUP_DEFS.end()) {
+            std::cerr << "Unknown setup in yaml: " << o_setupName << std::endl;
+            return;
+        }
+
+        const tsunami_lab::io::SetupDef &l_setupDef = l_setupDefIt->second;
+
+        for (const tsunami_lab::io::SetupArgDef &l_argDef : l_setupDef.args) {
+            YAML::Node l_valueNode = l_setupNode[l_argDef.name];
+
+            if (l_valueNode) {
+                o_setupArgs.values[l_argDef.name] = parseSetupValue(l_valueNode, l_argDef.type);
             }
-
-            const tsunami_lab::io::SetupDef &l_setupDef = l_setupDefIt->second;
-
-            for (const tsunami_lab::io::SetupArgDef &l_argDef : l_setupDef.args) {
-                YAML::Node l_valueNode = l_setupNode[l_argDef.name];
-
-                if (l_valueNode) {
-                    o_setupArgs.values[l_argDef.name] = parseSetupValue(l_valueNode, l_argDef.type);
-                }
-                else if (l_argDef.fallback.has_value()) {
-                    o_setupArgs.values[l_argDef.name] = l_argDef.fallback.value();
-                }
-                else if (l_argDef.required) {
-                    throw std::runtime_error("Missing required setup argument '"
-                                                + l_argDef.name
-                                                + "' for setup '"
-                                                + o_setupName
-                                                + "'."
-                                                + "\n");
-                }
+            else if (l_argDef.fallback.has_value()) {
+                o_setupArgs.values[l_argDef.name] = l_argDef.fallback.value();
+            }
+            else if (l_argDef.required) {
+                throw std::runtime_error("Missing required setup argument '"
+                                            + l_argDef.name
+                                            + "' for setup '"
+                                            + o_setupName
+                                            + "'."
+                                            + "\n");
             }
         }
 
@@ -224,9 +225,9 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         }
         
         // tweaks
-        // o_outRes = args["outputResolution"].as<tsunami_lab::t_idx>();
-        // bool l_useEntropieFix = args["useEntropyFix"].as<bool>();
-        // t_real l_manningFactor = args["manningFactor"].as<bool>();
+        o_outRes = args["outputResolution"].as<tsunami_lab::t_idx>();
+        o_useEntropyfix = args["useEntropyFix"].as<bool>();
+        o_manningFactor = args["manningFactor"].as<t_real>();
         
 
     } catch (YAML::Exception& e){

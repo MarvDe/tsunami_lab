@@ -36,6 +36,7 @@ void tsunami_lab::solvers::Hlle::netUpdates(
   t_real i_huL,  t_real i_huR,
   t_real,        t_real,
   t_real,        t_real,
+  bool,
   t_real o_netUpdateL[2],
   t_real o_netUpdateR[2] 
 ){

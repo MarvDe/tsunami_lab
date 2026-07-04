@@ -16,6 +16,9 @@ namespace tsunami_lab {
 }
 
 class tsunami_lab::solvers::Fwave {
+  public:
+    bool m_useEntropyFix = true;
+    Fwave(){};
   private:
     //! square root of gravity
     static t_real constexpr m_gSqrt = 3.131557121;
@@ -89,6 +92,7 @@ class tsunami_lab::solvers::Fwave {
                             t_real i_bR,
                             t_real,
                             t_real,
+                            bool i_useEntropyFix,
                             t_real o_netUpdateL[2],
                             t_real o_netUpdateR[2] );
 };

@@ -84,6 +84,7 @@ class tsunami_lab::solvers::Hlle {
                             t_real,
                             t_real,
                             t_real,
+                            bool,
                             t_real o_netUpdateL[2],
                             t_real o_netUpdateR[2] );
     

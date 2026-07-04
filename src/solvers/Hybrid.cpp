@@ -16,6 +16,7 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
                                                 t_real i_bR,
                                                 t_real i_hvL,
                                                 t_real i_hvR,
+                                                bool i_useEntropyFix,
                                                 t_real o_netUpdateL[3],
                                                 t_real o_netUpdateR[3]){
     t_real l_hL2;
@@ -78,6 +79,7 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
             t_real(0),
             t_real(0),
             t_real(0),
+            i_useEntropyFix,
             o_netUpdateL,
             o_netUpdateR
         );
@@ -93,6 +95,7 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
             i_bR,
             t_real(0),
             t_real(0),
+            i_useEntropyFix,
             o_netUpdateL,
             o_netUpdateR
         );

@@ -10,7 +10,7 @@ args:
     endTime: 3
     timeSteps: 0
     useEntropyFix: false
-    manningFactor: 0
+    manningFactor: 0.02
     stations: ""
     outputResolution: 1
     bathymetry: ""
