@@ -36,7 +36,7 @@ tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsun
   }
 }
 
-tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghostL, tsunami_lab::t_idx i_ghostR, bool i_useEntropyFix ): m_useEntropyFix(i_useEntropyFix), m_solverId(i_solverId), m_ghostL(i_ghostL), m_ghostR(i_ghostR) {
+tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghostL, tsunami_lab::t_idx i_ghostR, bool i_useEntropyFix ): m_solverId(i_solverId), m_ghostL(i_ghostL), m_ghostR(i_ghostR),  m_useEntropyFix(i_useEntropyFix) {
   m_nCells = i_nCells;
 
   // allocate memory including a single ghost cell on each side

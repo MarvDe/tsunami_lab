@@ -53,10 +53,12 @@ tsunami_lab::io::SetupDef tsunami_lab::setups::TsunamiEvent2d::getSetupDef() {
   return {
     "tsunamiEvent2d",
     {
-
+        {"displacement", tsunami_lab::io::ArgType::String, true, std::nullopt},
+        {"bathymetry", tsunami_lab::io::ArgType::String, true, std::nullopt},
     },
     "setup:\n"
-    " # no args\n"
+    " displacement: ${string}\n"
+    " bathymetry: ${string}\n"
   };
 }
 

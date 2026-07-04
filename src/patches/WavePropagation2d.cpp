@@ -13,6 +13,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <omp.h>
 
 tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix, t_real i_manningFactor, tsunami_lab::t_idx i_ghost ) : m_manningFactor(i_manningFactor), m_useEntropyFix(i_useEntropyFix), m_solverId(i_solverId) {
   const t_idx l_stride = getStride();
@@ -74,9 +75,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
 
   switch (m_solverId) {
     case solvers::FWAVE:
-      l_fwave = new tsunami_lab::solvers::Fwave();
-      l_fwave->m_useEntropyFix = m_useEntropyFix;
-      l_netUpdates = l_fwave->netUpdates;
+      l_netUpdates = solvers::Fwave::netUpdates;
       break;
     case solvers::HLLE:
       l_netUpdates = solvers::Hlle::netUpdates;
@@ -94,7 +93,8 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   }
   
   // iterate over edges and update with Riemann solutions
-  // X 
+  // X
+  #pragma omp parallel for 
   for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
     for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
       // determine left and right cell-id
@@ -198,6 +198,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   // }
 
   // Y
+  #pragma omp parallel for
   for (t_idx l_yed = 0; l_yed < m_yCells+1; l_yed++){
     for( t_idx l_xed = 1; l_xed < m_xCells+1; l_xed++ ) {
       // determine left and right cell-id

@@ -149,8 +149,8 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         std::string &o_setupName,
                                         std::string &o_formatName,
                                         tsunami_lab::t_real &o_dxy,
-                                        std::string &o_bathymetryNCFilePath,
-                                        std::string &o_displacementNCFilePath,
+                                        // std::string &o_bathymetryNCFilePath,
+                                        // std::string &o_displacementNCFilePath,
                                         tsunami_lab::t_idx &o_nx,
                                         tsunami_lab::t_idx &o_ny,
                                         tsunami_lab::t_real &o_endTime,
@@ -184,8 +184,8 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_timeSteps = args["timeSteps"].as<tsunami_lab::t_idx>();
         o_outputInterval = args["outputInterval"].as<tsunami_lab::t_idx>();
         o_stationsFilePath = args["stations"].as<std::string>();
-        o_displacementNCFilePath = args["displacement"].as<std::string>();
-        o_bathymetryNCFilePath = args["bathymetry"].as<std::string>();
+        // o_displacementNCFilePath = args["displacement"].as<std::string>();
+        // o_bathymetryNCFilePath = args["bathymetry"].as<std::string>();
         o_setupName = args["setupName"].as<std::string>();
         
         //setup args

@@ -251,8 +251,8 @@ int main( int   i_argc,
                         l_setupName,
                         l_formatName,
                         l_dxy,
-                        l_bathymetryNCFilePath,
-                        l_displacementNCFilePath,
+                        // l_bathymetryNCFilePath,
+                        // l_displacementNCFilePath,
                         l_nx,
                         l_ny,
                         l_endTime,
@@ -443,8 +443,8 @@ int main( int   i_argc,
     tsunami_lab::t_real * l_bathymetry = nullptr;
     tsunami_lab::t_real * l_displacement = nullptr;
 
-    int l_batRes = tsunami_lab::io::NetCdf::read(l_bathymetryNCFilePath, l_bX, l_bY, l_dxyBat, l_leftBat, l_upperBat, &l_bathymetry);
-    int l_disRes = tsunami_lab::io::NetCdf::read(l_displacementNCFilePath, l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, &l_displacement);
+    int l_batRes = tsunami_lab::io::NetCdf::read(l_setupArgs.get<std::string>("bathymetry"), l_bX, l_bY, l_dxyBat, l_leftBat, l_upperBat, &l_bathymetry);
+    int l_disRes = tsunami_lab::io::NetCdf::read(l_setupArgs.get<std::string>("displacement"), l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, &l_displacement);
 
     if (l_batRes || l_disRes){
       std::cout << "error reading bathymetry or displacement" << std::endl;
@@ -507,6 +507,7 @@ int main( int   i_argc,
   tsunami_lab::t_real l_vMaxAbs = 0;
 
   // set up solver
+  #pragma omp parallel for
   for( tsunami_lab::t_idx l_cy = 0; l_cy < l_ny; l_cy++ ) {
     tsunami_lab::t_real l_y = l_cy * l_dxy; 
 
@@ -588,7 +589,8 @@ int main( int   i_argc,
   // setup stations for measurement
   
   tsunami_lab::io::Stations l_stations(l_nx, l_ny, l_dxy, l_left, l_upper);
-  if (l_stationsFilePath.compare("") != 0){
+  if (!l_stationsFilePath.empty() && l_stationsFilePath != "null"){
+    std::cout << "stations file path: " << l_stationsFilePath << "\n";
     l_stations.readFile(l_stationsFilePath);
   } 
 
@@ -639,15 +641,15 @@ int main( int   i_argc,
   // iterate over time
 
   double l_timeMeasure = 0;
-  while( l_simTime < l_endTime && (l_maxTimeStep == 0 || l_maxTimeStep > l_timeStep)){
+  while((l_endTime == 0 || l_simTime < l_endTime) && (l_maxTimeStep == 0 || l_maxTimeStep > l_timeStep)){
     if( l_timeStep % l_outputInterval == 0 ) {
       std::cout << "  simulation time / #time steps: "
                 << l_simTime << " / " << l_timeStep << std::endl;
-      float maxHu = 0;
-      for (tsunami_lab::t_idx i=1; i<=l_nx * l_ny; ++i){
-        maxHu = std::max(maxHu,std::abs(l_waveProp->getMomentumX()[i]));
-      }
-      printf("maxHu = %f\n", maxHu);
+      // float maxHu = 0;
+      // for (tsunami_lab::t_idx i=1; i<=l_nx * l_ny; ++i){
+      //   maxHu = std::max(maxHu,std::abs(l_waveProp->getMomentumX()[i]));
+      // }
+      // printf("maxHu = %f\n", maxHu);
       if (l_formatId == tsunami_lab::io::CSV){
         std::string l_path = "solution_" + std::to_string(l_nOut) + ".csv";
         std::cout << "  writing wave field to " << l_path << std::endl;

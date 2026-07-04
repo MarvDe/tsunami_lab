@@ -112,6 +112,7 @@ int io::NetCdf::errorChecking(int i_errId, bool i_printErr){
     if (i_errId != NC_NOERR){
         if (i_printErr){
             std::cerr << "NC Error: " << nc_strerror(i_errId) << std::endl;
+            throw std::runtime_error("NetCdf Error!");
         }
         return -1;
     }
