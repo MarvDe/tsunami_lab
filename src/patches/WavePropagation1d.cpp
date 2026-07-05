@@ -12,7 +12,7 @@
 #include <cmath>
 #include <iostream>
 
-tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix ): m_useEntropyFix(i_useEntropyFix), m_solverId(i_solverId) {
+tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix ): m_solverId(i_solverId), m_useEntropyFix(i_useEntropyFix) {
   m_nCells = i_nCells;
 
   // allocate memory including a single ghost cell on each side
@@ -107,6 +107,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       break;
   }
 
+  #pragma omp parallel for schedule(runtime)
   // iterate over edges and update with Riemann solutions
   for( t_idx l_ed = 0; l_ed < m_nCells+1; l_ed++ ) {
     // determine left and right cell-id
@@ -180,6 +181,7 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       // manning friction
       t_real l_dt = m_dt;
       const t_real mann = 0.02;
+      #pragma omp parallel for schedule(runtime)
       for (t_idx i = 1; i <= m_nCells; i++) {
         if (l_hNew[i] > 1e-6) {
           const t_real l_h = l_hNew[i];

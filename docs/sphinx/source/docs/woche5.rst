@@ -41,7 +41,7 @@ des nächsten-Nachbarn-Verfahrens der entsprechende Wert errechnet.
 Die `Bathymetry`_ und `Displacement`_ Daten haben wir verwendet um folgende Simulation mit der 
 ``setups::TsunamiEvent2d`` Klasse zu generieren:
 
-.. image:: ../images/tsu2d.gif
+.. image:: ../../images/tsu2d.gif
 
 .. _Bathymetry: https://scalable.uni-jena.de/assets/tsunami_lab/artificialtsunami_bathymetry_1000.nc
 .. _Displacement: https://scalable.uni-jena.de/assets/tsunami_lab/artificialtsunami_displ_1000.nc
@@ -67,12 +67,12 @@ Hier sind nochmal Animationen der beiden Setups im Vergleich:
 
 **Tsunami Event 2d Animation** 
 
-.. image:: ../images/tsu2d.gif
+.. image:: ../../images/tsu2d.gif
 
 **Artificial Tsunami 2d Animation**
 
-.. image:: ../images/artiTsu.gif
+.. image:: ../../images/artiTsu.gif
 
 **Differenz der beiden Setups**
 
-.. image:: ../images/diffTsu.gif
+.. image:: ../../images/diffTsu.gif

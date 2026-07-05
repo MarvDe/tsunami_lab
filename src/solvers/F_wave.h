@@ -29,8 +29,8 @@ class tsunami_lab::solvers::Fwave {
                             t_real   i_hR,
                             t_real   i_uL,
                             t_real   i_uR,
-                            t_real   i_hSqrtL,
-                            t_real   i_hSqrtR,
+                            t_real   ,
+                            t_real   ,
                             t_real   i_hRoe,
                             t_real   i_uRoe,
                             t_real & o_waveSpeedL,
@@ -53,10 +53,10 @@ class tsunami_lab::solvers::Fwave {
           return;
       }
 
-      t_real l_hSqrtL = i_hSqrtL;
-      t_real l_hSqrtR = i_hSqrtR;
-      t_real l_hRoe   = l_hRoe;
-      t_real l_uRoe   = l_uRoe;
+    //   t_real l_hSqrtL = i_hSqrtL;
+    //   t_real l_hSqrtR = i_hSqrtR;
+      t_real l_hRoe   = i_hRoe;
+      t_real l_uRoe   = i_uRoe;
       // t_real l_cRoe   = m_gSqrt * std::sqrt(l_hRoe);
 
       // also compute speed bounds

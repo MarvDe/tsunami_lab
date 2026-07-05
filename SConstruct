@@ -62,7 +62,7 @@ else:
                             '-g',
                             #'-ffast-math',
                             '-march=native',
-                            '-flto'
+                            '-flto=auto'
                             ] )
 
   else:

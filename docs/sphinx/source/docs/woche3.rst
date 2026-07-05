@@ -52,11 +52,11 @@ Hier ist ein Vergleich zwischen der reflektierenden Wand und dem Shock-Shock Set
 
 **Reflektion**
 
-.. image:: ../images/wave_height_bound.gif
+.. image:: ../../images/wave_height_bound.gif
 
 **Shock-Shock**
 
-.. image:: ../images/wave_height_shock.gif
+.. image:: ../../images/wave_height_shock.gif
 
 Wie zu erwarten sind die Ergebnisse, bis auf eine Verschiebung, identisch.
 
@@ -72,7 +72,7 @@ Fukushima aus dem Datenset gelesen und in einer CSV Datei gespeichert.
 
 **Küstenstreifen vor Fukushima**
 
-.. image:: ../images/coast_line_fukushima.png
+.. image:: ../../images/coast_line_fukushima.png
 
 Für das Einbinden der Bathymetry in die Simulation nutzen wir die ``tsunami_lab::io::Csv`` Klasse.
 Die Klasse haben wir mit der Funktion ``readBathymetry`` erweitert, welche die Bathymetry aus der CSV Datei 
@@ -81,18 +81,18 @@ Dieses Setup simuliert ein Tsunami.
 
 **Tsunami Welle vor der Küsten von Fukushima**
 
-.. image:: ../images/wave_height_fukushima.gif
+.. image:: ../../images/wave_height_fukushima.gif
 
 **Momentum der Welle**
 
-.. image:: ../images/wave_momentum_fukushima.gif
+.. image:: ../../images/wave_momentum_fukushima.gif
 
 Die Welle ist aufgrund der Skalierung nicht gut zu erkennen, deshalb haben wir 
 die Darstellung noch einmal etwas verändert
 
 **Nähere Betrachtung der Welle**
 
-.. image:: ../images/wave_height_fukushima_zoom.gif
+.. image:: ../../images/wave_height_fukushima_zoom.gif
 
 Philipp Prell 
 *************
@@ -202,17 +202,17 @@ Der Fluss ist damit superkritisch (:math:`F > 1`), was bedeutet, dass Informatio
 Subcritical Case
 ~~~~~~~~~~~~~~~~
 
-.. image:: ../images/wave_height_subcriticalflow2.gif
+.. image:: ../../images/wave_height_subcriticalflow2.gif
 
-.. image:: ../images/wave_momentum_subcriticalflow2.gif
+.. image:: ../../images/wave_momentum_subcriticalflow2.gif
 
 
 Supercritical Case
 ~~~~~~~~~~~~~~~~~~
 
-.. image:: ../images/wave_height_supercriticalflow2.gif
+.. image:: ../../images/wave_height_supercriticalflow2.gif
 
-.. image:: ../images/wave_momentum_supercriticalflow2.gif
+.. image:: ../../images/wave_momentum_supercriticalflow2.gif
 
 
 Hydraulic Jump – Momentum Profile
@@ -220,7 +220,7 @@ Hydraulic Jump – Momentum Profile
 
 .. _plot_momentum_distribution:
 
-.. image:: ../images/momentum_hydraulic_jump.png
+.. image:: ../../images/momentum_hydraulic_jump.png
 
 
 

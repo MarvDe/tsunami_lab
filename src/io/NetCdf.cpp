@@ -10,7 +10,7 @@
 #include <cmath>
 using namespace tsunami_lab;
 
-io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, t_idx i_outRes, const std::string & i_filePath , bool i_existingFile){
+io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, t_idx i_outRes, t_idx i_compressionLevel, const std::string & i_filePath , bool i_existingFile){
 
     m_dxy = i_dxy * i_outRes;
     m_dt = i_dt;
@@ -48,8 +48,8 @@ io::NetCdf::NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_
         const std::string l_timeUnit = "seconds since start";
         errorChecking( nc_put_att_text(m_fileId, m_tVarId, "units", l_timeUnit.size(), l_timeUnit.c_str()) );
 
-        int l_compressionLevel = 3;
-        int l_useZlibCompression = 1;
+        int l_compressionLevel = i_compressionLevel;
+        int l_useZlibCompression = i_compressionLevel == 0 ? 0 : 1;
         int l_useShuffle = 1;
     
         errorChecking( nc_def_var(m_fileId, "h", NC_FLOAT, 3, l_dimIds, &m_hVarId) );
@@ -127,7 +127,8 @@ void io::NetCdf::write( t_idx                i_nx,
                         t_real       const * i_h,
                         t_real       const * i_hu,
                         t_real       const * i_hv,
-                        t_real       const * i_bathymetry ){
+                        t_real       const * i_bathymetry,
+                        bool                 i_writeCheckpoint ){
 
     if (i_nx + 2 == i_stride ){ // if ghost cells are passed
         errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeIndex, &i_simTime));
@@ -217,7 +218,9 @@ void io::NetCdf::write( t_idx                i_nx,
                 }
             }
         }
-        errorChecking( nc_sync(m_fileId));
+    }
+    if (i_writeCheckpoint) {
+        errorChecking( nc_sync(m_fileId) );
     }
 }
 

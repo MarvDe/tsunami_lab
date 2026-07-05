@@ -24,7 +24,7 @@ eine Bathymetrie im zweidimensionalen Raum und erzeugt in der Mitte
 eine Wassersäule mit vorgegebenem Radius und definierter Höhe.
 
 
-.. image:: ../images/out.gif
+.. image:: ../../images/out.gif
 
 Marvin Döring
 *************
@@ -42,7 +42,7 @@ Es wurden Tests für ``WavePropagation2d`` sowie für
 auch direkt über eine YAML-Datei deklariert werden. Um die YAML-Datei
 einzulesen nutzen wir das submodul *yaml-cpp*
 
-.. image:: ../images/out2.gif
+.. image:: ../../images/out2.gif
 
 Vergleich zwischen 2D und 1D
 ____________________________
@@ -67,14 +67,14 @@ an identischen X-Positionen.
 X = 10
 ~~~~~~
 
-.. image:: ../images/station10.png
+.. image:: ../../images/station10.png
 
 X = 30
 ~~~~~~
 
-.. image:: ../images/station30.png
+.. image:: ../../images/station30.png
 
 X = 60
 ~~~~~~
 
-.. image:: ../images/station60.png
+.. image:: ../../images/station60.png

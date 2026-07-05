@@ -78,6 +78,8 @@ namespace {
               << "  printSetups                  List all available setups.\n"
               << "  printSetup=<name>            Print setup-specific YAML arguments.\n"
               << "  printSetupInfo=<name>        Same as printSetup=<name>.\n\n"
+              << "  printSolvers                 Print all available solvers."
+              << "  printFormats                 Print all available output formats."
               << "Configuration:\n"
               << "  args=<file>                  Read simulation arguments from a YAML file.\n\n"
               << "Common key=value arguments:\n"
@@ -107,6 +109,14 @@ namespace {
     for( std::string const &l_setupName: getSortedSetupNames() ) {
       std::cout << "  " << l_setupName << "\n";
     }
+  }
+
+  void printFormats() {
+    std::cout << "\nAvailable output formats:\n";
+
+    std::cout << "  " << "nc:        for large two dimensional problems with compression\n"
+              << "  " << "csv:       simple ascii encoding\n"
+              << "  " << "NONE:      no output, good for benchmarking\n";
   }
 
   void printSetupInfo( std::string const &i_setupName ) {
@@ -143,6 +153,15 @@ namespace {
 
       std::cout << "\n";
     }
+  }
+
+  void printSolvers() {
+    std::cout << "\nAvailable solvers:\n";
+
+    std::cout << "  " << "fwave:       for one and two dimensional setups, dry cells reflect water.\n"
+              << "  " << "hlle:        for one and two dimensional setups, especially good for supercritical flows.\n"
+              << "  " << "roe:         for one dimensional setups.\n"
+              << "  " << "hybrid:      composed of fwave and hlle and other tweaks, capable of solving anything, but with increased compute time.\n";
   }
 }
 
@@ -213,26 +232,45 @@ int main( int   i_argc,
   // parse runtime arguments
   auto l_parser = tsunami_lab::io::Parser(i_argc, i_argv);
 
-  bool l_printHelp = i_argc == 1 || l_parser.get("help", "null").empty() || l_parser.get("h", "null").empty(); // || hasRuntimeArg( i_argc, i_argv, "help", "h" );
+  bool l_printHelp = i_argc == 1 || l_parser.get("help", "null").empty() || l_parser.get("h", "null").empty();
   if (l_printHelp) {
     printHelp( i_argv[0] );
 
     return 0;
   }
 
-  bool l_printSetups = l_parser.get("printSetups","null").empty(); //hasRuntimeArg( i_argc, i_argv, "printSetups" );
+  bool l_printSetups = l_parser.get("printSetups","null").empty();
   if (l_printSetups) {
     printSetups();
 
     return 0;
   }
 
-  std::string l_setupInfo = l_parser.get("printSetup", "");//getRuntimeArgValue( i_argc, i_argv, "printSetupInfo", "printSetup" );
+  bool l_printSolvers = l_parser.get("printSolvers", "null").empty();
+  if (l_printSolvers) {
+    printSolvers();
+
+    return 0;
+  }
+
+  bool l_printFormats = l_parser.get("printFormats", "null").empty();
+  if (l_printFormats) {
+    printFormats();
+
+    return 0;
+  }
+
+
+
+  std::string l_setupInfo = l_parser.get("printSetup", "");
 
   if (!l_setupInfo.empty()) {
     printSetupInfo( l_setupInfo );
+
     return 0;
   }
+
+  
 
   std::string l_setupFile = l_parser.get("args", "");
 
@@ -244,6 +282,8 @@ int main( int   i_argc,
   tsunami_lab::t_real l_manningFactor;
   tsunami_lab::t_idx l_maxTimeStep;
   tsunami_lab::t_idx l_outputInterval = 10;
+  tsunami_lab::t_idx l_compressionLevel = 0;
+  tsunami_lab::t_idx l_checkpointInterval = 100;
 
   if (l_setupFile.compare("") != 0){
     l_parser.parseFile( l_setupFile,
@@ -257,8 +297,6 @@ int main( int   i_argc,
                         l_ny,
                         l_endTime,
                         l_stationsFilePath,
-                        l_left,
-                        l_upper,
                         l_checkPointFilePath,
                         l_appendFile,
                         l_outputResolution,
@@ -266,6 +304,8 @@ int main( int   i_argc,
                         l_useEntropyFix,
                         l_maxTimeStep,
                         l_outputInterval,
+                        l_compressionLevel,
+                        l_checkpointInterval,
                         l_setupArgs
                         );
   }
@@ -446,6 +486,10 @@ int main( int   i_argc,
     int l_batRes = tsunami_lab::io::NetCdf::read(l_setupArgs.get<std::string>("bathymetry"), l_bX, l_bY, l_dxyBat, l_leftBat, l_upperBat, &l_bathymetry);
     int l_disRes = tsunami_lab::io::NetCdf::read(l_setupArgs.get<std::string>("displacement"), l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, &l_displacement);
 
+    l_left = l_setupArgs.get<tsunami_lab::t_real>("startCoordX");
+    l_upper = l_setupArgs.get<tsunami_lab::t_real>("startCoordY");
+
+
     if (l_batRes || l_disRes){
       std::cout << "error reading bathymetry or displacement" << std::endl;
     }
@@ -624,6 +668,7 @@ int main( int   i_argc,
                                               l_left,
                                               l_upper,
                                               l_outputResolution,
+                                              l_compressionLevel,
                                               "solution.nc");
     } else {
       l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
@@ -633,6 +678,7 @@ int main( int   i_argc,
                                               l_left,
                                               l_upper,
                                               l_outputResolution,
+                                              l_compressionLevel,
                                               l_checkPointFilePath,
                                               true);
     }
@@ -671,6 +717,7 @@ int main( int   i_argc,
         l_nOut++;
       }
       else if (l_formatId == tsunami_lab::io::NC){
+        bool l_writeCheckpoint = l_checkpointInterval != 0 && l_timeStep % l_checkpointInterval == 0;
         l_netCdf->write( l_nx,
                         l_ny,
                         l_nOut,
@@ -679,7 +726,8 @@ int main( int   i_argc,
                         l_waveProp->getHeight(),
                         l_waveProp->getMomentumX(),
                         l_waveProp->getMomentumY(),
-                        l_waveProp->getBathymetry());
+                        l_waveProp->getBathymetry(),
+                        l_writeCheckpoint);
         l_nOut++;
       }
     }

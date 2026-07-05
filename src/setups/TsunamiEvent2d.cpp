@@ -55,10 +55,14 @@ tsunami_lab::io::SetupDef tsunami_lab::setups::TsunamiEvent2d::getSetupDef() {
     {
         {"displacement", tsunami_lab::io::ArgType::String, true, std::nullopt},
         {"bathymetry", tsunami_lab::io::ArgType::String, true, std::nullopt},
+        {"startCoordX", tsunami_lab::io::ArgType::Real, true, std::nullopt},
+        {"startCoordY", tsunami_lab::io::ArgType::Real, true, std::nullopt},
     },
     "setup:\n"
     " displacement: ${string}\n"
     " bathymetry: ${string}\n"
+    " startCoordX: ${string}\n"
+    " startCoordY: ${string}\n"
   };
 }
 

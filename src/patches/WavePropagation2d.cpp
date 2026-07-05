@@ -99,7 +99,16 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
 
     // iterate over edges and update with Riemann solutions
     // X
-    #pragma omp for
+
+    // omp_sched_t sched_ty;
+    // int num;
+    // omp_get_schedule(&sched_ty, &num);
+
+    // printf("omp proc bind, omp places: %d, %d\n",omp_get_proc_bind(), omp_get_place_num());
+
+    
+
+    #pragma omp for schedule(runtime)
     for (t_idx l_yed = 1; l_yed < m_yCells+1; l_yed++){
       for( t_idx l_xed = 0; l_xed < m_xCells+1; l_xed++ ) {
         // determine left and right cell-id
@@ -204,7 +213,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
     #pragma omp barrier
     // Y
     for (t_idx l_parity = 0; l_parity < 2; ++l_parity) {
-      #pragma omp for
+      #pragma omp for schedule(runtime)
       for (t_idx l_yed = l_parity; l_yed < m_yCells+1; l_yed += 2){
         for( t_idx l_xed = 1; l_xed < m_xCells+1; l_xed++ ) {
         // determine left and right cell-id
@@ -296,7 +305,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       // manning friction
       t_real l_dt = m_dt;
       const t_real mann = m_manningFactor;
-      #pragma omp for
+      #pragma omp for schedule(runtime)
       for (t_idx l_iy = 1; l_iy < m_yCells + 1; l_iy++){
         #pragma omp simd
         for (t_idx l_ix = 1; l_ix < m_xCells + 1; l_ix++){

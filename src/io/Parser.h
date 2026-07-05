@@ -87,14 +87,10 @@ class tsunami_lab::io::Parser{
                     std::string &o_setupName,
                     std::string &o_formatName,
                     tsunami_lab::t_real &o_dxy,
-                    // std::string &o_bathymetryNCFilePath,
-                    // std::string &o_displacementNCFilePath,
                     tsunami_lab::t_idx &o_nx,
                     tsunami_lab::t_idx &o_ny,
                     tsunami_lab::t_real &o_endTime,
                     std::string &o_stationsFilePath,
-                    tsunami_lab::t_real &o_left,
-                    tsunami_lab::t_real &o_upper,
                     std::string &o_checkPointFile,
                     bool &o_appendFile,
                     tsunami_lab::t_idx &o_outRes,
@@ -102,6 +98,8 @@ class tsunami_lab::io::Parser{
                     bool &o_useEntropyfix,
                     tsunami_lab::t_idx &o_timeSteps,
                     tsunami_lab::t_idx &o_outputInterval,
+                    tsunami_lab::t_idx &o_compressionLevel,
+                    tsunami_lab::t_idx &o_checkpointInterval,
                     SetupArgs &o_setupArgs
                   );
 

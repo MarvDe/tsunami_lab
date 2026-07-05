@@ -30,10 +30,10 @@ die Datei mit einem 50m Gitter konnten wir weder lokal noch über den Uni PC sim
 
 **Demonstration des verschmelzens von Zellen**
 
-.. image:: ../images/downscaled2d.0000.png
+.. image:: ../../images/downscaled2d.0000.png
 
 
-.. image:: ../images/downscaled3d.0000.png
+.. image:: ../../images/downscaled3d.0000.png
 
 
 Philipp Prell

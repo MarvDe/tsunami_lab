@@ -38,11 +38,11 @@ Dabei ist 1400x1180 die Größe des Grids und 453*25 die Anzahl an Zeitschritten
 
 **2010 M 8.8 Chile Event Height**
 
-.. image:: ../images/chile2010.gif 
+.. image:: ../../images/chile2010.gif 
 
 **2010 M 8.8 Chile Event Momentum**
 
-.. image:: ../images/chile2010_momentum.gif 
+.. image:: ../../images/chile2010_momentum.gif 
 
 Tohoku Simulation
 _________________
@@ -55,7 +55,7 @@ Es ergeben sich also etwa 33 Minuten bis die erste Welle die Simulation verläss
 
 **2011 M 9.1 Tohoku Event**
 
-.. image:: ../images/tohoku2011_resize.gif
+.. image:: ../../images/tohoku2011_resize.gif
 
 Philipp Prell
 *************

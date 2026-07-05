@@ -16,6 +16,9 @@
 #include <stdexcept>
 #include <sstream>
 #include <yaml-cpp/yaml.h>
+#include <omp.h>
+
+#include <cstdlib>
 
 namespace {
     std::unordered_map<std::string, tsunami_lab::io::SetupDef> createSetupDefs() {
@@ -54,6 +57,8 @@ const std::unordered_map<std::string, bool> tsunami_lab::io::Parser::knownFlags 
     {"printSetups", false},
     {"printSetup", true},
     {"args", true},
+    {"printSolvers", false},
+    {"printFormats", false},
 };
 
 tsunami_lab::io::Parser::Parser(int i_argc, char *i_argv[]){
@@ -149,14 +154,10 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         std::string &o_setupName,
                                         std::string &o_formatName,
                                         tsunami_lab::t_real &o_dxy,
-                                        // std::string &o_bathymetryNCFilePath,
-                                        // std::string &o_displacementNCFilePath,
                                         tsunami_lab::t_idx &o_nx,
                                         tsunami_lab::t_idx &o_ny,
                                         tsunami_lab::t_real &o_endTime,
                                         std::string &o_stationsFilePath,
-                                        tsunami_lab::t_real &o_left,
-                                        tsunami_lab::t_real &o_upper,
                                         std::string &o_checkPointFile,
                                         bool &o_appendFile,
                                         tsunami_lab::t_idx &o_outRes,
@@ -164,6 +165,8 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         bool &o_useEntropyfix,
                                         tsunami_lab::t_idx &o_timeSteps,
                                         tsunami_lab::t_idx &o_outputInterval,
+                                        tsunami_lab::t_idx &o_compressionLevel,
+                                        tsunami_lab::t_idx &o_checkpointInterval,
                                         tsunami_lab::io::SetupArgs &o_setupArgs
                                     ){
     YAML::Node l_file;
@@ -171,38 +174,52 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
     try {
         l_file = YAML::LoadFile(i_file);
 
-        auto  args = l_file["args"][0];
-
+        /**
+         * args
+         */
+        auto  args = l_file["args"];
+        
         o_solverName = args["solverName"].as<std::string>();
-        o_left = args["startCoordX"].as<tsunami_lab::t_real>();
-        o_upper = args["startCoordY"].as<tsunami_lab::t_real>();
-        o_formatName = args["formatName"].as<std::string>();
+        o_setupName = args["setupName"].as<std::string>();
         o_dxy = args["cellSize"].as<tsunami_lab::t_real>();
         o_nx = args["cellx"].as<tsunami_lab::t_idx>();
         o_ny = args["celly"].as<tsunami_lab::t_idx>();
         o_endTime = args["endTime"].as<tsunami_lab::t_real>();
         o_timeSteps = args["timeSteps"].as<tsunami_lab::t_idx>();
-        o_outputInterval = args["outputInterval"].as<tsunami_lab::t_idx>();
-        o_stationsFilePath = args["stations"].as<std::string>();
-        // o_displacementNCFilePath = args["displacement"].as<std::string>();
-        // o_bathymetryNCFilePath = args["bathymetry"].as<std::string>();
-        o_setupName = args["setupName"].as<std::string>();
         
-        //setup args
+        
+        /**
+         * output
+         */
+        auto output = l_file["output"];
+        
+        o_formatName = output["formatName"].as<std::string>();
+        o_outputInterval = output["outputInterval"].as<tsunami_lab::t_idx>();
+        o_outRes = output["outputResolution"].as<tsunami_lab::t_idx>();
+        o_compressionLevel = output["compressionLevel"].as<tsunami_lab::t_idx>();
+        o_stationsFilePath = output["stations"].as<std::string>();
+        o_checkpointInterval = output["checkpointInterval"].as<tsunami_lab::t_idx>();
+        
+        // printf("loaded file\n");
+        
+        /**
+         * setup
+         */
+        auto setup = l_file["setup"];
+        
         o_setupArgs.name = o_setupName;
         o_setupArgs.values.clear();
-        auto l_setupNode = l_file["setup"];
-
+        
         auto l_setupDefIt = SETUP_DEFS.find(o_setupName);
         if (l_setupDefIt == SETUP_DEFS.end()) {
             std::cerr << "Unknown setup in yaml: " << o_setupName << std::endl;
             return;
         }
-
+        
         const tsunami_lab::io::SetupDef &l_setupDef = l_setupDefIt->second;
 
         for (const tsunami_lab::io::SetupArgDef &l_argDef : l_setupDef.args) {
-            YAML::Node l_valueNode = l_setupNode[l_argDef.name];
+            YAML::Node l_valueNode = setup[l_argDef.name];
 
             if (l_valueNode) {
                 o_setupArgs.values[l_argDef.name] = parseSetupValue(l_valueNode, l_argDef.type);
@@ -226,39 +243,70 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
             return;
         }
         
-        // tweaks
-        o_outRes = args["outputResolution"].as<tsunami_lab::t_idx>();
-        o_useEntropyfix = args["useEntropyFix"].as<bool>();
-        o_manningFactor = args["manningFactor"].as<t_real>();
+
+        /**
+         * tweaks
+         */
+        auto tweaks = l_file["tweaks"];
+        
+        o_useEntropyfix = tweaks["useEntropyFix"].as<bool>();
+        o_manningFactor = tweaks["manningFactor"].as<t_real>();
+
+
+        /**
+         * omp
+         */
+        auto omp = l_file["omp"];
+
+        if (omp.IsDefined()){
+            std::string l_omp_num_threads = omp["omp_num_threads"].as<std::string>();
+            std::string l_omp_schedule = omp["omp_schedule"].as<std::string>();
+
+            std::cout   << "OMP_NUM_THREADS: " << l_omp_num_threads << "\n"
+                        << "OMP_SCHEDULE: " << l_omp_schedule << "\n";
+            /**
+             * num threads
+             */
+            omp_set_num_threads(atoi(l_omp_num_threads.c_str()));
+            
+            /**
+             * schedeule
+             */
+            int l_chunksize = 8;
+            omp_sched_t l_schedTy;
+            size_t pos = l_omp_schedule.find(",");
+            if (pos != std::string::npos){
+                l_chunksize = atoi(l_omp_schedule.substr(pos+1).c_str());
+                l_omp_schedule = l_omp_schedule.substr(0, pos);
+            }
+            if (l_omp_schedule == "static") {
+                l_schedTy = omp_sched_static;
+            } else if (l_omp_schedule == "dynamic") {
+                l_schedTy = omp_sched_dynamic;
+            } else if (l_omp_schedule == "auto") {
+                l_schedTy = omp_sched_auto;
+            } else if (l_omp_schedule == "guided") {
+                l_schedTy = omp_sched_guided;
+            } else if (l_omp_schedule == "monotonic") {
+                l_schedTy = omp_sched_monotonic;
+            } else {
+                throw std::runtime_error("schedeule type not known!\n");
+            }
+            printf("set Schedule type to %d, %d\n", l_schedTy, l_chunksize);
+            omp_set_schedule(l_schedTy, l_chunksize);
+
+            setenv("OMP_NUM_THREADS", l_omp_num_threads.c_str(), 1);
+            setenv("OMP_SCHEDULE", l_omp_schedule.c_str(), 1);
+
+        }
+
+
         
 
     } catch (YAML::Exception& e){
         std::cerr << "YAML Error: " << e.what() << std::endl;
         std::cerr << "Line: " << e.mark.line
                   << ", Column: " << e.mark.column << std::endl;
-        std::cerr   << "\n\nexample yaml configuration:\n\n"
-                    << "args:\n"
-                    << "  - solverName: hybrid\n"
-                    << "    setupName: damBreak\n"
-                    << "    formatName: NONE\n"
-                    << "    startCoordX: 0\n"
-                    << "    startCoordY: 0\n"
-                    << "    cellSize: 1\n"
-                    << "    cellx: 100\n"
-                    << "    celly: 1\n"
-                    << "    endTime: 3\n"
-                    << "    timeSteps: 0\n"
-                    << "    outputInterval: 25\n"
-                    << "    useEntropyFix: false\n"
-                    << "    manningFactor: 0.02\n"
-                    << "    stations: ''\n"
-                    << "    outputResolution: 1\n"
-                    << "    bathymetry: ''\n"
-                    << "    displacement: ''\n\n"
-                    << "setup:\n"
-                    << "    heightLeft: 0.25\n"
-                    << "    heightRight: 0.0\n"
-                    << "    locationDam: 50\n\n\n";
         throw std::runtime_error("YAML Error");
         return;
     }
