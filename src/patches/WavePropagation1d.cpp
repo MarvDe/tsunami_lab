@@ -107,90 +107,92 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
       break;
   }
 
-  #pragma omp parallel for schedule(runtime)
-  // iterate over edges and update with Riemann solutions
-  for( t_idx l_ed = 0; l_ed < m_nCells+1; l_ed++ ) {
-    // determine left and right cell-id
-    t_idx l_ceL = l_ed;
-    t_idx l_ceR = l_ed+1;
-
-    // extract cell data
-    t_real l_hL = l_hOld[l_ceL];
-    t_real l_hR = l_hOld[l_ceR];
-    t_real l_huL = l_huOld[l_ceL];
-    t_real l_huR = l_huOld[l_ceR];
-    t_real l_bL = m_bathymetry[l_ceL];
-    t_real l_bR = m_bathymetry[l_ceR];
-    
-    // compute net-updates
-    t_real l_netUpdates[2][2];
-
-    
-
-    bool l_dryL = false, l_dryR = false;
-    if (m_solverId != tsunami_lab::solvers::HYBRID){
-      // check for dry cells
-      if (l_hL <= 1e-6f && l_hR <= 1e-6f) { // both cells dry
-        // skip evaluation
-        continue;
-      }
-      else if (l_hL <= 1e-6f){               // left cell dry
-        // set reflecting boundary conditions left
-        l_dryL = true;
-        l_hL = l_hR;
-        l_huL = -l_huR;
-        l_bL  = l_bR;
-      }
-      else if (l_hR <= 1e-6f){      // right cell dry
-        // set reflecting boundary conditions right
-        l_dryR = true;
-        l_hR = l_hL;
-        l_huR = -l_huL;
-        l_bR  = l_bL;
-      }
-    }
-
- 
-    l_netUpdatesfun( l_hL,
-                  l_hR,
-                  l_huL,
-                  l_huR,
-                  l_bL,
-                  l_bR,
-                  l_huL,
-                  l_huR,
-                  m_useEntropyFix,
-                  l_netUpdates[0],
-                  l_netUpdates[1] );
-
-    // update the cells' quantities
-    if (!l_dryL){
+  for (t_idx l_parity = 0; l_parity < 2; ++l_parity) {
+    #pragma omp parallel for schedule(runtime) 
+    for( t_idx l_ed = l_parity; l_ed < m_nCells+1; l_ed += 2 ) {
+      // determine left and right cell-id
+      t_idx l_ceL = l_ed;
+      t_idx l_ceR = l_ed+1;
+  
+      // extract cell data
+      t_real l_hL = l_hOld[l_ceL];
+      t_real l_hR = l_hOld[l_ceR];
+      t_real l_huL = l_huOld[l_ceL];
+      t_real l_huR = l_huOld[l_ceR];
+      t_real l_bL = m_bathymetry[l_ceL];
+      t_real l_bR = m_bathymetry[l_ceR];
       
-      l_hNew[l_ceL]  -= i_scaling * l_netUpdates[0][0];
-      l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1];
+      // compute net-updates
+      t_real l_netUpdates[2][2];
+  
       
-    }
-    if (!l_dryR){
-      
-      l_hNew[l_ceR]  -= i_scaling * l_netUpdates[1][0];
-      l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1];
-      
-    }
-
-    if (m_solverId == tsunami_lab::solvers::HYBRID) {
-      // manning friction
-      t_real l_dt = m_dt;
-      const t_real mann = 0.02;
-      #pragma omp parallel for schedule(runtime)
-      for (t_idx i = 1; i <= m_nCells; i++) {
-        if (l_hNew[i] > 1e-6) {
-          const t_real l_h = l_hNew[i];
-          t_real vel = l_huNew[i] / l_h;
-          const t_real h43 = l_h * std::cbrt(l_h);
-          t_real denom = 1.0 + 9.81 * l_dt * mann*mann
-                        * std::abs(vel) / h43;
-          l_huNew[i] /= denom;   // semi-implicit: always stable
+  
+      bool l_dryL = false, l_dryR = false;
+      if (m_solverId != tsunami_lab::solvers::HYBRID){
+        // check for dry cells
+        if (l_hL <= 1e-6f && l_hR <= 1e-6f) { // both cells dry
+          // skip evaluation
+          continue;
         }
+        else if (l_hL <= 1e-6f){               // left cell dry
+          // set reflecting boundary conditions left
+          l_dryL = true;
+          l_hL = l_hR;
+          l_huL = -l_huR;
+          l_bL  = l_bR;
+        }
+        else if (l_hR <= 1e-6f){      // right cell dry
+          // set reflecting boundary conditions right
+          l_dryR = true;
+          l_hR = l_hL;
+          l_huR = -l_huL;
+          l_bR  = l_bL;
+        }
+      }
+  
+   
+      l_netUpdatesfun( l_hL,
+                    l_hR,
+                    l_huL,
+                    l_huR,
+                    l_bL,
+                    l_bR,
+                    l_huL,
+                    l_huR,
+                    m_useEntropyFix,
+                    l_netUpdates[0],
+                    l_netUpdates[1] );
+  
+      // update the cells' quantities
+      if (!l_dryL){
+        
+        l_hNew[l_ceL]  -= i_scaling * l_netUpdates[0][0];
+        l_huNew[l_ceL] -= i_scaling * l_netUpdates[0][1];
+        
+      }
+      if (!l_dryR){
+        
+        l_hNew[l_ceR]  -= i_scaling * l_netUpdates[1][0];
+        l_huNew[l_ceR] -= i_scaling * l_netUpdates[1][1];
+        
+      }
+  
+    }
+  }
+  // iterate over edges and update with Riemann solutions
+  if (m_solverId == tsunami_lab::solvers::HYBRID) {
+    // manning friction
+    t_real l_dt = m_dt;
+    const t_real mann = 0.02;
+    #pragma omp parallel for schedule(runtime)
+    for (t_idx i = 1; i <= m_nCells; i++) {
+      if (l_hNew[i] > 1e-6) {
+        const t_real l_h = l_hNew[i];
+        t_real vel = l_huNew[i] / l_h;
+        const t_real h43 = l_h * std::cbrt(l_h);
+        t_real denom = 1.0 + 9.81 * l_dt * mann*mann
+                      * std::abs(vel) / h43;
+        l_huNew[i] /= denom;   // semi-implicit: always stable
       }
     }
   }
