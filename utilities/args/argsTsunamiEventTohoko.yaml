@@ -1,5 +1,5 @@
 args:
-  - solverName: "fwave"
+  - solverName: "hybrid"
     formatName: "nc"
     setupName: "tsunamiEvent2d"
     startCoordX: -200000. # global coordinates

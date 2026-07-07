@@ -48,7 +48,9 @@ env.Append( CXXFLAGS = [ '-std=c++17',
                          '-Wall',
                          '-Wextra',
                          '-Wpedantic',
-                         '-Wno-keyword-macro' ] )
+                         '-Wno-keyword-macro',
+                         '-fopenmp'] )
+env.Append( LINKFLAGS = [ '-fopenmp' ] )
 
 # set optimization mode
 if 'debug' in env['mode']:
@@ -57,9 +59,10 @@ if 'debug' in env['mode']:
 else:
   if 'optimization' in env['mode']:
     env.Append( CXXFLAGS = ['-O3',
-                            '-ffast-math',
+                            '-g',
+                            #'-ffast-math',
                             '-march=native',
-                            #'-flto'
+                            '-flto=auto'
                             ] )
 
   else:
@@ -78,7 +81,8 @@ if 'san' in  env['mode']:
                             '-fsanitize=address',
                             '-fsanitize=undefined' ] )
 else:
-  env.Append( CXXFLAGS = [ '-Werror' ] )
+  pass
+  # env.Append( CXXFLAGS = [ '-Werror' ] )
 
 # add Catch2
 env.Append( CXXFLAGS = [ '-isystem', 'submodules/Catch2/single_include' ] )

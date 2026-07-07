@@ -1,5 +1,5 @@
 args:
-  - solverName: "fwave_hydrostatic_reconstruction"
+  - solverName: "hybrid"
     formatName: "csv"
     setupName: "damBreak"
     startCoordX: 0 # global coordinates

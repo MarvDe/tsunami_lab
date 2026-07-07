@@ -10,6 +10,7 @@ Import('env')
 l_sources = [ 'solvers/Roe.cpp',
               'solvers/F_wave.cpp',
               'solvers/hlle.cpp',
+              'solvers/Hybrid.cpp',
               'patches/WavePropagation1d.cpp',
               'patches/WavePropagation2d.cpp',
               'setups/DamBreak1d.cpp',
@@ -25,7 +26,8 @@ l_sources = [ 'solvers/Roe.cpp',
               'setups/CircularDamBreak2d.cpp',
               'setups/ArtificialTsunami2d.cpp',
               'setups/TsunamiEvent2d.cpp',
-              'setups/CheckPoint.cpp'    
+              'setups/CheckPoint.cpp',
+              'setups/SingleWaveCanonicalIsland.cpp'
                ]
 
 for l_so in l_sources:

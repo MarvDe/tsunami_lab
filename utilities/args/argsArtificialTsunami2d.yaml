@@ -1,21 +1,26 @@
 args:
-  - solverName: "fwave"
-    formatName: "nc"
-    setupName: "artificialTsunami"
-    startCoordX: 0 # global coordinates
-    startCoordY: 0 # of simulation
-    cellSize: 1
-    cellx: 1000
-    celly: 1000
-    endTime: 12 # time in s (needs to be updated)
-    stations: ""
-    bathymetry:
-      - startCoordX: 0 # global coordinates
-        startCoordY: 0 # of bathymetry data
-        cellSize: 250 # in m
-        filePath: ""
-    displacement: 
-      - startCoordX: 0 # global coordinates
-        startCoordY: 0 # of bathymetry data
-        cellSize: 0 # in m
-        filePath: ""
+  solverName: fwave
+  setupName: artificialTsunami
+  cellSize: 250
+  cellx: 1000
+  celly: 1000
+  endTime: 0
+  timeSteps: 1000
+
+setup:
+
+tweaks:
+  useEntropyFix: true
+  manningFactor: 0.02
+
+output:
+  formatName: nc
+  outputInterval: 100
+  outputResolution: 1
+  compressionLevel: 3
+  checkpointInterval: 0
+  stations: ""
+
+omp:
+  omp_num_threads: 8
+  omp_schedule: static,8

@@ -1,0 +1,30 @@
+args:
+  solverName: hybrid
+  setupName: tsunamiEvent2d
+  cellSize: 250
+  cellx: 10800
+  celly: 6000
+  endTime: 0
+  timeSteps: 50
+
+setup:
+  displacement: "large_data/tohoku_gebco20_ucsb3_250m_displ.nc"
+  bathymetry: "large_data/tohoku_gebco20_ucsb3_250m_bath.nc"
+  startCoordX: -200000
+  startCoordY: -750000
+
+tweaks:
+  useEntropyFix: true
+  manningFactor: 0.02
+
+output:
+  formatName: nc
+  outputInterval: 10
+  outputResolution: 1
+  compressionLevel: 0
+  checkpointInterval: 100
+  stations: ""
+
+omp:
+  omp_num_threads: 8
+  omp_schedule: static,8

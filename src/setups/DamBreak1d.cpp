@@ -6,6 +6,21 @@
  **/
 #include "DamBreak1d.h"
 
+tsunami_lab::io::SetupDef tsunami_lab::setups::DamBreak1d::getSetupDef() {
+  return {
+    "damBreak",
+    {
+      {"heightLeft", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(0.2)},
+      {"heightRight", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(0.1)},
+      {"locationDam", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(50.0)}
+    },
+    "setup:\n"
+    " heightLeft: ${float}\n"
+    " heightRight: ${float}\n"
+    " locationDam: ${int}\n"
+  };
+}
+
 tsunami_lab::setups::DamBreak1d::DamBreak1d( t_real i_heightLeft,
                                              t_real i_heightRight,
                                              t_real i_locationDam ) {

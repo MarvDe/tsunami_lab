@@ -110,6 +110,11 @@ TEST_CASE( "Test the derivation of the Roe net-updates.", "[RoeUpdates]" ) {
                                          9,
                                          -30,
                                          27,
+                                         0,
+                                         0,
+                                         0,
+                                         0,
+                                         true,
                                          l_netUpdatesL,
                                          l_netUpdatesR );
 
@@ -159,6 +164,11 @@ TEST_CASE( "Test the derivation of the Roe net-updates.", "[RoeUpdates]" ) {
                                          8,
                                          0,
                                          0,
+                                         0,
+                                         0,
+                                         0,
+                                         0,
+                                         true,
                                          l_netUpdatesL,
                                          l_netUpdatesR ); 
 
@@ -179,6 +189,11 @@ TEST_CASE( "Test the derivation of the Roe net-updates.", "[RoeUpdates]" ) {
                                          10,
                                          0,
                                          0,
+                                         0,
+                                         0,
+                                         0,
+                                         0,
+                                         true,
                                          l_netUpdatesL,
                                          l_netUpdatesR );
 

@@ -34,6 +34,9 @@ void tsunami_lab::solvers::Hlle::waveSpeeds(
 void tsunami_lab::solvers::Hlle::netUpdates(
   t_real i_hL,   t_real i_hR,
   t_real i_huL,  t_real i_huR,
+  t_real,        t_real,
+  t_real,        t_real,
+  bool,
   t_real o_netUpdateL[2],
   t_real o_netUpdateR[2] 
 ){
@@ -88,10 +91,11 @@ void tsunami_lab::solvers::Hlle::netUpdates(
   }
 }
 
-void tsunami_lab::solvers::Hlle::netUpdates(
+void tsunami_lab::solvers::Hlle::netUpdatesDiag(
     t_real i_hL, t_real i_hR,
     t_real i_huL, t_real i_huR,
-    t_real i_hvL, t_real i_hvR,
+    t_real, t_real,
+    t_real i_hvL, t_real i_hvR, bool,
     t_real o_netUpdateL[3], t_real o_netUpdateR[3])
 {   
     t_real l_epsilon = 1e-12;

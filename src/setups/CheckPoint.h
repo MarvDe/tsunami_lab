@@ -91,6 +91,11 @@ public:
         delete[] m_momentumX;
         delete[] m_momentumY;
     }
+
+    /**
+     * Gets the yaml argument definition of the setup.
+     **/
+    static tsunami_lab::io::SetupDef getSetupDef();
     
     /**
      * Gets the water height at a given point.

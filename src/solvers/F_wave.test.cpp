@@ -117,6 +117,9 @@ TEST_CASE( "Test the derivation of the F-Wave Roe net-updates.", "[FWaveUpdates]
                                          27,
                                          0,
                                          0,
+                                         0,
+                                         0,
+                                         false,
                                          l_netUpdatesL,
                                          l_netUpdatesR );
 
@@ -181,6 +184,9 @@ TEST_CASE( "Test the derivation of the F-Wave Roe net-updates.", "[FWaveUpdates]
                                          0,
                                          0,
                                          0,
+                                         0,
+                                         0,
+                                         false,
                                          l_netUpdatesL,
                                          l_netUpdatesR ); 
 
@@ -212,6 +218,9 @@ TEST_CASE( "Test the derivation of the F-Wave Roe net-updates.", "[FWaveUpdates]
                                          10,
                                          0,
                                          0,
+                                         0,
+                                         0,
+                                         false,
                                          l_netUpdatesL,
                                          l_netUpdatesR );
 
@@ -243,6 +252,9 @@ TEST_CASE( "Test the derivation of the F-Wave Roe net-updates.", "[FWaveUpdates]
                                          -10,
                                          0,
                                          0,
+                                         0,
+                                         0,
+                                         false,
                                          l_netUpdatesL,
                                          l_netUpdatesR );
 
@@ -269,6 +281,9 @@ TEST_CASE( "Test the derivation of the F-Wave Roe net-updates.", "[FWaveUpdates]
                                          0,
                                          0,
                                          0,
+                                         0,
+                                         0,
+                                         false,
                                          l_netUpdatesL,
                                          l_netUpdatesR );
 
@@ -339,6 +354,9 @@ TEST_CASE( "Test sanity check.", "[FwaveUpdate]" ){
                                          l_inputs[i * 4 + 3], // huRight
                                          0,
                                          0,
+                                         0,
+                                         0,
+                                         false,
                                         l_netUpdatesL,
                                         l_netUpdatesR );
     

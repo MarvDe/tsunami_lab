@@ -22,7 +22,8 @@ namespace tsunami_lab {
       ROE,
       FWAVE,
       HLLE,
-      FWAVE_HYDROSTATIC_RECONSTRUCTION
+      FWAVE_HYDROSTATIC_RECONSTRUCTION,
+      HYBRID,
     };
   }
 
@@ -48,6 +49,7 @@ namespace tsunami_lab {
       ARTIFICIAL_TSUNAMI_2D,
       TSUNAMI_EVENT_2D,
       CHECK_POINT,
+      SINGLE_WAVE_CANONICAL_ISLAND
     };
   }
 

@@ -3,8 +3,14 @@
 #define TSUNAMI_LAB_IO_PARSER_H
 
 #include "../constants.h"
+#include "SetupConfig.h"
 #include <string>
 #include <unordered_map>
+#include <set>
+
+namespace YAML {
+  class Node;
+}
 
 namespace tsunami_lab {
   namespace io {
@@ -81,18 +87,29 @@ class tsunami_lab::io::Parser{
                     std::string &o_setupName,
                     std::string &o_formatName,
                     tsunami_lab::t_real &o_dxy,
-                    std::string &o_bathymetryNCFilePath,
-                    std::string &o_displacementNCFilePath,
                     tsunami_lab::t_idx &o_nx,
                     tsunami_lab::t_idx &o_ny,
                     tsunami_lab::t_real &o_endTime,
                     std::string &o_stationsFilePath,
-                    tsunami_lab::t_real &o_left,
-                    tsunami_lab::t_real &o_upper,
                     std::string &o_checkPointFile,
                     bool &o_appendFile,
-                    tsunami_lab::t_idx &o_outRes
+                    tsunami_lab::t_idx &o_outRes,
+                    tsunami_lab::t_real &o_manningFactor,
+                    bool &o_useEntropyfix,
+                    tsunami_lab::t_idx &o_timeSteps,
+                    tsunami_lab::t_idx &o_outputInterval,
+                    tsunami_lab::t_idx &o_compressionLevel,
+                    tsunami_lab::t_idx &o_checkpointInterval,
+                    SetupArgs &o_setupArgs
                   );
+
+    ArgValue parseSetupValue(const YAML::Node &node, ArgType type);
+
+    static const std::unordered_map<std::string, tsunami_lab::io::SetupDef> SETUP_DEFS;
+
+    static const std::unordered_map<std::string, bool> knownFlags;
 };
+
+
 
 #endif

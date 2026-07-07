@@ -57,6 +57,11 @@ public:
     ~TsunamiEvent1d();
 
     /**
+     * Gets the yaml argument definition of the setup.
+     **/
+    static tsunami_lab::io::SetupDef getSetupDef();
+
+    /**
      * Gets waterheight at a given point.
      * @return height at the given point.
      */

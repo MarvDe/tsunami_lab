@@ -38,6 +38,11 @@ class tsunami_lab::setups::RareRare1d:  public Setup{
                 t_real i_locationDiscontinuity);
 
     /**
+     * Gets the yaml argument definition of the setup.
+     **/
+    static tsunami_lab::io::SetupDef getSetupDef();
+
+    /**
      * Gets the water height at a given point.
      *
      * @return water height at the given point.

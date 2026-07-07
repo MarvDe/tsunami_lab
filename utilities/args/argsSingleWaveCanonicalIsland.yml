@@ -1,0 +1,25 @@
+args:
+  solverName: hybrid
+  setupName: singleWaveCanonicalIsland
+  cellSize: 1
+  cellx: 25
+  celly: 30
+  endTime: 0
+  timeSteps: 50
+
+setup:
+
+
+tweaks:
+  useEntropyFix: true
+  manningFactor: 0.02
+
+output:
+  formatName: csv
+  outputInterval: 10
+  checkpointInterval: 100
+  stations: ""
+
+omp:
+  omp_num_threads: 8
+  omp_schedule: static,8

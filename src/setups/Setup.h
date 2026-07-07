@@ -8,6 +8,7 @@
 #define TSUNAMI_LAB_SETUPS_SETUP_H
 
 #include "../constants.h"
+#include "../io/SetupConfig.h"
 
 namespace tsunami_lab {
   namespace setups {

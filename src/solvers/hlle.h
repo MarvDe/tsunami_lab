@@ -80,6 +80,11 @@ class tsunami_lab::solvers::Hlle {
                             t_real i_hR,
                             t_real i_huL,
                             t_real i_huR,
+                            t_real, // placeholer for wavepropagation
+                            t_real,
+                            t_real,
+                            t_real,
+                            bool,
                             t_real o_netUpdateL[2],
                             t_real o_netUpdateR[2] );
     
@@ -95,14 +100,17 @@ class tsunami_lab::solvers::Hlle {
      * @param o_netUpdateL will be set to the net-updates for the left side; 0: height, 1: momentum.
      * @param o_netUpdateR will be set to the net-updates for the right side; 0: height, 1: momentum.
      **/
-    static void netUpdates( t_real i_hL,
+    static void netUpdatesDiag( t_real i_hL,
                             t_real i_hR,
                             t_real i_huL,
                             t_real i_huR,
+                            t_real,
+                            t_real,
                             t_real i_hvL,
                             t_real i_hvR,
-                            t_real o_netUpdateL[2],
-                            t_real o_netUpdateR[2] );
+                            bool,
+                            t_real o_netUpdateL[3],
+                            t_real o_netUpdateR[3] );
 
 };
 

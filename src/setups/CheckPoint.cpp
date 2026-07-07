@@ -15,6 +15,19 @@ int errorChecking(int i_errId, bool i_printErr){
     return 0;
 }
 
+tsunami_lab::io::SetupDef tsunami_lab::setups::CheckPoint::getSetupDef() {
+  return {
+    "checkPoint",
+    {
+      {"inputFile", tsunami_lab::io::ArgType::String, true, std::nullopt},
+      {"appendFile", tsunami_lab::io::ArgType::Bool, true, std::nullopt},
+    },
+    "setup:\n"
+    " inputFile: ${string}\n"
+    " appendFile: ${bool}\n"
+  };
+}
+
 void setups::CheckPoint::readNetCdfFile(std::string i_inputFile,
                                         t_real &o_lastSimTime,
                                         t_idx &o_lastTimeStep,

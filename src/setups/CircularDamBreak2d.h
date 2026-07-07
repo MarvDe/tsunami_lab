@@ -59,6 +59,11 @@ class tsunami_lab::setups::CircularDamBreak2d: public Setup {
     ~CircularDamBreak2d();
 
     /**
+     * Gets the yaml argument definition of the setup.
+     **/
+    static tsunami_lab::io::SetupDef getSetupDef();
+
+    /**damBreak
      * Gets the water height at a given point.
      *
      * @param i_x x-coordinate of the queried point.

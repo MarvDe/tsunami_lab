@@ -1,0 +1,27 @@
+args:
+  solverName: hybrid
+  setupName: damBreak
+  cellSize: 1
+  cellx: 30
+  celly: 0
+  endTime: 0
+  timeSteps: 50
+
+setup:
+  heightLeft: 10
+  heightRight: 20
+  locationDam: 15
+
+tweaks:
+  useEntropyFix: true
+  manningFactor: 0.02
+
+output:
+  formatName: csv
+  outputInterval: 10
+  checkpointInterval: 100
+  stations: ""
+
+omp:
+  omp_num_threads: 8
+  omp_schedule: static,8

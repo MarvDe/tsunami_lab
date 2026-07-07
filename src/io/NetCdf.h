@@ -39,9 +39,9 @@ class tsunami_lab::io::NetCdf {
     int m_hvVarId;
     int m_bVarId;
     //! cell size
-    tsunami_lab::t_idx m_dxy;
+    tsunami_lab::t_real m_dxy;
     //! time step size
-    tsunami_lab::t_idx m_dt;
+    tsunami_lab::t_real m_dt;
     //! output resolution
     t_idx m_outRes;
 
@@ -57,11 +57,12 @@ class tsunami_lab::io::NetCdf {
      * @param i_dxy size of cell.
      * @param i_left coordinates of left most cell.
      * @param i_upper coordinates of upper most cell.
-     * @param i_outRes output resolution (=1: same, >1: merge cells)
+     * @param i_outRes output resolution (=1: same, >1: m
+                                        tsunami_lab::t_idx &o_compressionLevel,erge cells)
      * @param i_filePath path of the new nc file.
      * @param i_existingFile if true do not create a new file, but use filepath file
      **/
-    NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, t_idx i_outRes, const std::string & i_filePath , bool i_existingFile = false);
+    NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, t_idx i_outRes, t_idx i_compressionLevel, const std::string & i_filePath , bool i_existingFile = false);
     
     /**
      * Destructor.
@@ -89,7 +90,8 @@ class tsunami_lab::io::NetCdf {
                 t_real       const * i_h,
                 t_real       const * i_hu,
                 t_real       const * i_hv,
-                t_real       const * i_bathymetry );
+                t_real       const * i_bathymetry,
+                bool                 i_writeCheckpoint );
 
     /**
      * Reads data.

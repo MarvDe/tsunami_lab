@@ -8,6 +8,21 @@ tsunami_lab::setups::RareRare1d::RareRare1d( t_real i_height,
 
 }
 
+tsunami_lab::io::SetupDef tsunami_lab::setups::RareRare1d::getSetupDef() {
+  return {
+    "rareRare",
+    {
+      {"waterHeight", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(10)},
+      {"waterMomentum", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(5)},
+      {"locationDiscontinuity", tsunami_lab::io::ArgType::Real, false, tsunami_lab::t_real(5)}
+    },
+    "setup:\n"
+    " waterHeight: ${float}\n"
+    " waterMomentum: ${float}\n"
+    " locationDiscontinuity: ${float}\n"
+  };
+}
+
 tsunami_lab::t_real tsunami_lab::setups::RareRare1d::getHeight(t_real, t_real) const {
     return m_height;
 }

@@ -1,0 +1,61 @@
+stations:
+  - name: "stationDambreak1d_01"
+    locX: 0
+    locY: 1
+  - name: "stationDambreak1d_02"
+    locX: 76
+    locY: 1
+  - name: "stationDambreak1d_03"
+    locX: 102
+    locY: 1
+  - name: "stationDambreak1d_04"
+    locX: 127
+    locY: 1
+  - name: "stationDambreak1d_05"
+    locX: 137
+    locY: 1
+  - name: "stationDambreak1d_06"
+    locX: 142
+    locY: 1
+  - name: "stationDambreak1d_07"
+    locX: 147
+    locY: 1
+  - name: "stationDambreak1d_08"
+    locX: 152
+    locY: 1
+  - name: "stationDambreak1d_09"
+    locX: 157
+    locY: 1
+  - name: "stationDambreak1d_10"
+    locX: 167
+    locY: 1
+  - name: "stationDambreak1d_11"
+    locX: 177
+    locY: 1
+  - name: "stationDambreak1d_12"
+    locX: 187
+    locY: 1
+  - name: "stationDambreak1d_13"
+    locX: 242
+    locY: 1
+  - name: "stationDambreak1d_14"
+    locX: 247
+    locY: 1
+  - name: "stationDambreak1d_15"
+    locX: 252
+    locY: 1
+  - name: "stationDambreak1d_16"
+    locX: 257
+    locY: 1
+  - name: "stationDambreak1d_17"
+    locX: 262
+    locY: 1
+  - name: "stationDambreak1d_18"
+    locX: 362
+    locY: 1
+  - name: "stationDambreak1d_19"
+    locX: 452
+    locY: 1
+  - name: "stationDambreak1d_20"
+    locX: 552
+    locY: 1
