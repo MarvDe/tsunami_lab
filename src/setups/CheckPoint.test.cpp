@@ -54,6 +54,8 @@ TEST_CASE( "CheckPoint reads metadata and last time slice from NetCDF", "[CheckP
    * => last saved timestep = 20 -> 5 written timesteps, index 4
    */
   std::string l_fileName = "utilities/checkpoint_test.nc";
+  // std::string l_fileName = "solution.nc";
+
 
   t_real l_lastSimTime = 0;
   t_idx l_lastTimeStep = 0;

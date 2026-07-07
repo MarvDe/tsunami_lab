@@ -18,7 +18,7 @@ output:
   formatName: nc
   outputInterval: 5
   outputResolution: 1
-  compressionLevel: 0
+  compressionLevel: 3
   checkpointInterval: 10
   stations: ""
 
