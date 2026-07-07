@@ -48,6 +48,14 @@ void tsunami_lab::solvers::Hlle::netUpdates(
   t_real l_hL = (i_hL > 0) ? i_hL : t_real(0);
   t_real l_hR = (i_hR > 0) ? i_hR : t_real(0);
 
+  if (l_hL <= 1e-12 && l_hR <= 1e-12) {
+    o_netUpdateL[0] = 0;
+    o_netUpdateL[1] = 0;
+    o_netUpdateR[0] = 0;
+    o_netUpdateR[1] = 0;
+    return;
+  }
+
   t_real l_sL = 0;
   t_real l_sR = 0;
 

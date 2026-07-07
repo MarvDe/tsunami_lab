@@ -38,6 +38,14 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
                                 l_sourceR
                             );
 
+    if (l_hL2 <= 1e-12 && l_hR2 <= 1e-12) {
+        o_netUpdateL[0] = 0;
+        o_netUpdateL[1] = 0;
+        o_netUpdateR[0] = 0;
+        o_netUpdateR[1] = 0;
+        return;
+    }
+
     
 
     bool l_isSupercritical = false;

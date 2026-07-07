@@ -83,8 +83,8 @@ namespace {
               << "Configuration:\n"
               << "  args=<file>                  Read simulation arguments from a YAML file.\n\n"
               << "Common key=value arguments:\n"
-              << "  solver=<name>                Solver: roe, fwave, hlle, hybrid,\n"
-              << "                               fwave_hydrostatic_reconstruction. Default: roe.\n"
+              << "  solver=<name>                Solver: roe, fwave, hlle, hybrid\n"
+              << "                               Default: roe.\n"
               << "  setup=<name>                 Setup name. Default: damBreak.\n"
               << "  format=<name>                Output format: csv, nc, NONE. Default: csv.\n"
               << "  cellx=<n>                    Number of cells in x-direction. Default: 1.\n"
@@ -352,8 +352,8 @@ int main( int   i_argc,
   else if (l_solverName.compare("hlle") == 0) l_solverId = tsunami_lab::solvers::HLLE;
   else if (l_solverName.compare("hybrid") == 0) l_solverId = tsunami_lab::solvers::HYBRID;
   else {
-    l_solverName = "fwave_hydrostatic_reconstruction";
-    l_solverId = tsunami_lab::solvers::FWAVE_HYDROSTATIC_RECONSTRUCTION;
+    l_solverName = "fwave";
+    l_solverId = tsunami_lab::solvers::HYBRID;
   }
   
   if (l_setupName.compare("damBreak") == 0) l_setupId = tsunami_lab::setups::DAM_BREAK;
@@ -586,7 +586,7 @@ int main( int   i_argc,
       
       l_waveProp->setBathymetry( l_cx, l_cy, l_bathymetry );
 
-      if (l_solverId == tsunami_lab::solvers::FWAVE_HYDROSTATIC_RECONSTRUCTION){
+      if (l_solverId == tsunami_lab::solvers::HYBRID){
         tsunami_lab::t_real l_xNext = (l_cx + 1) * l_dxy; 
         tsunami_lab::t_real l_yNext = (l_cy + 1) * l_dxy;
 
