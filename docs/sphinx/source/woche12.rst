@@ -33,11 +33,22 @@ Beach visualisiert.
 
 **Solitary Wave on canonical Beach**
 
-.. Simulation einfügen ...
+.. image:: ../images/nthmp_bp01_wave.gif
+
+.. image:: ../images/bp01_setup_stations.png
 
 **Vergleich mit exakter Lösung**
 
-.. Plots einfügen ...
+.. image:: ../images/nthmp_bp01_snapshot_40_compare.png
+
+.. image:: ../images/nthmp_bp01_snapshot_55_compare.png
+
+.. image:: ../images/nthmp_bp01_snapshot_70_compare.png
+
+.. image:: ../images/nthmp_bp01_station_0_25_compare.png
+
+.. image:: ../images/nthmp_bp01_station_0_95_compare.png
+
 
 Als zweites haben wir das "Solitary Wave on canonical Island" Setup implementiert.
 Das Setup ist 2D und die NOAA hat das Setup in echt nach gebaut um das Verhalten von 
