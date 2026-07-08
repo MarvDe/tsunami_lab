@@ -1,7 +1,7 @@
 Woche 12
 ========
 
-Dies ist die letzt Woche des Tsunami Labs. Wir haben 
+Dies ist die letzte Woche des Tsunami Labs. Wir haben 
 die Zeit genutzt, um unsere aktuellen Ergebnisse zu validieren und 
 weitere Simulationen zu testen.
 
@@ -26,15 +26,18 @@ Hier haben wir zwei vorgegebene Simulationssetups von unserem Solver simulieren 
 diese mit bekannten Daten von der NOAA verglichen. 
 
 Ein analytisch berechenbares Setup ist das sogenannte "Solitary Wave on canonical Beach" Setup.
-Dieses Setup ist 1D und es besteht aus einer Welle, welch auf einen Strand trifft.
+Dieses Setup ist 1D und es besteht aus einer Welle, welche auf einen Strand trifft.
 Durch die Einfachheit dieses Setups kann die Wasserhöhe an bestimmten Stellen analytisch ermittelt werden.
 Die bekannten Lösungen haben wir zur Validierung unseres Solvers verwendet und den Runup auf den 
 Beach visualisiert.
 
 **Solitary Wave on canonical Beach**
 
+.. Simulation einfügen ...
 
 **Vergleich mit exakter Lösung**
+
+.. Plots einfügen ...
 
 Als zweites haben wir das "Solitary Wave on canonical Island" Setup implementiert.
 Das Setup ist 2D und die NOAA hat das Setup in echt nach gebaut um das Verhalten von 
@@ -70,7 +73,7 @@ In der letzten Station ist zu erkennen, dass bei unserer Simulation die Welle ni
 da diese Station auf der Insel in der Mitte sitzt. Somit haben wir die initiale Wellenhöhe vergrößert und 
 kamen dann auf folgendes Ergebnis:
 
-.. image:: ..images/gauge_22_raw_c_H0.064_vs_sim_H0.5.png
+.. image:: ../images/gauge_22_raw_c_H0.064_vs_sim_H0.5.png
 
 Man sieht, das zumindest die Peaks übereinstimmen. Man muss aber ehrlich sein und sagen, dass unser Solver 
 nicht ganz so nah an die realen Daten kommt wie wir das uns vorgestellt hätten. Das könnte mehrere Gründe haben.
@@ -79,19 +82,18 @@ Zum Beispiel könnte die initiale Welle bei unserem Setup nicht mit der initiale
 Weitere Experimente
 -------------------
 
-**Solitary Wave on canonical Island (mega Welle)**
+**Solitary Wave on canonical Island (Mega Welle)**
 
-.. image:: ..images/swocb-5m.gif
-
+.. image:: ../images/swocb-5m.gif
 
 **Small City Layout**
 
-.. image:: ..images/small_city_layout.png
+.. image:: ../images/small_city_layout.png
 
 **Small City**
 
-.. image:: ..images/small_city.gif
+.. image:: ../images/small_city.gif
 
 **Circular Dambreak Cap**
 
-.. image:: ..images/dambreak_cap.gif
+.. image:: ../images/dambreak_cap.gif
