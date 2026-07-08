@@ -1,5 +1,5 @@
 args:
-  solverName: hybrid
+  solverName: fwave
   setupName: tsunamiEvent2d
   cellSize: 250
   cellx: 10800
