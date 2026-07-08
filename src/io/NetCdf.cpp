@@ -130,7 +130,8 @@ void io::NetCdf::write( t_idx                i_nx,
                         t_real       const * i_bathymetry,
                         bool                 i_writeCheckpoint ){
 
-    if (i_nx + 2 == i_stride ){ // if ghost cells are passed
+    
+                            if (i_nx + 2 == i_stride ){ // if ghost cells are passed
         errorChecking( nc_put_var1_float(m_fileId, m_tVarId, &i_timeIndex, &i_simTime));
         size_t start[3] = {i_timeIndex, 0, 0};
         size_t count[3] = {1, (i_ny / m_outRes), (i_nx / m_outRes)};

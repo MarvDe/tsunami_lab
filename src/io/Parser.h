@@ -100,6 +100,7 @@ class tsunami_lab::io::Parser{
                     tsunami_lab::t_idx &o_outputInterval,
                     tsunami_lab::t_idx &o_compressionLevel,
                     tsunami_lab::t_idx &o_checkpointInterval,
+                    std::vector<tsunami_lab::t_real> &o_snapshots,
                     SetupArgs &o_setupArgs
                   );
 

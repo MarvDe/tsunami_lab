@@ -12,7 +12,24 @@
 #include <cmath>
 #include <iostream>
 
-tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix ): m_solverId(i_solverId), m_useEntropyFix(i_useEntropyFix) {
+namespace {
+  constexpr tsunami_lab::t_real DRY_TOLERANCE = 1e-5f;
+
+  void sanitizeCell( tsunami_lab::t_real &io_h,
+                     tsunami_lab::t_real &io_hu ) {
+    if( !std::isfinite(io_h) || io_h <= DRY_TOLERANCE ) {
+      io_h = 0;
+      io_hu = 0;
+      return;
+    }
+
+    if( !std::isfinite(io_hu) ) {
+      io_hu = 0;
+    }
+  }
+}
+
+tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix, t_real i_manningFactor ): m_solverId(i_solverId), m_manningFactor(i_manningFactor), m_useEntropyFix(i_useEntropyFix) {
   m_nCells = i_nCells;
 
   // allocate memory including a single ghost cell on each side
@@ -36,7 +53,7 @@ tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsun
   }
 }
 
-tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghostL, tsunami_lab::t_idx i_ghostR, bool i_useEntropyFix ): m_solverId(i_solverId), m_ghostL(i_ghostL), m_ghostR(i_ghostR),  m_useEntropyFix(i_useEntropyFix) {
+tsunami_lab::patches::WavePropagation1d::WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, tsunami_lab::t_idx i_ghostL, tsunami_lab::t_idx i_ghostR, bool i_useEntropyFix, t_real i_manningFactor ): m_solverId(i_solverId), m_ghostL(i_ghostL), m_ghostR(i_ghostR), m_manningFactor(i_manningFactor),  m_useEntropyFix(i_useEntropyFix) {
   m_nCells = i_nCells;
 
   // allocate memory including a single ghost cell on each side
@@ -180,13 +197,13 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
     }
   }
   // iterate over edges and update with Riemann solutions
-  if (m_solverId == tsunami_lab::solvers::HYBRID) {
+  if (m_solverId == tsunami_lab::solvers::HYBRID && m_manningFactor > 0) {
     // manning friction
     t_real l_dt = m_dt;
-    const t_real mann = 0.02;
+    const t_real mann = m_manningFactor;
     #pragma omp parallel for schedule(runtime)
     for (t_idx i = 1; i <= m_nCells; i++) {
-      if (l_hNew[i] > 1e-6) {
+      if (l_hNew[i] > DRY_TOLERANCE) {
         const t_real l_h = l_hNew[i];
         t_real vel = l_huNew[i] / l_h;
         const t_real h43 = l_h * std::cbrt(l_h);
@@ -195,6 +212,11 @@ void tsunami_lab::patches::WavePropagation1d::timeStep( t_real i_scaling ) {
         l_huNew[i] /= denom;   // semi-implicit: always stable
       }
     }
+  }
+
+  #pragma omp parallel for schedule(runtime)
+  for (t_idx i = 1; i <= m_nCells; i++) {
+    sanitizeCell(l_hNew[i], l_huNew[i]);
   }
 }
 

@@ -48,6 +48,7 @@ namespace tsunami_lab {
       ARTIFICIAL_TSUNAMI_2D,
       TSUNAMI_EVENT_2D,
       CHECK_POINT,
+      SOLITARY_WAVE_BEACH
     };
   }
 

@@ -1,0 +1,33 @@
+args:
+  solverName: hybrid
+  setupName: solitaryWaveBeach
+  cellSize: 0.05
+  cellx: 2400
+  celly: 1
+  endTime: 50
+  timeSteps: 0
+
+setup:
+  depth: 1.0
+  waveHeight: 0.019
+  slopeInv: 19.85
+  shorelineX: 50.0
+  waveCenterX: 105.0
+  velocitySign: -1.0
+
+tweaks:
+  useEntropyFix: true
+  manningFactor: 0.04
+
+output:
+  formatName: csv
+  outputInterval: 1000
+  outputResolution: 1
+  compressionLevel: 0
+  checkpointInterval: 0
+  snapshots: []
+  stations: "benchmarks/nthmp_bp01/stations.yml"
+
+omp:
+  omp_num_threads: 4
+  omp_schedule: static,8

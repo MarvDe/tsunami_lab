@@ -9,6 +9,7 @@
 #include "../setups/SupercriticalFlow1d.h"
 #include "../setups/TsunamiEvent1d.h"
 #include "../setups/TsunamiEvent2d.h"
+#include "../setups/SolitaryWaveBeach1d.h"
 
 #include <cstdlib>
 #include <string.h>
@@ -32,6 +33,7 @@ namespace {
         tsunami_lab::io::SetupDef l_supercritical = tsunami_lab::setups::SupercriticalFlow1d::getSetupDef();
         tsunami_lab::io::SetupDef l_tsunamiEvent1d = tsunami_lab::setups::TsunamiEvent1d::getSetupDef();
         tsunami_lab::io::SetupDef l_tsunamiEvent2d = tsunami_lab::setups::TsunamiEvent2d::getSetupDef();
+        tsunami_lab::io::SetupDef l_solitaryWaveBeach = tsunami_lab::setups::SolitaryWaveBeach1d::getSetupDef();
 
 
         return {
@@ -45,7 +47,8 @@ namespace {
             {l_subcritical.name, l_subcritical},
             {l_supercritical.name, l_supercritical},
             {l_tsunamiEvent1d.name, l_tsunamiEvent1d},
-            {l_tsunamiEvent2d.name, l_tsunamiEvent2d}
+            {l_tsunamiEvent2d.name, l_tsunamiEvent2d},
+            {l_solitaryWaveBeach.name, l_solitaryWaveBeach},
         };
     }
 }
@@ -177,6 +180,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         tsunami_lab::t_idx &o_outputInterval,
                                         tsunami_lab::t_idx &o_compressionLevel,
                                         tsunami_lab::t_idx &o_checkpointInterval,
+                                        std::vector<tsunami_lab::t_real> &o_snapshots,
                                         tsunami_lab::io::SetupArgs &o_setupArgs
                                     ){
     YAML::Node l_file;
@@ -209,6 +213,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_compressionLevel = output["compressionLevel"].as<tsunami_lab::t_idx>();
         o_stationsFilePath = output["stations"].as<std::string>();
         o_checkpointInterval = output["checkpointInterval"].as<tsunami_lab::t_idx>();
+        o_snapshots = output["snapshots"].as<std::vector<tsunami_lab::t_real>>();
         
         // printf("loaded file\n");
         

@@ -17,6 +17,7 @@
 #include "setups/ArtificialTsunami2d.h"
 #include "setups/TsunamiEvent2d.h"
 #include "setups/CheckPoint.h"
+#include "setups/SolitaryWaveBeach1d.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include "io/Stations.h"
@@ -278,12 +279,14 @@ int main( int   i_argc,
   std::string l_setupName = "damBreak";
   std::string l_formatName = "NONE";
   tsunami_lab::io::SetupArgs l_setupArgs;
-  bool l_useEntropyFix;
-  tsunami_lab::t_real l_manningFactor;
-  tsunami_lab::t_idx l_maxTimeStep;
+  bool l_useEntropyFix = true;
+  tsunami_lab::t_real l_manningFactor = 0;
+  tsunami_lab::t_idx l_maxTimeStep = 0;
   tsunami_lab::t_idx l_outputInterval = 10;
   tsunami_lab::t_idx l_compressionLevel = 0;
   tsunami_lab::t_idx l_checkpointInterval = 100;
+  std::vector<tsunami_lab::t_real> l_snapshots;
+
 
   if (l_setupFile.compare("") != 0){
     l_parser.parseFile( l_setupFile,
@@ -306,6 +309,7 @@ int main( int   i_argc,
                         l_outputInterval,
                         l_compressionLevel,
                         l_checkpointInterval,
+                        l_snapshots,
                         l_setupArgs
                         );
   }
@@ -366,6 +370,7 @@ int main( int   i_argc,
   else if (l_setupName.compare("artificialTsunami") == 0) l_setupId = tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D;
   else if (l_setupName.compare("tsunamiEvent2d") == 0) l_setupId = tsunami_lab::setups::TSUNAMI_EVENT_2D;
   else if (l_setupName.compare("checkPoint") == 0) l_setupId = tsunami_lab::setups::CHECK_POINT;
+  else if (l_setupName.compare("solitaryWaveBeach") == 0) l_setupId = tsunami_lab::setups::SOLITARY_WAVE_BEACH;
   else l_setupName = "damBreak";
 
   if (l_formatName.compare("nc") == 0) l_formatId = tsunami_lab::io::NC;
@@ -428,6 +433,16 @@ int main( int   i_argc,
     l_setup = new tsunami_lab::setups::SupercriticalFlow1d();
     l_dxy = 0.1;
     l_nx /=l_dxy;
+  }
+  else if(l_setupId == tsunami_lab::setups::SOLITARY_WAVE_BEACH){
+    l_setup = new tsunami_lab::setups::SolitaryWaveBeach1d(
+      l_setupArgs.get<tsunami_lab::t_real>("depth"),
+      l_setupArgs.get<tsunami_lab::t_real>("waveHeight"),
+      l_setupArgs.get<tsunami_lab::t_real>("slopeInv"),
+      l_setupArgs.get<tsunami_lab::t_real>("shorelineX"),
+      l_setupArgs.get<tsunami_lab::t_real>("waveCenterX"),
+      l_setupArgs.get<tsunami_lab::t_real>("velocitySign")
+    );
   }
   else if(l_setupId == tsunami_lab::setups::DAM_BREAK_2D){
     constexpr int l_cellsX = 100;
@@ -501,11 +516,11 @@ int main( int   i_argc,
     delete[] l_displacement;
   }
   else if (l_setupId == tsunami_lab::setups::CHECK_POINT){
-    l_checkPointFilePath = l_setupArgs.get<tsunami_lab::t_real>("inputFile");
+    l_checkPointFilePath = l_setupArgs.get<std::string>("inputFile");
     //l_solverId = tsunami_lab::solvers::FWAVE;
     //l_formatId = tsunami_lab::io::NC;
     //l_endTime = 20;
-    l_appendFile = l_setupArgs.get<tsunami_lab::t_real>("appendFile");
+    l_appendFile = l_setupArgs.get<bool>("appendFile");
     l_setup = new tsunami_lab::setups::CheckPoint(  l_checkPointFilePath,
                                                     l_simTime,
                                                     l_timeStep,
@@ -542,7 +557,7 @@ int main( int   i_argc,
                                                               l_manningFactor);
   } 
   else {
-    l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId, l_outflowTypeL, l_outflowTypeR , l_useEntropyFix);
+    l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId, l_outflowTypeL, l_outflowTypeR, l_useEntropyFix, l_manningFactor);
   }
 
   // maximum observed height in the setup
@@ -730,7 +745,32 @@ int main( int   i_argc,
                         l_writeCheckpoint);
         l_nOut++;
       }
+      
     }
+    for (auto& time : l_snapshots) {
+      tsunami_lab::t_real snapshot_time = time;
+
+      if (l_dt != 0 && l_simTime >= snapshot_time && l_simTime < snapshot_time + l_dt) {
+        std::string l_path = "snapshot_" + std::to_string(l_simTime) + std::to_string(l_nOut) + ".csv";
+        std::cout << "  writing wave field to " << l_path << std::endl;
+  
+        std::ofstream l_file;
+        l_file.open( l_path  );
+  
+        tsunami_lab::io::Csv::write( l_dxy,
+                                      l_nx,
+                                      l_ny,
+                                      l_waveProp->getStride(),
+                                      l_waveProp->getHeight(),
+                                      l_waveProp->getMomentumX(),
+                                      l_waveProp->getMomentumY(),
+                                      l_waveProp->getBathymetry(),
+                                      l_file );
+      
+        l_file.close();
+      }
+    }
+
     if (l_stationsFilePath.compare("") != 0){
       l_stations.write(
         l_simTime,

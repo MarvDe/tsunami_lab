@@ -59,7 +59,7 @@ Dammbruch Experimente
     import pandas as pd
     import matplotlib.pyplot as plt
 
-    df = pd.read_csv("dh10_h5_solution_1.csv")
+    df = pd.read_csv("../../assets/dh10_h5_solution_1.csv")
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
 
@@ -78,7 +78,7 @@ Dammbruch Experimente
     import pandas as pd
     import matplotlib.pyplot as plt
 
-    df = pd.read_csv("dh20_h5_solution_1.csv")
+    df = pd.read_csv("../../assets/dh20_h5_solution_1.csv")
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
 
@@ -126,7 +126,7 @@ Zusammenhang zwischen Wasserhöhe und Wassermomentum auf die Wellengeschwindigke
     import pandas as pd
     import matplotlib.pyplot as plt
 
-    df = pd.read_csv("h1u4solution_1.csv")
+    df = pd.read_csv("../../assets/h1u4solution_1.csv")
 
     plt.plot(df.iloc[:, 0], df.iloc[:, 2])
     plt.xlabel("X-Position") 
@@ -138,7 +138,7 @@ Zusammenhang zwischen Wasserhöhe und Wassermomentum auf die Wellengeschwindigke
     import pandas as pd
     import matplotlib.pyplot as plt
 
-    df = pd.read_csv("h1u0_8solution_1.csv")
+    df = pd.read_csv("../../assets/h1u0_8solution_1.csv")
 
     plt.plot(df.iloc[:, 0], df.iloc[:, 2])
     plt.xlabel("X-Position") 
@@ -150,7 +150,7 @@ Zusammenhang zwischen Wasserhöhe und Wassermomentum auf die Wellengeschwindigke
     import pandas as pd
     import matplotlib.pyplot as plt
 
-    df = pd.read_csv("h4u0_8solution_1.csv")
+    df = pd.read_csv("../../assets/h4u0_8solution_1.csv")
 
     plt.plot(df.iloc[:, 0], df.iloc[:, 2])
     plt.xlabel("X-Position") 
@@ -167,7 +167,7 @@ deutlich mehr ansteigt.
     import pandas as pd
     import matplotlib.pyplot as plt
 
-    df = pd.read_csv("rh1u2solution_1.csv")
+    df = pd.read_csv("../../assets/rh1u2solution_1.csv")
 
     plt.plot(df.iloc[:, 0], df.iloc[:, 2])
     plt.xlabel("X-Position") 
@@ -179,7 +179,7 @@ deutlich mehr ansteigt.
     import pandas as pd
     import matplotlib.pyplot as plt
 
-    df = pd.read_csv("rh1u0_8solution_1.csv")
+    df = pd.read_csv("../../assets/rh1u0_8solution_1.csv")
 
     plt.plot(df.iloc[:, 0], df.iloc[:, 2])
     plt.xlabel("X-Position") 
@@ -191,7 +191,7 @@ deutlich mehr ansteigt.
     import pandas as pd
     import matplotlib.pyplot as plt
 
-    df = pd.read_csv("rh4u0_8solution_1.csv")
+    df = pd.read_csv("../../assets/rh4u0_8solution_1.csv")
 
     plt.plot(df.iloc[:, 0], df.iloc[:, 2])
     plt.xlabel("X-Position") 

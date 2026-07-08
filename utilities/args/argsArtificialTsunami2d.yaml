@@ -1,11 +1,11 @@
 args:
-  solverName: hybrid
+  solverName: fwave
   setupName: artificialTsunami
   cellSize: 250
   cellx: 1000
   celly: 1000
   endTime: 0
-  timeSteps: 50
+  timeSteps: 1000
 
 setup:
   
@@ -16,10 +16,10 @@ tweaks:
 
 output:
   formatName: nc
-  outputInterval: 5
+  outputInterval: 100
   outputResolution: 1
   compressionLevel: 3
-  checkpointInterval: 10
+  checkpointInterval: 0
   stations: ""
 
 omp:

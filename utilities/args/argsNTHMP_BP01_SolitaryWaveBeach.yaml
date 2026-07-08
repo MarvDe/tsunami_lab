@@ -1,0 +1,35 @@
+args:
+  solverName: hybrid
+  setupName: solitaryWaveBeach
+  cellSize: 0.05
+  cellx: 2400
+  celly: 1
+  endTime: 40
+  timeSteps: 0
+
+setup:
+  # NTHMP BP01/Synolakis non-breaking solitary wave:
+  # H/d=0.019, d=1 m, beach slope 1:19.85.
+  depth: 1.0
+  waveHeight: 0.019
+  slopeInv: 19.85
+  shorelineX: 50.0
+  waveCenterX: 90.0
+  velocitySign: -1.0
+
+tweaks:
+  useEntropyFix: true
+  manningFactor: 0.045
+
+output:
+  formatName: NONE # csv
+  outputInterval: 500
+  outputResolution: 1
+  compressionLevel: 0
+  checkpointInterval: 0
+  snapshots: [12.8, 17.6, 22.4]
+  stations: "benchmarks/nthmp_bp01/stations.yml"
+
+omp:
+  omp_num_threads: 4
+  omp_schedule: static,8
