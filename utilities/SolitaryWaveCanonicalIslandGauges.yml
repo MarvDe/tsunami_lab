@@ -1,0 +1,13 @@
+stations:
+  - name: "gauge_6"
+    locX: 9.36
+    locY: 13.80
+  - name: "gauge_9"
+    locX: 10.36
+    locY: 13.80
+  - name: "gauge_16"
+    locX: 12.9
+    locY: 11.22
+  - name: "gauge_22"
+    locX: 15.56
+    locY: 13.80

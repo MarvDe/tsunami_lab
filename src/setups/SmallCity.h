@@ -1,42 +1,77 @@
-#ifndef TSUNAMI_LAB_SETUPS_SINGLE_WAVE_CANONICAL_ISLAND_2D_H
-#define TSUNAMI_LAB_SETUPS_SINGLE_WAVE_CANONICAL_ISLAND_2D_H
+#ifndef TSUNAMI_LAB_SETUPS_SMALL_CITY_2D_H
+#define TSUNAMI_LAB_SETUPS_SMALL_CITY_2D_H
 
 #include "Setup.h"
 
 namespace tsunami_lab{
     namespace setups{
-        class SingleWaveCanonicalIsland;
+        class SmallCity;
     }
 }
 
 
 /**
- * 2d single wave on canonical island setup.
+ * 2d small city setup.
  */
-class tsunami_lab::setups::SingleWaveCanonicalIsland : public Setup {
+class tsunami_lab::setups::SmallCity : public Setup {
 private:
 
     //! number of cells
-    t_idx m_cellsX = 25;
-    t_idx m_cellsY = 30;
+    t_idx m_cellsX = 10;
+    t_idx m_cellsY = 8;
 
-    //! location of island
-    t_real m_x0 = 12.96;
-    t_real m_y0 = 13.80;
-
-    //! dimensions of island
-    t_real m_rBase = 3.6;
-    t_real m_rTop = 1.1;
-    t_real m_hCone = 0.625;
-
-    //! height of water
+    //! beach foot
+    t_real m_x0 = 3;
     t_real m_d = 0.32;
+    //! beach top
+    t_real m_x1 = 5;
+    t_real m_beachTop = 0.1;
 
-    //! initial height of wave
-    t_real m_H = 5;
+    t_real m_waveX = 2;
+    t_real m_H = 3;
 
-    //! initial position of wave
-    t_real m_x1 = 3;
+    //! buildings
+    t_real m_bHeight = 0.5;
+    t_real m_bWidth = 0.5;
+    //! first row
+    t_real m_b00x = 5;
+    t_real m_b00y = 1;
+
+    t_real m_b01x = 6.5;
+    t_real m_b01y = 1;
+    
+    t_real m_b02x = 8;
+    t_real m_b02y = 1;
+    //! second row
+    t_real m_b10x = 5;
+    t_real m_b10y = 3;
+
+    t_real m_b11x = 6.5;
+    t_real m_b11y = 3;
+    
+    t_real m_b12x = 8;
+    t_real m_b12y = 3;
+    //! third row
+    t_real m_b20x = 5;
+    t_real m_b20y = 5;
+
+    t_real m_b21x = 6.5;
+    t_real m_b21y = 5;
+    
+    t_real m_b22x = 8;
+    t_real m_b22y = 5;
+    //! fourth row
+    t_real m_b30x = 5;
+    t_real m_b30y = 7;
+
+    t_real m_b31x = 6.5;
+    t_real m_b31y = 7;
+    
+    t_real m_b32x = 8;
+    t_real m_b32y = 7;
+
+
+
 
 public:
     /**
@@ -44,10 +79,10 @@ public:
      * 
      * 
      */
-    SingleWaveCanonicalIsland(){
+    SmallCity(){
     }
 
-    ~SingleWaveCanonicalIsland(){}
+    ~SmallCity(){}
 
     /**
      * Gets the yaml argument definition of the setup.

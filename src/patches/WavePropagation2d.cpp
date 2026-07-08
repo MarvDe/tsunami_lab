@@ -190,7 +190,19 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
           l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
           l_hvNew[l_ceR] -= i_scaling * l_netUpdatesX[1][2];
         }
-  
+        
+        // protection against negative values
+        if (l_hNew[l_ceL] < 1e-6f){
+          l_hNew[l_ceL] = 0;
+          l_huNew[l_ceL] = 0;
+          l_hvNew[l_ceL] = 0;
+        }
+
+        if (l_hNew[l_ceR] < 1e-6f){
+          l_hNew[l_ceR] = 0;
+          l_huNew[l_ceR] = 0;
+          l_hvNew[l_ceR] = 0;
+        }
       }
     }
     #pragma omp barrier
@@ -279,7 +291,19 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
           l_huNew[l_ceB] -= i_scaling * l_netUpdatesY[1][2];
           // if (l_netUpdatesY[1][2] != 0 ) printf("%f", l_netUpdatesY[1][2]);
         }
-  
+        
+        // protection against negative values
+        if (l_hNew[l_ceU] < 1e-6f){
+          l_hNew[l_ceU] = 0;
+          l_huNew[l_ceU] = 0;
+          l_hvNew[l_ceU] = 0;
+        }
+
+        if (l_hNew[l_ceB] < 1e-6f){
+          l_hNew[l_ceB] = 0;
+          l_huNew[l_ceB] = 0;
+          l_hvNew[l_ceB] = 0;
+        }
         }
       }
     }
@@ -412,4 +436,17 @@ void tsunami_lab::patches::WavePropagation2d::setBathymetry( t_idx i_ix,
   if (i_ix == m_xCells - 1 && i_iy == m_yCells - 1){
     m_bathymetry[m_xCells + 1 + m_yCells * l_stride] = i_height;
   }
+}
+
+tsunami_lab::t_real tsunami_lab::patches::WavePropagation2d::getMass(){
+  t_real * l_h =  m_h[m_step];
+
+  t_real mass = 0;
+  for (t_idx l_iy = 1; l_iy < m_yCells + 1; l_iy++){
+    for (t_idx l_ix = 1; l_ix < m_xCells + 1; l_ix++){
+      t_idx l_ce = l_ix + l_iy * getStride();
+      mass += l_h[l_ce];
+    }
+  }
+  return mass;
 }

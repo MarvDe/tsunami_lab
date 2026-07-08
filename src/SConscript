@@ -27,7 +27,8 @@ l_sources = [ 'solvers/Roe.cpp',
               'setups/ArtificialTsunami2d.cpp',
               'setups/TsunamiEvent2d.cpp',
               'setups/CheckPoint.cpp',
-              'setups/SingleWaveCanonicalIsland.cpp'
+              'setups/SingleWaveCanonicalIsland.cpp',
+              'setups/SmallCity.cpp'
                ]
 
 for l_so in l_sources:

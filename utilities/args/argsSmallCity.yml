@@ -1,10 +1,10 @@
 args:
   solverName: hybrid
-  setupName: singleWaveCanonicalIsland
+  setupName: smallCity
   cellSize: 1
-  cellx: 25
-  celly: 30
-  endTime: 10
+  cellx: 10
+  celly: 8
+  endTime: 15
   timeSteps: 0
 
 setup:
@@ -12,15 +12,15 @@ setup:
 
 tweaks:
   useEntropyFix: true
-  manningFactor: 0.08
+  manningFactor: 0.04
 
 output:
-  formatName: NONE
-  outputInterval: 100
+  formatName: nc
+  outputInterval: 25
   outputResolution: 1
   compressionLevel: 0
   checkpointInterval: 100
-  stations: "utilities/SolitaryWaveCanonicalIslandGauges.yml"
+  stations: ""
 
 omp:
   omp_num_threads: 8

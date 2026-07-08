@@ -1,26 +1,28 @@
 args:
   solverName: hybrid
-  setupName: singleWaveCanonicalIsland
+  setupName: damBreak2d
   cellSize: 1
-  cellx: 25
-  celly: 30
-  endTime: 10
+  cellx: 100
+  celly: 100
+  endTime: 50
   timeSteps: 0
 
 setup:
-
+  innerWaterHeight: 80
+  innerWaterRadius: 10
+  bathymetryCap: true
 
 tweaks:
   useEntropyFix: true
-  manningFactor: 0.08
+  manningFactor: 0.4
 
 output:
-  formatName: NONE
-  outputInterval: 100
+  formatName: nc
+  outputInterval: 10
   outputResolution: 1
   compressionLevel: 0
   checkpointInterval: 100
-  stations: "utilities/SolitaryWaveCanonicalIslandGauges.yml"
+  stations: ""
 
 omp:
   omp_num_threads: 8
