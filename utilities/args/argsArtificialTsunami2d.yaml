@@ -20,6 +20,7 @@ output:
   outputResolution: 1
   compressionLevel: 3
   checkpointInterval: 0
+  snapshots: []
   stations: ""
 
 omp:
