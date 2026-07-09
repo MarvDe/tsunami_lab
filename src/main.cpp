@@ -472,7 +472,7 @@ int main( int   i_argc,
     }
     l_setup = new tsunami_lab::setups::CircularDamBreak2d(l_setupArgs.get<tsunami_lab::t_real>("innerWaterHeight"),
                                                           l_bathymetry,
-                                                          l_setupArgs.get<tsunami_lab::t_real>("innerWateRadius"),
+                                                          l_setupArgs.get<tsunami_lab::t_real>("innerWaterRadius"),
                                                           l_nx,
                                                           l_ny,
                                                           1);
