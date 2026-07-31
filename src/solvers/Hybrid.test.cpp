@@ -191,8 +191,11 @@ TEST_CASE( "Hybrid delegates supercritical flat interfaces to HLLE diagonal upda
                         3,
                         10,
                         10,
+                        0,
+                        0,
                         1,
                         6,
+                        false,
                         l_hlleL,
                         l_hlleR );
 

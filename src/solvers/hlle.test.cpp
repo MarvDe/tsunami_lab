@@ -197,6 +197,9 @@ TEST_CASE( "HLLE diagonal updates include tangential momentum", "[Hlle]" ) {
                         0,
                         0,
                         0,
+                        0,
+                        0,
+                        false,
                         l_netUpdateL,
                         l_netUpdateR );
 
@@ -213,8 +216,11 @@ TEST_CASE( "HLLE diagonal updates include tangential momentum", "[Hlle]" ) {
                         9,
                         -30,
                         27,
+                        0,
+                        0,
                         5,
                         -7,
+                        true,
                         l_netUpdateL,
                         l_netUpdateR );
 

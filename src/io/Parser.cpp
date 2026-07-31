@@ -50,7 +50,7 @@ namespace {
             {l_supercritical.name, l_supercritical},
             {l_tsunamiEvent1d.name, l_tsunamiEvent1d},
             {l_tsunamiEvent2d.name, l_tsunamiEvent2d},
-            {l_solitaryWaveBeach.name, l_solitaryWaveBeach},,
+            {l_solitaryWaveBeach.name, l_solitaryWaveBeach},
             {l_singleWaveCanonicalIsland.name, l_singleWaveCanonicalIsland}
         };
     }

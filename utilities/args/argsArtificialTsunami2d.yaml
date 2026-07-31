@@ -15,7 +15,7 @@ tweaks:
   manningFactor: 0.02
 
 output:
-  formatName: nc
+  formatName: NONE
   outputInterval: 100
   outputResolution: 1
   compressionLevel: 3
