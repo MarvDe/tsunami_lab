@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * Base class of the wave propagation patches.
+ * @file
+ * @brief Abstract interface for wave-propagation patches.
  **/
 #ifndef TSUNAMI_LAB_PATCHES_WAVE_PROPAGATION
 #define TSUNAMI_LAB_PATCHES_WAVE_PROPAGATION
@@ -15,6 +15,7 @@ namespace tsunami_lab {
   }
 }
 
+/** Defines the common interface of one- and two-dimensional patches. */
 class tsunami_lab::patches::WavePropagation {
   public:
     /**
@@ -29,6 +30,11 @@ class tsunami_lab::patches::WavePropagation {
      **/
     virtual void timeStep( t_real i_scaling ) = 0;
 
+    /**
+     * Sets the time-step size used by source-term updates.
+     *
+     * @param i_dt time-step size.
+     **/
     virtual void setDt( t_real i_dt ) = 0;
 
     /**
@@ -44,7 +50,7 @@ class tsunami_lab::patches::WavePropagation {
     virtual t_idx getStride() = 0;
 
     /**
-     * Gets cells' water heights.
+     * Gets the cells' water heights.
      *
      * @return water heights.
      */
@@ -67,16 +73,15 @@ class tsunami_lab::patches::WavePropagation {
     /**
      * Gets the cells' bathymetry.
      *
-     * 
-     * @return bathymetry
+     * @return bathymetry.
      **/
     virtual t_real const * getBathymetry() = 0;
 
     /**
      * Sets the height of the cell to the given value.
      *
-     * @param i_ix id of the cell in x-direction.
-     * @param i_iy id of the cell in y-direction.
+     * @param i_ix index of the cell in x-direction.
+     * @param i_iy index of the cell in y-direction.
      * @param i_h water height.
      **/
     virtual void setHeight( t_idx  i_ix,
@@ -86,8 +91,8 @@ class tsunami_lab::patches::WavePropagation {
     /**
      * Sets the momentum in x-direction to the given value.
      *
-     * @param i_ix id of the cell in x-direction.
-     * @param i_iy id of the cell in y-direction.
+     * @param i_ix index of the cell in x-direction.
+     * @param i_iy index of the cell in y-direction.
      * @param i_hu momentum in x-direction.
      **/
     virtual void setMomentumX( t_idx  i_ix,
@@ -97,22 +102,20 @@ class tsunami_lab::patches::WavePropagation {
     /**
      * Sets the momentum in y-direction to the given value.
      *
-     * @param i_ix id of the cell in x-direction.
-     * @param i_iy id of the cell in y-direction.
+     * @param i_ix index of the cell in x-direction.
+     * @param i_iy index of the cell in y-direction.
      * @param i_hv momentum in y-direction.
      **/
     virtual void setMomentumY( t_idx  i_ix,
                                t_idx  i_iy,
                                t_real i_hv ) = 0;
     
-  /**
+    /**
      * Sets the cells' bathymetry.
      *
-     * @param i_ix id of the cell in x-direction.
-     * @param i_iy id of the cell in y-direction.
-     * @param i_height height of bathymetry
-     * 
-     * @return bathymetry
+     * @param i_ix index of the cell in x-direction.
+     * @param i_iy index of the cell in y-direction.
+     * @param i_height bathymetry value.
      **/
     virtual void setBathymetry( t_idx i_ix, 
                                 t_idx i_iy, t_real i_height 

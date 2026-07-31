@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Sampling and output of simulation data at fixed stations.
+ */
 #ifndef TSUNAMI_LAB_IO_STATIONS_H
 #define TSUNAMI_LAB_IO_STATIONS_H
 
@@ -15,14 +19,20 @@ namespace tsunami_lab {
     }
 }
 
+/**
+ * Describes a sampling station and its output stream.
+ */
 struct tsunami_lab::io::Station{
-    const std::string m_name;
-    t_real m_posX;
-    t_real m_posY;
-    std::ostream *m_stream;
-    bool m_ownsStream;
+    const std::string m_name; //!< Station name.
+    t_real m_posX;            //!< Station x-coordinate.
+    t_real m_posY;            //!< Station y-coordinate.
+    std::ostream *m_stream;   //!< Output stream receiving sampled data.
+    bool m_ownsStream;        //!< Whether the station owns the output stream.
 };
 
+/**
+ * Manages fixed sampling stations on a Cartesian simulation grid.
+ */
 class tsunami_lab::io::Stations{
     private:
         //! array of stations
@@ -44,11 +54,11 @@ class tsunami_lab::io::Stations{
         /**
          * Constructs the stations class.
          *
-         * @param i_cellX number of cells in x direction.
-         * @param i_cellY number of cells in y direction.
-         * @param i_dxy cell size
-         * @param i_leftUpperX x value of global left upper coordinate.
-         * @param i_leftUpperY y value of global left upper coordinate.
+         * @param i_cellX number of cells in x-direction.
+         * @param i_cellY number of cells in y-direction.
+         * @param i_dxy cell size.
+         * @param i_leftUpperX x-coordinate of the upper-left grid cell.
+         * @param i_leftUpperY y-coordinate of the upper-left grid cell.
          **/
         Stations( t_idx i_cellX, t_idx i_cellY, t_real i_dxy, t_real i_leftUpperX, t_real i_leftUpperY);
 
@@ -62,11 +72,11 @@ class tsunami_lab::io::Stations{
         /**
          * Adds a station for which data can be tracked.
          *
-         * @param i_name name of stations
-         * @param i_posX position in x direction
-         * @param i_posY position in y direction
-         * @param io_stream output stream for writing data
-         * @param i_ownsStream flag for memory management if true memory io_stream gets deleted else it is assumed that stream is externally managed.
+         * @param i_name station name.
+         * @param i_posX station x-coordinate.
+         * @param i_posY station y-coordinate.
+         * @param io_stream output stream receiving the sampled data.
+         * @param i_ownsStream whether this object owns and deletes @p io_stream.
          **/
         void addStation(const std::string &i_name, t_real i_posX, t_real i_posY, std::ostream *io_stream, bool i_ownsStream = false);
 
@@ -74,10 +84,10 @@ class tsunami_lab::io::Stations{
         /**
          * Writes data to the output stream.
          *
-         * @param i_simTime current time of simulaton.
+         * @param i_simTime current simulation time.
          * @param i_height water height.
-         * @param i_momentumX water momentum in x direction.
-         * @param i_momentumY water momentum in y direction.
+         * @param i_momentumX water momentum in x-direction.
+         * @param i_momentumY water momentum in y-direction.
          * @param i_bathymetry bathymetry data.
          * @param i_stride stride of data arrays.
          **/
@@ -85,9 +95,9 @@ class tsunami_lab::io::Stations{
 
         
         /**
-         * Reads station from yaml file
+         * Reads station definitions from a YAML file.
          * 
-         * @param i_filePath path of the stations yaml file.
+         * @param i_filePath path to the station YAML file.
          **/
         void readFile(std::string i_filePath);
 };

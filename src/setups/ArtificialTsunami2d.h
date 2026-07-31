@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Two-dimensional artificial-tsunami setup.
+ */
 #ifndef TSUNAMI_LAB_SETUPS_ARTIFICIAL_TSUNAMI_2D_H
 #define TSUNAMI_LAB_SETUPS_ARTIFICIAL_TSUNAMI_2D_H
 
@@ -12,7 +16,7 @@ namespace tsunami_lab{
 
 
 /**
- * 2d artificial Tsunami setup.
+ * Two-dimensional artificial-tsunami setup.
  */
 class tsunami_lab::setups::ArtificialTsunami2d : public Setup {
 private:
@@ -26,18 +30,19 @@ private:
 
 public:
     /**
-     * Constructor.
-     * 
-     * 
+     * Constructs the setup with its fixed grid dimensions.
      */
     ArtificialTsunami2d(){
         m_stride = m_cellsX;
     }
 
+    /** Destructor. */
     ~ArtificialTsunami2d(){}
 
     /**
-     * Gets the yaml argument definition of the setup.
+     * Gets the YAML argument definition of the setup.
+     *
+     * @return setup argument definition.
      **/
     static tsunami_lab::io::SetupDef getSetupDef();
 
@@ -46,13 +51,13 @@ public:
      * 
      * @param i_x x-coordinate of the queried point.
      * @param i_y y-coordinate of the queried point.
-     * @return height of the point.
+     * @return water height at the given point.
      */
     t_real getHeight(   t_real i_x,
                         t_real i_y) const;
 
     /**
-     * Gets the momentum in x-direction.
+     * Gets the momentum in x-direction, which is zero initially.
      * 
      * @return momentum in x-direction.
      */
@@ -62,9 +67,9 @@ public:
     }
 
     /**
-     * Gets the momentum in y-direction.
+     * Gets the momentum in y-direction, which is zero initially.
      * 
-     * @return momentum in y-drection.
+     * @return momentum in y-direction.
      */
     t_real getMomentumY(t_real,
                         t_real) const {
@@ -72,11 +77,11 @@ public:
     }
 
     /**
-     * Gets the bathymetry
+     * Gets the bathymetry.
      * 
      * @param i_x x-coordinate of the queried point.
      * @param i_y y-coordinate of the queried point.
-     * @return bathymetry of the point.
+     * @return bathymetry at the given point.
      */
     t_real getBathymetry(   t_real i_x,
                             t_real i_y) const;
@@ -86,7 +91,7 @@ public:
      * 
      * @param i_x x-coordinate of the queried point.
      * @param i_y y-coordinate of the queried point.
-     * @return displaceent of the point.
+     * @return displacement at the given point.
      */
     t_real getDisplacement( t_real i_x,
                             t_real i_y) const;

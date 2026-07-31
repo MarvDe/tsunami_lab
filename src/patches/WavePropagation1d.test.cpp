@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * Unit tests for the one-dimensional wave propagation patch.
+ * @file
+ * @brief Unit tests for the one-dimensional wave-propagation patch.
  **/
 #include <catch2/catch.hpp>
 #include "WavePropagation1d.h"

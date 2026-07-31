@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * two-dimensional dam break problem.
+ * @file
+ * @brief Two-dimensional circular dam-break problem.
  **/
 #ifndef TSUNAMI_LAB_SETUPS_DAM_BREAK_2D_H
 #define TSUNAMI_LAB_SETUPS_DAM_BREAK_2D_H
@@ -16,7 +16,7 @@ namespace tsunami_lab {
 }
 
 /**
- * 2d dam break setup.
+ * Two-dimensional circular dam-break setup.
  **/
 class tsunami_lab::setups::CircularDamBreak2d: public Setup {
   private:
@@ -41,12 +41,12 @@ class tsunami_lab::setups::CircularDamBreak2d: public Setup {
     /**
      * Constructor.
      *
-     * @param i_heightCircle height of circle.
-     * @param i_bathymetry bathymetry.
-     * @param i_radius radius of circle.
-     * @param i_cellX number of cells in x direction 
-     * @param i_cellY number of cells in y direction
-     * @param i_dxy size of cell
+     * @param i_heightCircle water height inside the circle.
+     * @param i_bathymetry bathymetry array copied by the setup.
+     * @param i_radius radius of the circle.
+     * @param i_cellX number of cells in x-direction.
+     * @param i_cellY number of cells in y-direction.
+     * @param i_dxy cell size.
      **/
     CircularDamBreak2d( t_real i_heightCircle,
                         t_real * i_bathymetry,
@@ -56,18 +56,22 @@ class tsunami_lab::setups::CircularDamBreak2d: public Setup {
                         t_real i_dxy
                       );
     
+    /** Destructor. */
     ~CircularDamBreak2d();
 
     /**
-     * Gets the yaml argument definition of the setup.
+     * Gets the YAML argument definition of the setup.
+     *
+     * @return setup argument definition.
      **/
     static tsunami_lab::io::SetupDef getSetupDef();
 
-    /**damBreak
+    /**
      * Gets the water height at a given point.
      *
      * @param i_x x-coordinate of the queried point.
-     * @return height at the given point.
+     * @param i_y y-coordinate of the queried point.
+     * @return water height at the given point.
      **/
     t_real getHeight( t_real i_x,
                       t_real i_y    ) const;
@@ -88,9 +92,11 @@ class tsunami_lab::setups::CircularDamBreak2d: public Setup {
     t_real getMomentumY( t_real,
                          t_real ) const;
     /**
-     * gets the bathymetry.
+     * Gets the bathymetry.
      *
-     * @return Bathymetry.
+     * @param i_x x-coordinate of the queried point.
+     * @param i_y y-coordinate of the queried point.
+     * @return bathymetry at the given point.
      **/
     t_real getBathymetry( t_real i_x,
                           t_real i_y ) const;

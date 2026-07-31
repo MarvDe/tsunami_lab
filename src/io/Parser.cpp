@@ -181,7 +181,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
     try {
         l_file = YAML::LoadFile(i_file);
 
-        /**
+        /*
          * args
          */
         auto  args = l_file["args"];
@@ -195,7 +195,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_timeSteps = args["timeSteps"].as<tsunami_lab::t_idx>();
         
         
-        /**
+        /*
          * output
          */
         auto output = l_file["output"];
@@ -210,7 +210,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         
         // printf("loaded file\n");
         
-        /**
+        /*
          * setup
          */
         auto setup = l_file["setup"];
@@ -252,7 +252,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         }
         
 
-        /**
+        /*
          * tweaks
          */
         auto tweaks = l_file["tweaks"];
@@ -261,7 +261,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_manningFactor = tweaks["manningFactor"].as<t_real>();
 
 
-        /**
+        /*
          * omp
          */
         auto omp = l_file["omp"];
@@ -272,12 +272,12 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
 
             std::cout   << "OMP_NUM_THREADS: " << l_omp_num_threads << "\n"
                         << "OMP_SCHEDULE: " << l_omp_schedule << "\n";
-            /**
+            /*
              * num threads
              */
             omp_set_num_threads(atoi(l_omp_num_threads.c_str()));
             
-            /**
+            /*
              * schedeule
              */
             int l_chunksize = 8;

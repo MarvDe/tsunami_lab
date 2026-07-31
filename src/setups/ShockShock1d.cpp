@@ -1,6 +1,6 @@
 /**
- * @section DESCRIPTION
- * One-dimensional shock-shock problem.
+ * @file
+ * @brief One-dimensional shock-shock problem.
  */
 #include "ShockShock1d.h"
 

@@ -14,7 +14,7 @@ namespace {
 }
 
 TEST_CASE( "CheckPoint reads metadata and last time slice from NetCDF", "[CheckPoint]" ) {
-  /** test was started with:
+  /* Test was started with:
    * args:
    *  solverName: hybrid
    *  setupName: artificialTsunami

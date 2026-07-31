@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Solitary-wave interaction with a canonical conical island.
+ */
 #ifndef TSUNAMI_LAB_SETUPS_SINGLE_WAVE_CANONICAL_ISLAND_2D_H
 #define TSUNAMI_LAB_SETUPS_SINGLE_WAVE_CANONICAL_ISLAND_2D_H
 
@@ -11,7 +15,7 @@ namespace tsunami_lab{
 
 
 /**
- * 2d artificial Tsunami setup.
+ * Two-dimensional solitary-wave setup with a canonical conical island.
  */
 class tsunami_lab::setups::SingleWaveCanonicalIsland : public Setup {
 private:
@@ -40,17 +44,18 @@ private:
 
 public:
     /**
-     * Constructor.
-     * 
-     * 
+     * Constructs the setup using the canonical benchmark parameters.
      */
     SingleWaveCanonicalIsland(){
     }
 
+    /** Destructor. */
     ~SingleWaveCanonicalIsland(){}
 
     /**
-     * Gets the yaml argument definition of the setup.
+     * Gets the YAML argument definition of the setup.
+     *
+     * @return setup argument definition.
      **/
     static tsunami_lab::io::SetupDef getSetupDef();
 
@@ -59,7 +64,7 @@ public:
      * 
      * @param i_x x-coordinate of the queried point.
      * @param i_y y-coordinate of the queried point.
-     * @return height of the point.
+     * @return water height at the given point.
      */
     t_real getHeight(   t_real i_x,
                         t_real i_y) const;
@@ -67,15 +72,17 @@ public:
     /**
      * Gets the momentum in x-direction.
      * 
+     * @param i_x x-coordinate of the queried point.
+     * @param i_y y-coordinate of the queried point.
      * @return momentum in x-direction.
      */
     t_real getMomentumX(t_real i_x,
                         t_real i_y) const;
 
     /**
-     * Gets the momentum in y-direction.
+     * Gets the momentum in y-direction, which is zero initially.
      * 
-     * @return momentum in y-drection.
+     * @return momentum in y-direction.
      */
     t_real getMomentumY(t_real,
                         t_real) const {
@@ -83,11 +90,11 @@ public:
     }
 
     /**
-     * Gets the bathymetry
+     * Gets the bathymetry.
      * 
      * @param i_x x-coordinate of the queried point.
      * @param i_y y-coordinate of the queried point.
-     * @return bathymetry of the point.
+     * @return bathymetry at the given point.
      */
     t_real getBathymetry(   t_real i_x,
                             t_real i_y) const;

@@ -1,6 +1,6 @@
 /**
- * @section DESCRIPTION
- * Tests the 2d tsunami event setup.
+ * @file
+ * @brief Tests the two-dimensional tsunami-event setup.
  */
 #include <catch2/catch.hpp>
 #include "TsunamiEvent2d.h"

@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * One-dimensional wave propagation patch.
+ * @file
+ * @brief One-dimensional wave-propagation patch.
  **/
 #include "WavePropagation1d.h"
 #include "../solvers/Roe.h"

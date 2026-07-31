@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * One-dimensional dam break problem.
+ * @file
+ * @brief One-dimensional dam-break problem.
  **/
 #ifndef TSUNAMI_LAB_SETUPS_DAM_BREAK_1D_H
 #define TSUNAMI_LAB_SETUPS_DAM_BREAK_1D_H
@@ -17,7 +17,7 @@ namespace tsunami_lab {
 }
 
 /**
- * 1d dam break setup.
+ * One-dimensional dam-break setup.
  **/
 class tsunami_lab::setups::DamBreak1d: public Setup {
   private:
@@ -43,7 +43,9 @@ class tsunami_lab::setups::DamBreak1d: public Setup {
                 t_real i_locationDam );
 
     /**
-     * Gets the yaml argument definition of the setup.
+     * Gets the YAML argument definition of the setup.
+     *
+     * @return setup argument definition.
      **/
     static tsunami_lab::io::SetupDef getSetupDef();
 
@@ -51,7 +53,7 @@ class tsunami_lab::setups::DamBreak1d: public Setup {
      * Gets the water height at a given point.
      *
      * @param i_x x-coordinate of the queried point.
-     * @return height at the given point.
+     * @return water height at the given point.
      **/
     t_real getHeight( t_real i_x,
                       t_real      ) const;
@@ -72,9 +74,9 @@ class tsunami_lab::setups::DamBreak1d: public Setup {
     t_real getMomentumY( t_real,
                          t_real ) const;
     /**
-     * gets the bathymetry.
+     * Gets the bathymetry, which is flat at zero.
      *
-     * @return Bathymetry.
+     * @return zero.
      **/
     t_real getBathymetry( t_real,
                           t_real ) const {

@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * IO-routines for writing a snapshot as Comma Separated Values (CSV).
+ * @file
+ * @brief Input/output routines for comma-separated values (CSV).
  **/
 #include "Csv.h"
 

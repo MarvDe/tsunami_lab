@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * Tests the dam break setup.
+ * @file
+ * @brief Tests the one-dimensional dam-break setup.
  **/
 #include <catch2/catch.hpp>
 #include "DamBreak1d.h"

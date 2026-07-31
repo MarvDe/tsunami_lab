@@ -1,6 +1,6 @@
 /**
- * @section DESCRIPTION
- * One-dimensional tsunami event.
+ * @file
+ * @brief One-dimensional tsunami event based on gridded bathymetry.
  */
 #ifndef TSUNAMI_LAB_SETUPS_TSUNAMI_EVENT_H
 #define TSUNAMI_LAB_SETUPS_TSUNAMI_EVENT_H
@@ -16,7 +16,7 @@ namespace tsunami_lab {
 }
 
 /**
- * 1d tsunami event setup.
+ * One-dimensional tsunami-event setup.
  */
 
 class tsunami_lab::setups::TsunamiEvent1d: public Setup {
@@ -34,9 +34,10 @@ private:
     t_real m_delta = 0;
 
     /**
-     * Vertical displacement
+     * Computes the vertical displacement.
      * 
-     * @param i_x x coordinate
+     * @param i_x x-coordinate of the queried point.
+     * @return vertical displacement at the given point.
      */
     t_real verticalDisplacement(t_real i_x) const;
 
@@ -57,13 +58,16 @@ public:
     ~TsunamiEvent1d();
 
     /**
-     * Gets the yaml argument definition of the setup.
+     * Gets the YAML argument definition of the setup.
+     *
+     * @return setup argument definition.
      **/
     static tsunami_lab::io::SetupDef getSetupDef();
 
     /**
-     * Gets waterheight at a given point.
-     * @return height at the given point.
+     * Gets the water height at a given point.
+     *
+     * @return water height at the given point.
      */
     t_real getHeight(t_real, t_real) const;
 
@@ -79,10 +83,10 @@ public:
      */
     t_real getMomentumY(t_real, t_real) const;
 
-      /**
-     * gets the bathymetry.
+    /**
+     * Gets the bathymetry.
      *
-     * @return Bathymetry.
+     * @return bathymetry at the given point.
      **/
     t_real getBathymetry( t_real,
                           t_real ) const;

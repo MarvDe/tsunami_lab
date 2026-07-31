@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * Entry-point for simulations.
+ * @file
+ * @brief Entry point for simulations.
  **/
 #include "constants.h"
 #include "patches/WavePropagation1d.h"
@@ -312,7 +312,7 @@ int main( int   i_argc,
                           );
     } catch (std::exception &e) {
       std::cerr << "\nError: " << e.what() << "\n";
-      return 0;
+      return 1;
     }
   }
   else {
@@ -476,7 +476,7 @@ int main( int   i_argc,
       l_disRes = tsunami_lab::io::NetCdf::read(l_setupArgs.get<std::string>("displacement"), l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, &l_displacement);
     } catch (std::exception &e) {
       std::cerr << "\nError: " << e.what() << "\n";
-      return 0;
+      return 1;
     }
 
     l_left = l_setupArgs.get<tsunami_lab::t_real>("startCoordX");
@@ -511,7 +511,7 @@ int main( int   i_argc,
                                                     );
     } catch (std::exception &e) {
       std::cerr << "\nError: " << e.what() << "\n";
-      return 0;
+      return 1;
     }
     std::cout << "CheckPoint: " << std::endl;
     std::cout << "sim time: " << l_simTime << std::endl;
@@ -684,7 +684,7 @@ int main( int   i_argc,
                                                 "solution.nc");
       } catch (std::exception &e) {
         std::cerr << "\nError: " << e.what() << "\n";
-        return 0;
+        return 1;
       }
     } else {
       try {
@@ -700,7 +700,7 @@ int main( int   i_argc,
                                                 true);
       } catch (std::exception &e) {
         std::cerr << "\nError: " << e.what() << "\n";
-        return 0;
+        return 1;
       }
     }
   }
@@ -752,7 +752,7 @@ int main( int   i_argc,
                           l_writeCheckpoint);
         } catch (std::exception &e) {
           std::cerr << "\nError: " << e.what() << "\n";
-          return 0;
+          return 1;
         }
         l_nOut++;
       }

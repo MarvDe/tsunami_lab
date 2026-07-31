@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * IO-routines for writing a snapshot as Comma Separated Values (CSV).
+ * @file
+ * @brief Input/output routines for comma-separated values (CSV).
  **/
 #ifndef TSUNAMI_LAB_IO_CSV
 #define TSUNAMI_LAB_IO_CSV
@@ -18,6 +18,7 @@ namespace tsunami_lab {
   }
 }
 
+/** Provides CSV serialization helpers for simulation data. */
 class tsunami_lab::io::Csv {
   public:
     /**
@@ -46,9 +47,9 @@ class tsunami_lab::io::Csv {
     /**
      * Reads bathymetry data.
      * 
-     * @param i_cellx number of cells to read.
-     * @param i_stream data stream to CSV file.
-     * @param o_bathymetry bathymetry data.
+     * @param i_cellx number of values to read.
+     * @param i_stream input stream containing CSV data.
+     * @param o_bathymetry destination array for the bathymetry values.
      */
     static void readBathymetry( t_idx             i_cellx,
                                 std::istream &    i_stream,

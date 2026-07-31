@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief One-dimensional supercritical-flow setup.
+ */
 #ifndef TSUNAMI_LAB_SETUPS_SUPERCRITICAL_FLOW_1D_H
 #define TSUNAMI_LAB_SETUPS_SUPERCRITICAL_FLOW_1D_H
 
@@ -11,7 +15,7 @@ namespace tsunami_lab {
 
 
 /**
- * 1d Supercritical flow setup
+ * One-dimensional supercritical-flow setup.
  */
 class tsunami_lab::setups::SupercriticalFlow1d: public Setup {
 private:
@@ -25,7 +29,9 @@ public:
     SupercriticalFlow1d();
 
     /**
-     * Gets the yaml argument definition of the setup.
+     * Gets the YAML argument definition of the setup.
+     *
+     * @return setup argument definition.
      **/
     static tsunami_lab::io::SetupDef getSetupDef();
 
@@ -38,10 +44,10 @@ public:
     t_real getHeight(t_real i_x, t_real) const;
 
     /**
-     * gets the bathymetry.
+     * Gets the bathymetry.
      *
      * @param i_x x-coordinate of the queried point.
-     * @return Bathymetry.
+     * @return bathymetry at the given point.
      **/
     t_real getBathymetry(t_real i_x, t_real) const;
 

@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * Entry-point for unit tests.
+ * @file
+ * @brief Entry point for unit tests.
  **/
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>

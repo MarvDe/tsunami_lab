@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * F-wave Riemann solver for the one-dimensional shallow water equations.
+ * @file
+ * @brief F-wave Riemann solver for the one-dimensional shallow-water equations.
  **/
 #ifndef TSUNAMI_LAB_SOLVERS_FWAVE
 #define TSUNAMI_LAB_SOLVERS_FWAVE
@@ -17,6 +17,7 @@ namespace tsunami_lab {
   }
 }
 
+/** Computes well-balanced interface fluctuations with the F-wave method. */
 class tsunami_lab::solvers::Fwave {
   private:
     //! square root of gravity
@@ -74,8 +75,8 @@ class tsunami_lab::solvers::Fwave {
      *
      * @param i_hL height of the left side.
      * @param i_hR height of the right side.
-     * @param i_uL particle velocity of the leftside.
-     * @param i_uR particles velocity of the right side.
+     * @param i_uL particle velocity of the left side.
+     * @param i_uR particle velocity of the right side.
      * @param o_waveSpeedL will be set to the speed of the wave propagating to the left.
      * @param o_waveSpeedR will be set to the speed of the wave propagating to the right.
      **/
@@ -124,8 +125,8 @@ class tsunami_lab::solvers::Fwave {
      *
      * @param i_hL height of the left side.
      * @param i_hR height of the right side.
-     * @param i_uL particle velocity of the leftside.
-     * @param i_uR particle velocity of the rightside.
+     * @param i_uL particle velocity of the left side.
+     * @param i_uR particle velocity of the right side.
      * @param i_huL momentum of the left side.
      * @param i_huR momentum of the right side.
      * @param i_bL bathymetry of the left side.
@@ -175,6 +176,23 @@ class tsunami_lab::solvers::Fwave {
 
   public:
 
+    /**
+     * Computes net-updates using precomputed Roe averages.
+     *
+     * @param i_hL water height of the left side.
+     * @param i_hR water height of the right side.
+     * @param i_huL momentum of the left side.
+     * @param i_huR momentum of the right side.
+     * @param i_bL bathymetry of the left side.
+     * @param i_bR bathymetry of the right side.
+     * @param i_hSqrtL square root of the left water height.
+     * @param i_hSqrtR square root of the right water height.
+     * @param i_hRoe Roe-averaged water height.
+     * @param i_uRoe Roe-averaged particle velocity.
+     * @param i_useEntropyFix whether to apply the entropy fix.
+     * @param o_netUpdateL net-updates for the left side; 0: height, 1: momentum.
+     * @param o_netUpdateR net-updates for the right side; 0: height, 1: momentum.
+     **/
     inline static void netUpdates( t_real i_hL,
                             t_real i_hR,
                             t_real i_huL,
@@ -335,14 +353,15 @@ class tsunami_lab::solvers::Fwave {
     /**
      * Computes the net-updates.
      *
-     * @param i_hL height of the left side.
-     * @param i_hR height of the right side.
+     * @param i_hL water height of the left side.
+     * @param i_hR water height of the right side.
      * @param i_huL momentum of the left side.
      * @param i_huR momentum of the right side.
-     * @param i_huL momentum of the left side.
-     * @param i_huR momentum of the right side.
-     * @param o_netUpdateL will be set to the net-updates for the left side; 0: height, 1: momentum.
-     * @param o_netUpdateR will be set to the net-updates for the right side; 0: height, 1: momentum.
+     * @param i_bL bathymetry of the left side.
+     * @param i_bR bathymetry of the right side.
+     * @param i_useEntropyFix whether to apply the entropy fix.
+     * @param o_netUpdateL net-updates for the left side; 0: height, 1: momentum.
+     * @param o_netUpdateR net-updates for the right side; 0: height, 1: momentum.
      **/
     inline static void netUpdates( t_real i_hL,
                             t_real i_hR,

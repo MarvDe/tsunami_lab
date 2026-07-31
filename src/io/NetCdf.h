@@ -1,8 +1,8 @@
 /**
  * @author Marvin Doering
  *
- * @section DESCRIPTION
- * IO-routines handling netcdf files.
+ * @file
+ * @brief Input/output routines for NetCDF files.
  **/
 #ifndef TSUNAMI_LAB_IO_NETCDF
 #define TSUNAMI_LAB_IO_NETCDF
@@ -21,6 +21,9 @@ namespace tsunami_lab {
 }
 
 
+/**
+ * Reads gridded input data and writes simulation results in NetCDF format.
+ **/
 class tsunami_lab::io::NetCdf {
   private:
 
@@ -45,22 +48,31 @@ class tsunami_lab::io::NetCdf {
     //! output resolution
     t_idx m_outRes;
 
+    /**
+     * Handles a return code from the NetCDF C API.
+     *
+     * @param i_errId NetCDF status code.
+     * @param i_printErr whether to report the error and throw an exception.
+     * @return zero on success and -1 for a suppressed error.
+     * @throws std::runtime_error if an error occurs and @p i_printErr is true.
+     **/
     static int errorChecking(int i_errId, bool i_printErr = true);
 
   public:
 
     /**
-     * Constructs a NetCdf object and creates a new .nc file. With calls to the write function this nc file can be filled with data.
+     * Creates a NetCDF output file or opens an existing one for appending.
      *
      * @param i_nx number of cells in x-direction.
      * @param i_ny number of cells in y-direction.
-     * @param i_dxy size of cell.
-     * @param i_left coordinates of left most cell.
-     * @param i_upper coordinates of upper most cell.
-     * @param i_outRes output resolution (=1: same, >1: m
-                                        tsunami_lab::t_idx &o_compressionLevel,erge cells)
-     * @param i_filePath path of the new nc file.
-     * @param i_existingFile if true do not create a new file, but use filepath file
+     * @param i_dxy cell size.
+     * @param i_dt time-step size.
+     * @param i_left x-coordinate of the leftmost cell.
+     * @param i_upper y-coordinate of the uppermost cell.
+     * @param i_outRes output coarsening factor; 1 preserves the input resolution.
+     * @param i_compressionLevel NetCDF compression level; 0 disables compression.
+     * @param i_filePath path to the NetCDF file.
+     * @param i_existingFile whether to open an existing file instead of creating one.
      **/
     NetCdf( t_idx i_nx, t_idx i_ny, t_real i_dxy, t_real i_dt, t_real i_left, t_real i_upper, t_idx i_outRes, t_idx i_compressionLevel, const std::string & i_filePath , bool i_existingFile = false);
     
@@ -70,7 +82,7 @@ class tsunami_lab::io::NetCdf {
     ~NetCdf();
 
     /**
-     * Writes the data to a .nc file using the netcdf library.
+     * Writes one simulation state to the NetCDF file.
      *
      * @param i_nx number of cells in x-direction.
      * @param i_ny number of cells in y-direction.
@@ -81,6 +93,7 @@ class tsunami_lab::io::NetCdf {
      * @param i_hu momentum in x-direction of the cells; optional: use nullptr if not required.
      * @param i_hv momentum in y-direction of the cells; optional: use nullptr if not required.
      * @param i_bathymetry bathymetry data of the cells; optional: use nullptr if not required.
+     * @param i_writeCheckpoint whether to flush the file to durable storage after writing.
      **/
     void write( t_idx                i_nx,
                 t_idx                i_ny,
@@ -94,17 +107,18 @@ class tsunami_lab::io::NetCdf {
                 bool                 i_writeCheckpoint );
 
     /**
-     * Reads data.
+     * Reads the two-dimensional variable `z` and its grid coordinates.
      * 
      * @param i_filePath path to file.
-     * @param o_cellX number of cells in x direction.
-     * @param o_cellY number of cells in y direction.
-     * @param o_dxy   size of cell (calculated through the difference between the first and second element in the x variable of the nc file)
-     * @param o_left  x-coordinate of the left most cell in the nc file
-     * @param o_upper y-coordinate of the upper most cell in the nc file
-     * @param o_data data.
+     * @param o_cellX number of cells in x-direction.
+     * @param o_cellY number of cells in y-direction.
+     * @param o_dxy cell size derived from the first two x-coordinates.
+     * @param o_left x-coordinate of the leftmost cell.
+     * @param o_upper y-coordinate of the uppermost cell.
+     * @param o_data newly allocated array containing the gridded data.
+     * @param printErr whether NetCDF errors are reported by throwing an exception.
      *
-     * @return success.
+     * @return zero on success and -1 on a suppressed NetCDF error.
      */
     static int read(  const std::string  & i_filePath,
                       t_idx      &  o_cellX,
@@ -113,7 +127,7 @@ class tsunami_lab::io::NetCdf {
                       t_real     &  o_left,
                       t_real     &  o_upper,
                       t_real     ** o_data,
-                      bool printErr = true );                                
+                      bool printErr = true );
 
 };
 

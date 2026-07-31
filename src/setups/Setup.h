@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * Simulation setup.
+ * @file
+ * @brief Abstract interface for simulation setups.
  **/
 #ifndef TSUNAMI_LAB_SETUPS_SETUP_H
 #define TSUNAMI_LAB_SETUPS_SETUP_H
@@ -17,7 +17,7 @@ namespace tsunami_lab {
 }
 
 /**
- * Base setup.
+ * Defines the initial state and bathymetry of a simulation setup.
  **/
 class tsunami_lab::setups::Setup {
   public:
@@ -56,12 +56,12 @@ class tsunami_lab::setups::Setup {
     virtual t_real getMomentumY( t_real i_x,
                                  t_real i_y ) const = 0;
     
-  /**
-     * gets the bathymetry.
+    /**
+     * Gets the bathymetry.
      *
      * @param i_x x-coordinate of the queried point.
      * @param i_y y-coordinate of the queried point.
-     * @return Bathymetry.
+     * @return bathymetry at the given point.
      **/
     virtual t_real getBathymetry( t_real i_x,
                                   t_real i_y ) const = 0;

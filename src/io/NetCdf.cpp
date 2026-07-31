@@ -1,8 +1,8 @@
 /**
  * @author Marvin Doering
  *
- * @section DESCRIPTION
- * IO-routines handling netcdf files.
+ * @file
+ * @brief Input/output routines for NetCDF files.
  **/
 #include "NetCdf.h"
 #include <vector>
@@ -290,4 +290,4 @@ int io::NetCdf::read( const std::string  & i_filePath,
     if (l_status) return -1;
     l_status = errorChecking( nc_close(l_ncid), printErr );
     return l_status;
-}  
+}

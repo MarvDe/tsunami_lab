@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * Roe Riemann solver for the one-dimensional shallow water equations.
+ * @file
+ * @brief Roe Riemann solver for the one-dimensional shallow-water equations.
  **/
 #ifndef TSUNAMI_LAB_SOLVERS_ROE
 #define TSUNAMI_LAB_SOLVERS_ROE
@@ -15,6 +15,7 @@ namespace tsunami_lab {
   }
 }
 
+/** Computes interface fluctuations with Roe's approximate Riemann solver. */
 class tsunami_lab::solvers::Roe{
   private:
     //! square root of gravity
@@ -25,8 +26,8 @@ class tsunami_lab::solvers::Roe{
      *
      * @param i_hL height of the left side.
      * @param i_hR height of the right side.
-     * @param i_uL particle velocity of the leftside.
-     * @param i_uR particles velocity of the right side.
+     * @param i_uL particle velocity of the left side.
+     * @param i_uR particle velocity of the right side.
      * @param o_waveSpeedL will be set to the speed of the wave propagating to the left.
      * @param o_waveSpeedR will be set to the speed of the wave propagating to the right.
      **/

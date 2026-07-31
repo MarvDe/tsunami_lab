@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * Constants / typedefs used throughout the code.
+ * @file
+ * @brief Fundamental types and identifiers used throughout the code.
  **/
 #ifndef TSUNAMI_LAB_CONSTANTS_H
 #define TSUNAMI_LAB_CONSTANTS_H

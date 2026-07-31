@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Two-dimensional tsunami-event setup based on gridded input data.
+ */
 #ifndef TSUNAMI_LAB_SETUPS_TSUNAMI_EVENT_2D_H
 #define TSUNAMI_LAB_SETUPS_TSUNAMI_EVENT_2D_H
 
@@ -13,7 +17,7 @@ namespace tsunami_lab{
 
 
 /**
- * 2d Tsunami Event setup.
+ * Two-dimensional tsunami-event setup.
  */
 class tsunami_lab::setups::TsunamiEvent2d : public Setup {
 private:
@@ -55,21 +59,21 @@ public:
     /**
      * Constructor.
      * 
-     * @param i_cellsX number of cells in x direction.
-     * @param i_cellsY number of cells in y direction.
-     * @param i_dxy size of cell.
-     * @param i_left coordinate of left most cell.
-     * @param i_upper coordinate of upper most cell.
-     * @param i_cellsXBat number of cells in x direction of bathymetry grid.
-     * @param i_cellsYBat number of cells in y direction of bathymetry grid.
-     * @param i_dxyBat size of cell of bathymetry grid.
-     * @param i_leftBat coordinate of left most cell in bathymetry grid.
-     * @param i_upperBat coordinate of upper most cell in bathymetry grid.
-     * @param i_cellsXDis number of cells in x direction of displacement grid.
-     * @param i_cellsYDis number of cells in y direction of displacement grid.
-     * @param i_dxyDis size of cell of displacement grid.
-     * @param i_leftDis coordinate of left most cell in displacement grid.
-     * @param i_upperDis coordinate of upper most cell in displacement grid.
+     * @param i_cellsX number of simulation cells in x-direction.
+     * @param i_cellsY number of simulation cells in y-direction.
+     * @param i_dxy simulation-cell size.
+     * @param i_left x-coordinate of the leftmost simulation cell.
+     * @param i_upper y-coordinate of the uppermost simulation cell.
+     * @param i_cellsXBat number of bathymetry cells in x-direction.
+     * @param i_cellsYBat number of bathymetry cells in y-direction.
+     * @param i_dxyBat bathymetry-cell size.
+     * @param i_leftBat x-coordinate of the leftmost bathymetry cell.
+     * @param i_upperBat y-coordinate of the uppermost bathymetry cell.
+     * @param i_cellsXDis number of displacement cells in x-direction.
+     * @param i_cellsYDis number of displacement cells in y-direction.
+     * @param i_dxyDis displacement-cell size.
+     * @param i_leftDis x-coordinate of the leftmost displacement cell.
+     * @param i_upperDis y-coordinate of the uppermost displacement cell.
      * @param i_bathymetry input bathymetry data.
      * @param i_displacement input displacement data.
      */
@@ -82,7 +86,9 @@ public:
     ~TsunamiEvent2d();
 
     /**
-     * Gets the yaml argument definition of the setup.
+     * Gets the YAML argument definition of the setup.
+     *
+     * @return setup argument definition.
      **/
     static tsunami_lab::io::SetupDef getSetupDef();
 
@@ -91,13 +97,13 @@ public:
      * 
      * @param i_x x-coordinate of the queried point.
      * @param i_y y-coordinate of the queried point.
-     * @return height of the point.
+     * @return water height at the given point.
      */
     t_real getHeight(   t_real i_x,
                         t_real i_y) const;
 
     /**
-     * Gets the momentum in x-direction.
+     * Gets the momentum in x-direction, which is zero initially.
      * 
      * @return momentum in x-direction.
      */
@@ -107,9 +113,9 @@ public:
     }
 
     /**
-     * Gets the momentum in y-direction.
+     * Gets the momentum in y-direction, which is zero initially.
      * 
-     * @return momentum in y-drection.
+     * @return momentum in y-direction.
      */
     t_real getMomentumY(t_real,
                         t_real) const {
@@ -117,11 +123,11 @@ public:
     }
 
     /**
-     * Gets the bathymetry
+     * Gets the bathymetry.
      * 
      * @param i_x x-coordinate of the queried point.
      * @param i_y y-coordinate of the queried point.
-     * @return bathymetry of the point.
+     * @return bathymetry at the given point.
      */
     t_real getBathymetry(   t_real i_x,
                             t_real i_y) const;

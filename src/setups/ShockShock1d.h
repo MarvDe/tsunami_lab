@@ -1,6 +1,6 @@
 /**
- * @section DESCRIPTION
- * One-dimensional shock-shock problem.
+ * @file
+ * @brief One-dimensional shock-shock problem.
  */
 #ifndef TSUNAMI_LAB_SETUPS_SHOCK_SHOCK_H
 #define TSUNAMI_LAB_SETUPS_SHOCK_SHOCK_H
@@ -15,7 +15,7 @@ namespace tsunami_lab {
 }
 
 /**
- * 1d shock-shock setup.
+ * One-dimensional shock-shock setup.
  */
 
 class tsunami_lab::setups::ShockShock1d: public Setup {
@@ -42,13 +42,16 @@ public:
                     t_real i_locationDiscontinuity);
     
     /**
-     * Gets the yaml argument definition of the setup.
+     * Gets the YAML argument definition of the setup.
+     *
+     * @return setup argument definition.
      **/
     static tsunami_lab::io::SetupDef getSetupDef();
     
     /**
-     * Gets waterheight at a given point.
-     * @return height at the given point.
+     * Gets the water height at a given point.
+     *
+     * @return water height at the given point.
      */
     t_real getHeight(t_real, t_real) const;
 
@@ -65,10 +68,10 @@ public:
      */
     t_real getMomentumY(t_real, t_real) const;
 
-      /**
-     * gets the bathymetry.
+    /**
+     * Gets the bathymetry, which is flat at zero.
      *
-     * @return Bathymetry.
+     * @return zero.
      **/
     t_real getBathymetry( t_real,
                           t_real ) const {

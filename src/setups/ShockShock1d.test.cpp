@@ -1,6 +1,6 @@
 /**
- * @section DESCRIPTION
- * Tests the shock-shock setup.
+ * @file
+ * @brief Tests the shock-shock setup.
  */
 #include <catch2/catch.hpp>
 #include "ShockShock1d.h"

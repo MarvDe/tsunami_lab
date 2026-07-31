@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * two-dimensional dam break problem.
+ * @file
+ * @brief Two-dimensional circular dam-break problem.
  **/
 #include "CircularDamBreak2d.h"
 #include <cmath>
@@ -84,4 +84,4 @@ tsunami_lab::t_real tsunami_lab::setups::CircularDamBreak2d::getBathymetry( t_re
   t_idx l_ix = i_x / m_dxy;
   t_idx l_iy = i_y / m_dxy;
   return m_bathymetry[l_ix + l_iy * m_cellX];
-} 
+}

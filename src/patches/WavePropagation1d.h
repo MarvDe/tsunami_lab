@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * One-dimensional wave propagation patch.
+ * @file
+ * @brief One-dimensional wave-propagation patch.
  **/
 #ifndef TSUNAMI_LAB_PATCHES_WAVE_PROPAGATION_1D
 #define TSUNAMI_LAB_PATCHES_WAVE_PROPAGATION_1D
@@ -15,12 +15,13 @@ namespace tsunami_lab {
   }
 }
 
+/** Advances the one-dimensional shallow-water equations on a Cartesian grid. */
 class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
   private:
     //! current step which indicates the active values in the arrays below
     unsigned short m_step = 0;
 
-    // flag to choose solver, 0=Roe, 1=F_wave
+    //! Selected Riemann solver.
     tsunami_lab::solvers::Ids m_solverId = tsunami_lab::solvers::FWAVE;
 
     //! number of cells discretizing the computational domain
@@ -35,7 +36,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     //! bathymetry data 
     t_real * m_bathymetry = nullptr;
 
-    // ! ghost cell updating conditions (0 = outflow, 1 = reflecting)
+    //! Ghost-cell boundary conditions (0 = outflow, 1 = reflecting).
     t_idx m_ghostL = 1; 
     t_idx m_ghostR = 1;
 
@@ -57,7 +58,9 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * Constructs the 1d wave propagation solver.
      *
      * @param i_nCells number of cells.
-     * @param i_solver_id flag to choose solver.
+     * @param i_solverId selected Riemann solver.
+     * @param i_useEntropyFix whether to apply the entropy fix.
+     * @param i_manningFactor Manning friction factor.
      **/
     WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix, t_real i_manningFactor = 0 );
 
@@ -65,9 +68,11 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * Constructs the 1d wave propagation solver.
      *
      * @param i_nCells number of cells.
-     * @param i_solver_id flag to choose solver.
+     * @param i_solverId selected Riemann solver.
      * @param i_ghostL type of boundary for left ghost cell.
      * @param i_ghostR type of boundary for right ghost cell.
+     * @param i_useEntropyFix whether to apply the entropy fix.
+     * @param i_manningFactor Manning friction factor.
      **/
     WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, t_idx i_ghostL, t_idx i_ghostR, bool i_useEntropyFix, t_real i_manningFactor = 0 );
 
@@ -83,6 +88,11 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      **/
     void timeStep( t_real i_scaling );
 
+    /**
+     * Sets the time-step size used by source-term updates.
+     *
+     * @param i_dt time-step size.
+     **/
     void setDt( t_real i_dt ); 
 
     /**
@@ -100,7 +110,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     }
 
     /**
-     * Gets cells' water heights.
+     * Gets the cells' water heights.
      *
      * @return water heights.
      */
@@ -118,7 +128,9 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     }
 
     /**
-     * Dummy function which returns a nullptr.
+     * Gets the cells' momenta in y-direction.
+     *
+     * @return nullptr because a one-dimensional patch has no y-momentum.
      **/
     t_real const * getMomentumY(){
       return nullptr;
@@ -127,7 +139,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     /**
      * Gets the cells' bathymetry.
      * 
-     * @return bathymetry
+     * @return bathymetry.
      **/
     t_real const * getBathymetry() {
       return m_bathymetry+1;
@@ -136,7 +148,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     /**
      * Sets the height of the cell to the given value.
      *
-     * @param i_ix id of the cell in x-direction.
+     * @param i_ix index of the cell in x-direction.
      * @param i_h water height.
      **/
     void setHeight( t_idx  i_ix,
@@ -148,7 +160,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     /**
      * Sets the momentum in x-direction to the given value.
      *
-     * @param i_ix id of the cell in x-direction.
+     * @param i_ix index of the cell in x-direction.
      * @param i_hu momentum in x-direction.
      **/
     void setMomentumX( t_idx  i_ix,
@@ -158,7 +170,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     }
 
     /**
-     * Dummy function since there is no y-momentum in the 1d solver.
+     * Ignores a y-momentum value because a one-dimensional patch has no y-momentum.
      **/
     void setMomentumY( t_idx,
                        t_idx,
@@ -167,10 +179,8 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
     /**
      * Sets the cells' bathymetry.
      *
-     * @param i_ix id of the cell in x-direction.
-     * 
-     * 
-     * @return bathymetry
+     * @param i_ix index of the cell in x-direction.
+     * @param i_height bathymetry value.
      **/
     void setBathymetry( t_idx i_ix, 
                         t_idx, 

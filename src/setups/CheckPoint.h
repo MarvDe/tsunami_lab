@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief Setup for resuming a simulation from a NetCDF checkpoint.
+ */
 #ifndef TSUNAMI_LAB_SETUP_CHECK_POINT
 #define TSUNAMI_LAB_SETUP_CHECK_POINT
 
@@ -11,6 +15,7 @@ namespace tsunami_lab {
     }
 }
 
+/** Restores a simulation state from a NetCDF checkpoint file. */
 class tsunami_lab::setups::CheckPoint : public Setup {
 private:
     //! bathymetry
@@ -29,15 +34,16 @@ private:
     t_idx m_stride;
 
     /**
-     * Reads a NetCdf file and stores values into vars.
-     * @param i_inputFile path to input NetCdf File.
-     * @param o_lastSimTime last fully filled time in the simulation
-     * @param o_lastTimeStep last fully filled timestep in the simulation
-     * @param o_nx cells in x direction in simulation
-     * @param o_ny cells in y direction in simulation
-     * @param o_dxy cell size
-     * @param o_globalX X value for global coord (top left corner)
-     * @param o_globalY Y value for global coord (top left corner.
+     * Reads the state and grid metadata from a NetCDF checkpoint file.
+     *
+     * @param i_inputFile path to the input NetCDF file.
+     * @param o_lastSimTime latest complete simulation time.
+     * @param o_lastTimeStep latest complete simulation time step.
+     * @param o_nx number of simulation cells in x-direction.
+     * @param o_ny number of simulation cells in y-direction.
+     * @param o_dxy cell size.
+     * @param o_globalX x-coordinate of the upper-left grid cell.
+     * @param o_globalY y-coordinate of the upper-left grid cell.
      */
     void readNetCdfFile(std::string i_inputFile,
                         t_real &o_lastSimTime, 
@@ -51,15 +57,16 @@ private:
 
 public:
     /**
-     * Constructor
-     * @param i_inputFile path to input NetCdf File.
-     * @param o_lastSimTime last fully filled time in the simulation
-     * @param o_lastTimeStep last fully filled time step in the simulation
-     * @param o_nx cells in x direction in simulation
-     * @param o_ny cells in y direction in simulation
-     * @param o_dxy cell size
-     * @param o_globalX X value for global coord (top left corner)
-     * @param o_globalY Y value for global coord (top left corner)
+     * Constructs the setup from a NetCDF checkpoint file.
+     *
+     * @param i_inputFile path to the input NetCDF file.
+     * @param o_lastSimTime latest complete simulation time.
+     * @param o_lastTimeStep latest complete simulation time step.
+     * @param o_nx number of simulation cells in x-direction.
+     * @param o_ny number of simulation cells in y-direction.
+     * @param o_dxy cell size.
+     * @param o_globalX x-coordinate of the upper-left grid cell.
+     * @param o_globalY y-coordinate of the upper-left grid cell.
      * 
      */
     CheckPoint( std::string i_inputFile,
@@ -83,7 +90,7 @@ public:
     };
 
     /**
-     * Destructor
+     * Frees the restored state arrays.
      */
     ~CheckPoint(){
         delete[] m_bathymetry;
@@ -93,7 +100,9 @@ public:
     }
 
     /**
-     * Gets the yaml argument definition of the setup.
+     * Gets the YAML argument definition of the setup.
+     *
+     * @return setup argument definition.
      **/
     static tsunami_lab::io::SetupDef getSetupDef();
     
@@ -127,12 +136,12 @@ public:
     t_real getMomentumY( t_real i_x,
                                  t_real i_y ) const;
     
-  /**
-     * gets the bathymetry.
+    /**
+     * Gets the bathymetry.
      *
      * @param i_x x-coordinate of the queried point.
      * @param i_y y-coordinate of the queried point.
-     * @return Bathymetry.
+     * @return bathymetry at the given point.
      **/
     t_real getBathymetry( t_real i_x,
                                   t_real i_y ) const;

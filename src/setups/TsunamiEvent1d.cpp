@@ -1,6 +1,6 @@
 /**
- * @section DESCRIPTION
- * One-dimensional tsunami event.
+ * @file
+ * @brief One-dimensional tsunami event.
  */
 #include "TsunamiEvent1d.h"
 

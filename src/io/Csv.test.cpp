@@ -1,8 +1,8 @@
 /**
  * @author Alexander Breuer (alex.breuer AT uni-jena.de)
  *
- * @section DESCRIPTION
- * Unit tests for the CSV-interface.
+ * @file
+ * @brief Unit tests for the CSV interface.
  **/
 #include <catch2/catch.hpp>
 #include "../constants.h"

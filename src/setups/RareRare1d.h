@@ -1,3 +1,7 @@
+/**
+ * @file
+ * @brief One-dimensional rare-rare problem.
+ */
 #ifndef TSUNAMI_LAB_SETUPS_RARE_RARE_1D_H
 #define TSUNAMI_LAB_SETUPS_RARE_RARE_1D_H
 
@@ -12,7 +16,7 @@ namespace tsunami_lab {
 
 
 /**
- * 1d rare rare setup.
+ * One-dimensional rare-rare setup.
  **/
 class tsunami_lab::setups::RareRare1d:  public Setup{
       private:
@@ -22,7 +26,7 @@ class tsunami_lab::setups::RareRare1d:  public Setup{
     //! water momentum
     t_real m_momentum = 0;
 
-    //! location of the disconstinuity
+    //! Location of the discontinuity.
     t_real m_locationDiscontinuity = 0;
 
   public:
@@ -31,14 +35,16 @@ class tsunami_lab::setups::RareRare1d:  public Setup{
      *
      * @param i_height water height.
      * @param i_momentum water momentum.
-     * @param i_locationDiscontinuity(x-coordinate) of the disconstinuity.
+     * @param i_locationDiscontinuity x-coordinate of the discontinuity.
      **/
     RareRare1d( t_real i_height,
                 t_real i_momentum,
                 t_real i_locationDiscontinuity);
 
     /**
-     * Gets the yaml argument definition of the setup.
+     * Gets the YAML argument definition of the setup.
+     *
+     * @return setup argument definition.
      **/
     static tsunami_lab::io::SetupDef getSetupDef();
 
@@ -68,9 +74,9 @@ class tsunami_lab::setups::RareRare1d:  public Setup{
                          t_real ) const;
     
     /**
-     * gets the bathymetry.
+     * Gets the bathymetry, which is flat at zero.
      *
-     * @return Bathymetry.
+     * @return zero.
      **/
     t_real getBathymetry( t_real,
                           t_real ) const {
