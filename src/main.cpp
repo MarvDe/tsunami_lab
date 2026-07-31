@@ -18,6 +18,7 @@
 #include "setups/TsunamiEvent2d.h"
 #include "setups/CheckPoint.h"
 #include "setups/SolitaryWaveBeach1d.h"
+#include "setups/SingleWaveCanonicalIsland.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include "io/Stations.h"
@@ -371,6 +372,7 @@ int main( int   i_argc,
   else if (l_setupName.compare("tsunamiEvent2d") == 0) l_setupId = tsunami_lab::setups::TSUNAMI_EVENT_2D;
   else if (l_setupName.compare("checkPoint") == 0) l_setupId = tsunami_lab::setups::CHECK_POINT;
   else if (l_setupName.compare("solitaryWaveBeach") == 0) l_setupId = tsunami_lab::setups::SOLITARY_WAVE_BEACH;
+  else if (l_setupName.compare("singleWaveCanonicalIsland") == 0) l_setupId = tsunami_lab::setups::SINGLE_WAVE_CANONICAL_ISLAND;
   else l_setupName = "damBreak";
 
   if (l_formatName.compare("nc") == 0) l_formatId = tsunami_lab::io::NC;
@@ -537,6 +539,13 @@ int main( int   i_argc,
     std::cout << "ny: " << l_ny << std::endl;
     std::cout << "dxy: " << l_dxy << std::endl;
   }
+  else if( l_setupId == tsunami_lab::setups::SINGLE_WAVE_CANONICAL_ISLAND){
+    l_dxy = 0.1;
+    l_nx = tsunami_lab::t_idx(25 / l_dxy);
+    l_ny = tsunami_lab::t_idx(30 / l_dxy);
+    std::cout << "nx: " << l_nx << ", ny: " << l_ny << ", dxy: " << l_dxy << std::endl;
+    l_setup = new tsunami_lab::setups::SingleWaveCanonicalIsland();
+  }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( l_setupArgs.get<tsunami_lab::t_real>("heightLeft"),
                                                    l_setupArgs.get<tsunami_lab::t_real>("heightRight"),
@@ -549,7 +558,8 @@ int main( int   i_argc,
   if (l_setupId == tsunami_lab::setups::DAM_BREAK_2D ||
       l_setupId == tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D ||
       l_setupId == tsunami_lab::setups::TSUNAMI_EVENT_2D ||
-      l_setupId == tsunami_lab::setups::CHECK_POINT ){
+      l_setupId == tsunami_lab::setups::CHECK_POINT ||
+      l_setupId == tsunami_lab::setups::SINGLE_WAVE_CANONICAL_ISLAND){
     l_waveProp = new tsunami_lab::patches::WavePropagation2d( l_nx,
                                                               l_ny,
                                                               l_solverId,
@@ -600,6 +610,10 @@ int main( int   i_argc,
                                 l_hv );
       
       l_waveProp->setBathymetry( l_cx, l_cy, l_bathymetry );
+
+      if (l_bathymetry > 10){
+        std::cout << "Bath error: " << l_bathymetry << std::endl; 
+      }
 
       if (l_solverId == tsunami_lab::solvers::HYBRID){
         tsunami_lab::t_real l_xNext = (l_cx + 1) * l_dxy; 
@@ -653,12 +667,13 @@ int main( int   i_argc,
     l_stations.readFile(l_stationsFilePath);
   } 
 
-  // derive maximum wave speed in setup;  
+  // derive maximum wave speed in setup;   
+  std::cout << "h max: " << l_hMax << std::endl;
   tsunami_lab::t_real l_xSpeedMax = std::sqrt( 9.81f * l_hMax ) + l_uMaxAbs;
   tsunami_lab::t_real l_ySpeedMax = std::sqrt( 9.81f * l_hMax ) + l_vMaxAbs;
 
   // derive constant time step; changes at simulation time are ignored
-  tsunami_lab::t_real l_dt = 0.1 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
+  tsunami_lab::t_real l_dt = 0.5 * l_dxy / (l_xSpeedMax + l_ySpeedMax);
   std::cout << "delta time: " << l_dt << std::endl; 
 
   l_waveProp->setDt(l_dt);

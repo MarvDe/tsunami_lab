@@ -39,9 +39,9 @@ class tsunami_lab::io::NetCdf {
     int m_hvVarId;
     int m_bVarId;
     //! cell size
-    tsunami_lab::t_idx m_dxy;
+    tsunami_lab::t_real m_dxy;
     //! time step size
-    tsunami_lab::t_idx m_dt;
+    tsunami_lab::t_real m_dt;
     //! output resolution
     t_idx m_outRes;
 

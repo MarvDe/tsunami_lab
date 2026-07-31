@@ -95,7 +95,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
       l_netUpdates = solvers::Fwave::netUpdates;
       break;
     case solvers::HLLE:
-      l_netUpdates = solvers::Hlle::netUpdates;
+      l_netUpdates = solvers::Hlle::netUpdatesDiag;
       break;
     case solvers::ROE:
       l_netUpdates = solvers::Roe::netUpdates;
@@ -146,7 +146,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         t_real l_bR = m_bathymetry[l_ceR];
         
         // compute net-updates
-        t_real l_netUpdatesX[2][3]= {};
+        t_real l_netUpdatesX[2][3]= {{0,0,0}, {0,0,0}};
   
         // check for dry cells
         bool l_dryL = false, l_dryR = false;
@@ -217,23 +217,6 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
   
       }
     }
-    // if (m_solverId == tsunami_lab::solvers::HYBRID) {
-    //   // manning friction
-    //   t_real l_dt = 0.1;
-    //   const t_real mann = 0.02;
-    //   for (t_idx i = 1; i <= m_xCells; i++) {
-    //       if (l_hNew[i] > 1e-6) {
-    //           // t_real vel = l_huNew[i] / l_hNew[i];
-    //           // t_real denom = 1.0 + 9.81 * l_dt * mann*mann* std::abs(vel) / std::pow(l_hNew[i], 4.0/3.0);
-  
-    //           t_real speed = std::sqrt(l_huNew[i] * l_huNew[i] + l_hvNew[i] * l_hvNew[i]);
-    //           t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / std::pow(l_hNew[i], 4.0/3.0);
-  
-    //           l_huNew[i] /= denom;   // semi-implicit: always stable
-    //           l_hvNew[i] /= denom;
-    //       }
-    //   }
-    // }
     #pragma omp barrier
     // Y
     for (t_idx l_parity = 0; l_parity < 2; ++l_parity) {
@@ -253,7 +236,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         t_real l_bB = m_bathymetry[l_ceB];
         
         // compute net-updates
-        t_real l_netUpdatesY[2][3] = {};
+        t_real l_netUpdatesY[2][3] = {{0,0,0}, {0,0,0}};
         
         // check for dry cells
         bool l_dryU = false, l_dryB = false;
@@ -339,7 +322,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
 
           if (l_hNew[l_ce] > DRY_TOLERANCE) {
             const t_real l_h = l_hNew[l_ce];
-            const t_real speed = std::sqrt(l_huNew[l_ce] * l_huNew[l_ce] + l_hvNew[l_ce] * l_hvNew[l_ce]);
+            const t_real speed = std::sqrt(l_huNew[l_ce] * l_huNew[l_ce] + l_hvNew[l_ce] * l_hvNew[l_ce]) / l_hNew[l_ce];
             const t_real h43 = l_h * std::cbrt(l_h);
             const t_real denom = 1.0 + 9.81 * l_dt * mann * mann * speed / h43;
 

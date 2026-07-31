@@ -67,8 +67,11 @@ void tsunami_lab::solvers::Hybrid::netUpdates(  t_real i_hL,
           l_hR2,
           l_huL2,
           l_huR2,
+          0,
+          0,
           l_hvL2,
           l_hvR2,
+          false,
           o_netUpdateL,
           o_netUpdateR 
         );

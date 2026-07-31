@@ -10,6 +10,7 @@
 #include "../setups/TsunamiEvent1d.h"
 #include "../setups/TsunamiEvent2d.h"
 #include "../setups/SolitaryWaveBeach1d.h"
+#include "../setups/SingleWaveCanonicalIsland.h"
 
 #include <cstdlib>
 #include <string.h>
@@ -34,6 +35,7 @@ namespace {
         tsunami_lab::io::SetupDef l_tsunamiEvent1d = tsunami_lab::setups::TsunamiEvent1d::getSetupDef();
         tsunami_lab::io::SetupDef l_tsunamiEvent2d = tsunami_lab::setups::TsunamiEvent2d::getSetupDef();
         tsunami_lab::io::SetupDef l_solitaryWaveBeach = tsunami_lab::setups::SolitaryWaveBeach1d::getSetupDef();
+        tsunami_lab::io::SetupDef l_singleWaveCanonicalIsland = tsunami_lab::setups::SingleWaveCanonicalIsland::getSetupDef();
 
 
         return {
@@ -48,7 +50,8 @@ namespace {
             {l_supercritical.name, l_supercritical},
             {l_tsunamiEvent1d.name, l_tsunamiEvent1d},
             {l_tsunamiEvent2d.name, l_tsunamiEvent2d},
-            {l_solitaryWaveBeach.name, l_solitaryWaveBeach},
+            {l_solitaryWaveBeach.name, l_solitaryWaveBeach},,
+            {l_singleWaveCanonicalIsland.name, l_singleWaveCanonicalIsland}
         };
     }
 }
@@ -72,6 +75,7 @@ const std::unordered_map<std::string, bool> tsunami_lab::io::Parser::knownFlags 
     {"upper", true},
     {"stations", true},
     {"res", true},
+    {"setup", true}
 };
 
 tsunami_lab::io::Parser::Parser(int i_argc, char *i_argv[]){
