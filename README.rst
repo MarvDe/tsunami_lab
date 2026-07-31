@@ -9,7 +9,7 @@ Dokumentation
 -------------
 
 Die Dokumentationswebseite ist unter https://marvde.github.io/tsunami_lab/index.html aufrufbar.
-Dort steht eine Anleitung für das installieren und nutzen des Programms. Außerdem 
+Dort steht eine Anleitung für das Installieren und Nutzen des Programms. Außerdem 
 findet man auf der Webseite auch eine Dokumentation, bestehend aus wöchentlichen Einträgen,
 über die Entstehung der Software. Wir wünschen euch viel Spaß beim Lesen!
 
