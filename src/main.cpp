@@ -19,6 +19,7 @@
 #include "setups/CheckPoint.h"
 #include "setups/SolitaryWaveBeach1d.h"
 #include "setups/SingleWaveCanonicalIsland.h"
+#include "setups/SmallCity.h"
 #include "io/Csv.h"
 #include "io/Parser.h"
 #include "io/Stations.h"
@@ -177,6 +178,7 @@ int main( int   i_argc,
   // outflow types
   tsunami_lab::t_idx l_outflowTypeL = 0;
   tsunami_lab::t_idx l_outflowTypeR = 0;
+  tsunami_lab::t_idx l_outflowType = 1; // reflection
   
   // amount of cells which will be merged together in output (= 1: every cell will be written, > 1: cells will be merged)
   tsunami_lab::t_idx l_outputResolution = 1;  
@@ -341,6 +343,7 @@ int main( int   i_argc,
   else if (l_setupName.compare("checkPoint") == 0) l_setupId = tsunami_lab::setups::CHECK_POINT;
   else if (l_setupName.compare("solitaryWaveBeach") == 0) l_setupId = tsunami_lab::setups::SOLITARY_WAVE_BEACH;
   else if (l_setupName.compare("singleWaveCanonicalIsland") == 0) l_setupId = tsunami_lab::setups::SINGLE_WAVE_CANONICAL_ISLAND;
+  else if (l_setupName.compare("smallCity") == 0) l_setupId = tsunami_lab::setups::SMALL_CITY;
   else l_setupName = "damBreak";
 
   if (l_formatName.compare("nc") == 0) l_formatId = tsunami_lab::io::NC;
@@ -428,11 +431,18 @@ int main( int   i_argc,
       l_bathymetryCap = true;
     }
     
+    tsunami_lab::t_real l_radiusCap = 30;
     tsunami_lab::t_real l_bathymetry[l_cellsX*l_cellsY];
     for (int i = 0; i < l_cellsY; i++){
       for (int j = 0; j < l_cellsX; j++){
         if (l_bathymetryCap) {
-          l_bathymetry[j + l_cellsX*i] =  50 -( (i-l_cellsY/2)*(i-l_cellsY/2) + (j-l_cellsX/2)*(j-l_cellsX/2) ) * 0.01;
+          tsunami_lab::t_real l_r = (i-l_cellsY/2)*(i-l_cellsY/2) + (j-l_cellsX/2)*(j-l_cellsX/2);
+          if (std::sqrt(l_r) < l_radiusCap){
+            l_bathymetry[j + l_cellsX*i] =  50 -( l_r ) * 0.01;
+          }
+          else{
+            l_bathymetry[j + l_cellsX*i] = 50 - (l_radiusCap * l_radiusCap )* 0.01;
+          }
         } else if (l_bathymetryCup) {
           l_bathymetry[j + l_cellsX*i] =  ( (i-l_cellsY/2)*(i-l_cellsY/2) + (j-l_cellsX/2)*(j-l_cellsX/2) ) * 0.01;
         } else {
@@ -440,7 +450,10 @@ int main( int   i_argc,
         }
       }
     }
-    l_setup = new tsunami_lab::setups::CircularDamBreak2d(l_setupArgs.get<tsunami_lab::t_real>("innerWaterHeight"),
+    tsunami_lab::t_real l_waterHeight = l_setupArgs.get<tsunami_lab::t_real>("innerWaterHeight");
+    tsunami_lab::t_real l_waterRadius = l_setupArgs.get<tsunami_lab::t_real>("innerWaterRadius");
+    
+    l_setup = new tsunami_lab::setups::CircularDamBreak2d(l_waterHeight,
                                                           l_bathymetry,
                                                           l_setupArgs.get<tsunami_lab::t_real>("innerWaterRadius"),
                                                           l_nx,
@@ -521,11 +534,18 @@ int main( int   i_argc,
     std::cout << "dxy: " << l_dxy << std::endl;
   }
   else if( l_setupId == tsunami_lab::setups::SINGLE_WAVE_CANONICAL_ISLAND){
-    l_dxy = 0.1;
+    l_dxy = 0.01;
     l_nx = tsunami_lab::t_idx(25 / l_dxy);
     l_ny = tsunami_lab::t_idx(30 / l_dxy);
     std::cout << "nx: " << l_nx << ", ny: " << l_ny << ", dxy: " << l_dxy << std::endl;
     l_setup = new tsunami_lab::setups::SingleWaveCanonicalIsland();
+  }
+  else if (l_setupId == tsunami_lab::setups::SMALL_CITY){
+    l_dxy = 0.1;
+    l_nx = tsunami_lab::t_idx(10 / l_dxy);
+    l_ny = tsunami_lab::t_idx(8 / l_dxy);
+    std::cout << "nx: " << l_nx << ", ny: " << l_ny << ", dxy: " << l_dxy << std::endl;
+    l_setup = new tsunami_lab::setups::SmallCity();
   }
   else{
     l_setup = new tsunami_lab::setups::DamBreak1d( l_setupArgs.get<tsunami_lab::t_real>("heightLeft"),
@@ -540,12 +560,15 @@ int main( int   i_argc,
       l_setupId == tsunami_lab::setups::ARTIFICIAL_TSUNAMI_2D ||
       l_setupId == tsunami_lab::setups::TSUNAMI_EVENT_2D ||
       l_setupId == tsunami_lab::setups::CHECK_POINT ||
-      l_setupId == tsunami_lab::setups::SINGLE_WAVE_CANONICAL_ISLAND){
+      l_setupId == tsunami_lab::setups::SINGLE_WAVE_CANONICAL_ISLAND ||
+      l_setupId == tsunami_lab::setups::SMALL_CITY){
     l_waveProp = new tsunami_lab::patches::WavePropagation2d( l_nx,
                                                               l_ny,
                                                               l_solverId,
                                                               l_useEntropyFix,
-                                                              l_manningFactor);
+                                                              l_manningFactor, 
+                                                              l_outflowType
+                                                            );
   } 
   else {
     l_waveProp = new tsunami_lab::patches::WavePropagation1d( l_nx, l_solverId, l_outflowTypeL, l_outflowTypeR, l_useEntropyFix, l_manningFactor);
@@ -705,8 +728,10 @@ int main( int   i_argc,
     }
   }
 
-  // iterate over time
 
+  tsunami_lab::t_real startMass = l_waveProp->getMass();
+
+  // iterate over time
   double l_timeMeasure = 0;
   while((l_endTime == 0 || l_simTime < l_endTime) && (l_maxTimeStep == 0 || l_maxTimeStep > l_timeStep)){
     if( l_timeStep % l_outputInterval == 0 ) {
@@ -805,9 +830,13 @@ int main( int   i_argc,
     l_simTime += l_dt;
   }
 
+  tsunami_lab::t_real endMass = l_waveProp->getMass();
+
   std::cout << "finished time loop" << std::endl;
   std::cout << "total time measured: " << l_timeMeasure << std::endl;
   std::cout << "normalized time measured: " << l_timeMeasure / (l_nx * l_ny * l_timeStep) << std::endl;
+  std::cout << "water mass at start: " << startMass << std::endl;
+  std::cout << "water mass at end: " << endMass << std::endl;
 
   // free memory
   std::cout << "freeing memory" << std::endl;

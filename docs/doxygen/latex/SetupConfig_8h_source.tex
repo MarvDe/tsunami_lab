@@ -1,0 +1,53 @@
+\doxysection{Setup\+Config.\+h}
+\hypertarget{SetupConfig_8h_source}{}\label{SetupConfig_8h_source}\index{/home/marvind/Desktop/Programs/tsunami\_lab/src/io/SetupConfig.h@{/home/marvind/Desktop/Programs/tsunami\_lab/src/io/SetupConfig.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ TSUNAMI\_LAB\_IO\_SETUP\_CONFIG\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ TSUNAMI\_LAB\_IO\_SETUP\_CONFIG\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}../constants.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <optional>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <variant>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacetsunami__lab}{tsunami\_lab}}\ \{}
+\DoxyCodeLine{00012\ \ \ \textcolor{keyword}{namespace\ }io\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{enum\ class}\ ArgType\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ String,}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ Int,}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ Real,}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ Bool,}
+\DoxyCodeLine{00018\ \ \ \ \ \};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keyword}{using\ }ArgValue\ =\ std::variant<std::string,\ tsunami\_lab::t\_idx,\ tsunami\_lab::t\_real,\ bool>;}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtsunami__lab_1_1io_1_1SetupArgDef}{SetupArgDef}}\ \{}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ std::string\ name;}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ ArgType\ type;}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ required;}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ std::optional<ArgValue>\ fallback;}
+\DoxyCodeLine{00027\ \ \ \ \ \};}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtsunami__lab_1_1io_1_1SetupDef}{SetupDef}}\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ std::string\ name;}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ std::vector<SetupArgDef>\ args;}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ std::string\ printTemplate;}
+\DoxyCodeLine{00033\ \ \ \ \ \};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtsunami__lab_1_1io_1_1SetupArgs}{SetupArgs}}\ \{}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ std::string\ name;}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ std::unordered\_map<std::string,\ ArgValue>\ values;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ T\ get(\textcolor{keyword}{const}\ std::string\ \&i\_name)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::get<T>(values.at(i\_name));}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00043\ \ \ \ \ \};}
+\DoxyCodeLine{00044\ \ \ \}}
+\DoxyCodeLine{00045\ \}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

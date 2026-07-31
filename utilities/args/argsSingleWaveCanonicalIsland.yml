@@ -4,21 +4,23 @@ args:
   cellSize: 1
   cellx: 25
   celly: 30
-  endTime: 0
-  timeSteps: 50
+  endTime: 10
+  timeSteps: 0
 
 setup:
 
 
 tweaks:
   useEntropyFix: true
-  manningFactor: 0.02
+  manningFactor: 0.08
 
 output:
-  formatName: csv
-  outputInterval: 10
+  formatName: NONE
+  outputInterval: 100
+  outputResolution: 1
+  compressionLevel: 0
   checkpointInterval: 100
-  stations: ""
+  stations: "utilities/SolitaryWaveCanonicalIslandGauges.yml"
 
 omp:
   omp_num_threads: 8

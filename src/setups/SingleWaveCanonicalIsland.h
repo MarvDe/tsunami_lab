@@ -16,6 +16,7 @@ namespace tsunami_lab{
 
 /**
  * Two-dimensional solitary-wave setup with a canonical conical island.
+ * This is a benchmark setup defined by the NOAA.
  */
 class tsunami_lab::setups::SingleWaveCanonicalIsland : public Setup {
 private:
@@ -37,10 +38,10 @@ private:
     t_real m_d = 0.32;
 
     //! initial height of wave
-    t_real m_H = 0.1;
+    t_real m_H = 5;
 
     //! initial position of wave
-    t_real m_x1 = 0;
+    t_real m_x1 = 3;
 
 public:
     /**

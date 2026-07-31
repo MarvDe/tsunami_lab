@@ -1,0 +1,27 @@
+args:
+  solverName: hybrid
+  setupName: smallCity
+  cellSize: 1
+  cellx: 10
+  celly: 8
+  endTime: 15
+  timeSteps: 0
+
+setup:
+
+
+tweaks:
+  useEntropyFix: true
+  manningFactor: 0.04
+
+output:
+  formatName: nc
+  outputInterval: 25
+  outputResolution: 1
+  compressionLevel: 0
+  checkpointInterval: 100
+  stations: ""
+
+omp:
+  omp_num_threads: 8
+  omp_schedule: static,8

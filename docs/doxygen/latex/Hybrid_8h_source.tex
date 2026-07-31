@@ -1,0 +1,55 @@
+\doxysection{Hybrid.\+h}
+\hypertarget{Hybrid_8h_source}{}\label{Hybrid_8h_source}\index{/home/marvind/Desktop/Programs/tsunami\_lab/src/solvers/Hybrid.h@{/home/marvind/Desktop/Programs/tsunami\_lab/src/solvers/Hybrid.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#ifndef\ TSUNAMI\_LAB\_SOLVERS\_HYBRID}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#define\ TSUNAMI\_LAB\_SOLVERS\_HYBRID}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}../constants.h"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacetsunami__lab}{tsunami\_lab}}\ \{}
+\DoxyCodeLine{00013\ \ \ \textcolor{keyword}{namespace\ }solvers\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{class\ }Hybrid;}
+\DoxyCodeLine{00015\ \ \ \}}
+\DoxyCodeLine{00016\ \}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtsunami__lab_1_1solvers_1_1Hybrid}{tsunami\_lab::solvers::Hybrid}}\ \{}
+\DoxyCodeLine{00019\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \textcolor{keyword}{constexpr}\ m\_gSqrt\ =\ 3.131557121;}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \textcolor{keyword}{constexpr}\ m\_g\ =\ 9.80665;}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \textcolor{keyword}{constexpr}\ m\_delta\ =\ 0.1;}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classtsunami__lab_1_1solvers_1_1Hybrid_a64814568c2a3196bab3f56e82da7c261}{netUpdates}}(\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_hL,}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_hR,}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_huL,}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_huR,}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_bL,}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_bR,}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_hvL,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_hvR,}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool},}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ o\_netUpdateL[2],}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ o\_netUpdateR[2]\ );}
+\DoxyCodeLine{00049\ \ \ \ \ }
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ hydrostatic\_reconstruction(\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_bL,}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_bR,}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_hL,}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_hR,}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_huL,}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_huR,}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \&o\_hL,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \&o\_hR,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \&o\_huL,}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \&o\_huR,}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \&o\_sourceL,}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \&o\_sourceR}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00065\ \};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

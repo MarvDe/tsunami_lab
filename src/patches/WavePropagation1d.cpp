@@ -264,3 +264,13 @@ void tsunami_lab::patches::WavePropagation1d::setBathymetry( t_idx i_ix,
     m_bathymetry[m_nCells + 1] = i_height;
   }
 }
+
+tsunami_lab::t_real tsunami_lab::patches::WavePropagation1d::getMass(){
+  t_real * l_h = m_h[m_step];
+  
+  t_real mass = 0;
+  for (t_idx i = 1; i <= m_nCells; i++) {
+    mass += l_h[i];
+  }
+  return mass;
+}

@@ -1,0 +1,54 @@
+\doxysection{Solitary\+Wave\+Beach1d.\+h}
+\hypertarget{SolitaryWaveBeach1d_8h_source}{}\label{SolitaryWaveBeach1d_8h_source}\index{/home/marvind/Desktop/Programs/tsunami\_lab/src/setups/SolitaryWaveBeach1d.h@{/home/marvind/Desktop/Programs/tsunami\_lab/src/setups/SolitaryWaveBeach1d.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#ifndef\ TSUNAMI\_LAB\_SETUPS\_SOLITARY\_WAVE\_BEACH\_1D\_H}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#define\ TSUNAMI\_LAB\_SETUPS\_SOLITARY\_WAVE\_BEACH\_1D\_H}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}../io/SetupConfig.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}Setup.h"{}}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacetsunami__lab}{tsunami\_lab}}\ \{}
+\DoxyCodeLine{00012\ \ \ \textcolor{keyword}{namespace\ }setups\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{class\ }SolitaryWaveBeach1d;}
+\DoxyCodeLine{00014\ \ \ \}}
+\DoxyCodeLine{00015\ \}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtsunami__lab_1_1setups_1_1SolitaryWaveBeach1d}{tsunami\_lab::setups::SolitaryWaveBeach1d}}:\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1Setup}{Setup}}\ \{}
+\DoxyCodeLine{00021\ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_depth\ =\ 1;}
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_waveHeight\ =\ 0.019f;}
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_slopeInv\ =\ 19.85f;}
+\DoxyCodeLine{00025\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_shorelineX\ =\ 50;}
+\DoxyCodeLine{00026\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_waveCenterX\ =\ 95;}
+\DoxyCodeLine{00027\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_velocitySign\ =\ -\/1;}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ getSurfaceElevation(\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_x\ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00032\ \ \ \ \ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1SolitaryWaveBeach1d}{SolitaryWaveBeach1d}}(\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_depth,}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_waveHeight,}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_slopeInv,}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_shorelineX,}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_waveCenterX,}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_velocitySign\ );}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{structtsunami__lab_1_1io_1_1SetupDef}{tsunami\_lab::io::SetupDef}}\ getSetupDef();}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1SolitaryWaveBeach1d_a530929e3f28fafb84b84f50dc0b91b83}{getHeight}}(\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_x,}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \ \ \ \ \ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1SolitaryWaveBeach1d_a0a6b71d820354011f2d493ca768edbc2}{getMomentumX}}(\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_x,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \ \ \ \ \ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1SolitaryWaveBeach1d_ab9d3b883eb72ccea7e74b0ffd00f77c9}{getMomentumY}}(\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}},}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1SolitaryWaveBeach1d_a15a2847a9b316ce6bdf7d604b92ee106}{getBathymetry}}(\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_x,}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \ \ \ \ \ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00052\ \};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

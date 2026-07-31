@@ -181,6 +181,11 @@ class tsunami_lab::patches::WavePropagation2d: public WavePropagation {
     void setBathymetry( t_idx i_ix, 
                         t_idx i_iy, 
                         t_real i_height);
+    
+    /**
+     * Check water mass
+     */
+    t_real getMass();
 
 };
 
