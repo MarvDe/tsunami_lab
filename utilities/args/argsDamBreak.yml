@@ -19,7 +19,10 @@ tweaks:
 output:
   formatName: csv
   outputInterval: 10
+  outputResolution: 1
+  compressionLevel: 0
   checkpointInterval: 100
+  snapshots: []
   stations: ""
 
 omp:

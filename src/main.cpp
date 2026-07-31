@@ -206,6 +206,9 @@ int main( int   i_argc,
   // start time of simulation
   tsunami_lab::t_real l_simTime = 0;
 
+  // station output interval
+  tsunami_lab::t_idx l_stationFreq = 1;
+
   // flag to append data when using checkpoints
   bool l_appendFile = false;
   
@@ -455,7 +458,7 @@ int main( int   i_argc,
     
     l_setup = new tsunami_lab::setups::CircularDamBreak2d(l_waterHeight,
                                                           l_bathymetry,
-                                                          l_setupArgs.get<tsunami_lab::t_real>("innerWaterRadius"),
+                                                          l_waterRadius,
                                                           l_nx,
                                                           l_ny,
                                                           1);
@@ -808,14 +811,16 @@ int main( int   i_argc,
     }
 
     if (l_stationsFilePath.compare("") != 0){
-      l_stations.write(
-        l_simTime,
-        l_waveProp->getHeight(),
-        l_waveProp->getMomentumX(),
-        l_waveProp->getMomentumY(),
-        l_waveProp->getBathymetry(),
-        l_waveProp->getStride()
-      );
+      if (l_timeStep % l_stationFreq == 0) {
+        l_stations.write(
+          l_simTime,
+          l_waveProp->getHeight(),
+          l_waveProp->getMomentumX(),
+          l_waveProp->getMomentumY(),
+          l_waveProp->getBathymetry(),
+          l_waveProp->getStride()
+        );
+      }
     }
 
     auto l_timeStart = std::chrono::steady_clock::now();

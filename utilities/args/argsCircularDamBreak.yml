@@ -8,9 +8,11 @@ args:
   timeSteps: 0
 
 setup:
+  bathymetryCup: false
+  bathymetryCap: true
+  bathymetryConst: false
   innerWaterHeight: 80
   innerWaterRadius: 10
-  bathymetryCap: true
 
 tweaks:
   useEntropyFix: true
@@ -22,6 +24,7 @@ output:
   outputResolution: 1
   compressionLevel: 0
   checkpointInterval: 100
+  snapshots: []
   stations: ""
 
 omp:

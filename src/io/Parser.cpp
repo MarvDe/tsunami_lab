@@ -43,7 +43,6 @@ namespace {
         return {
             {l_damBreak.name, l_damBreak},
             {l_artificialTsunami2d.name, l_artificialTsunami2d},
-            {l_checkPoint.name, l_artificialTsunami2d},
             {l_checkPoint.name, l_checkPoint},
             {l_circularDamBreak2d.name, l_circularDamBreak2d},
             {l_rareRare.name, l_rareRare},
@@ -248,12 +247,10 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
             }
         }
 
-        if (o_setupName.compare("checkPoint") == 0 ){
-            o_checkPointFile = args["checkPointFile"].as<std::string>();
-            o_appendFile = args["appendFile"].as<bool>();
-            return;
+        if (o_setupName.compare("checkPoint") == 0) {
+            o_checkPointFile = o_setupArgs.get<std::string>("inputFile");
+            o_appendFile = o_setupArgs.get<bool>("appendFile");
         }
-        
 
         /*
          * tweaks

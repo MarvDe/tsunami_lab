@@ -1,21 +1,30 @@
 args:
-  - solverName: "hybrid"
-    formatName: "csv"
-    setupName: "damBreak"
-    startCoordX: 0 # global coordinates
-    startCoordY: 0 # of simulation
-    cellSize: 1
-    cellx: 20
-    celly: 1
-    endTime: 50 # time in s (needs to be updated)
-    stations: ""
-    bathymetry:
-      - startCoordX: 0 # global coordinates
-        startCoordY: 0 # of bathymetry data
-        cellSize: 250 # in m
-        filePath: ""
-    displacement: 
-      - startCoordX: 0 # global coordinates
-        startCoordY: 0 # of bathymetry data
-        cellSize: 0 # in m
-        filePath: ""
+  solverName: hybrid
+  setupName: damBreak
+  cellSize: 1
+  cellx: 20
+  celly: 1
+  endTime: 50
+  timeSteps: 0
+
+setup:
+  heightLeft: 0.2
+  heightRight: 0.1
+  locationDam: 50.0
+
+tweaks:
+  useEntropyFix: true
+  manningFactor: 0.02
+
+output:
+  formatName: csv
+  outputInterval: 10
+  outputResolution: 1
+  compressionLevel: 0
+  checkpointInterval: 100
+  snapshots: []
+  stations: ""
+
+omp:
+  omp_num_threads: 8
+  omp_schedule: static,8

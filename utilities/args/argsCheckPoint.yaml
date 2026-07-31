@@ -8,10 +8,8 @@ args:
   timeSteps: 50
 
 setup:
-  displacement: "large_data/tohoku_gebco20_ucsb3_250m_displ.nc"
-  bathymetry: "large_data/tohoku_gebco20_ucsb3_250m_bath.nc"
-  startCoordX: -200000
-  startCoordY: -750000
+  inputFile: solution.nc
+  appendFile: true
 
 tweaks:
   useEntropyFix: true
@@ -23,6 +21,7 @@ output:
   outputResolution: 1
   compressionLevel: 0
   checkpointInterval: 10
+  snapshots: []
   stations: ""
 
 omp:

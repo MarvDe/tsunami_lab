@@ -1,21 +1,32 @@
-﻿args:
-  - solverName: "hybrid"
-    formatName: "nc"
-    setupName: "damBreak2d"
-    startCoordX: 0 # global coordinates
-    startCoordY: 0 # of simulation
-    cellSize: 1
-    cellx: 100
-    celly: 100
-    endTime: 20 # time in s (needs to be updated)
-    stations: ""
-    bathymetry:
-      - startCoordX: 0 # global coordinates
-        startCoordY: 0 # of bathymetry data
-        cellSize: 250 # in m
-        filePath: ""
-    displacement: 
-      - startCoordX: 0 # global coordinates
-        startCoordY: 0 # of bathymetry data
-        cellSize: 0 # in m
-        filePath: ""
+args:
+  solverName: hybrid
+  setupName: damBreak2d
+  cellSize: 1
+  cellx: 100
+  celly: 100
+  endTime: 20
+  timeSteps: 0
+
+setup:
+  bathymetryCup: false
+  bathymetryCap: false
+  bathymetryConst: true
+  innerWaterHeight: 50
+  innerWaterRadius: 10
+
+tweaks:
+  useEntropyFix: true
+  manningFactor: 0.02
+
+output:
+  formatName: nc
+  outputInterval: 10
+  outputResolution: 1
+  compressionLevel: 0
+  checkpointInterval: 100
+  snapshots: []
+  stations: ""
+
+omp:
+  omp_num_threads: 8
+  omp_schedule: static,8
