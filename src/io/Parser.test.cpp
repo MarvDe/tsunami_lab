@@ -21,37 +21,32 @@ TEST_CASE( "Test argument parsing.", "[Parser]" ){
   char arg3[] = "cellx=0";
   char arg4[] = "bbb=1.001";
 
-  char *argv1[] = {name, arg1, arg2, arg3, arg4}; 
-
-
+  char *argv1[] = {name, arg1, arg2, arg3, arg4};
 
   REQUIRE_THROWS(tsunami_lab::io::Parser(
     5,
     argv1
   ));
 
-  char arg5[] = "solver=roe";
-  char arg6[] = "cellx=0";
+  char arg5[] = "args=testfile.yaml";
+  char arg6[] = "help";
 
   char *argv2[] = {name, arg5, arg6};
 
   tsunami_lab::io::Parser* l_parser = new tsunami_lab::io::Parser(3, argv2);
 
 
-  std::string l_solver;
-  tsunami_lab::t_idx l_cellx;
+  std::string l_args;
   tsunami_lab::t_idx l_bli;
   float l_bbb;
   std::string l_bla;
 
-  l_solver = l_parser -> get("solver", "bbbb");
-  l_cellx = l_parser -> get("cellx", (tsunami_lab::t_real) 1);
+  l_args = l_parser -> get("args", "bbbb");
   l_bli = l_parser -> get("bli", (tsunami_lab::t_real) 1);
   l_bbb = l_parser -> get("bbb", (float) 1.0);
   l_bla = l_parser -> get("bla", "ble");
 
-  REQUIRE_THAT(l_solver, Catch::Matchers::Equals("roe", Catch::CaseSensitive::Yes));
-  REQUIRE( l_cellx == 0 );
+  REQUIRE_THAT(l_args, Catch::Matchers::Equals("testfile.yaml", Catch::CaseSensitive::Yes));
   REQUIRE( l_bli == 1 );
   REQUIRE( l_bbb == 1.0f );
   REQUIRE_THAT(l_bla, Catch::Matchers::Equals("ble", Catch::CaseSensitive::Yes));
