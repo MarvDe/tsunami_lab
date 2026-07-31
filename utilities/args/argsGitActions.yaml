@@ -5,7 +5,7 @@ args:
   cellx: 100
   celly: 100
   endTime: 0
-  timeSteps: 50
+  timeSteps: 5
 
 setup:
 
@@ -16,7 +16,7 @@ tweaks:
 
 output:
   formatName: NONE
-  outputInterval: 10
+  outputInterval: 1
   outputResolution: 1
   compressionLevel: 0
   checkpointInterval: 100

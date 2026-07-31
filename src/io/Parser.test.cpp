@@ -58,4 +58,6 @@ TEST_CASE( "Test argument parsing.", "[Parser]" ){
 
   REQUIRE_THROWS( tsunami_lab::io::Parser(2, argv3));
 
+  delete l_parser;
+
 }

@@ -228,6 +228,8 @@ int main( int   i_argc,
 
   auto l_parser = *l_parser_ptr;
 
+  delete l_parser_ptr;
+
   bool l_printHelp = i_argc == 1 || l_parser.get("help", "null").empty() || l_parser.get("h", "null").empty();
   if (l_printHelp) {
     printHelp( i_argv[0] );
