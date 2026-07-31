@@ -179,7 +179,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         tsunami_lab::io::SetupArgs &o_setupArgs
                                     ){
     YAML::Node l_file;
-    printf("start parseFile\n");
+    // printf("start parseFile\n");
     try {
         l_file = YAML::LoadFile(i_file);
 
@@ -300,7 +300,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
             } else {
                 throw std::runtime_error("schedeule type not known!\n");
             }
-            printf("set Schedule type to %d, %d\n", l_schedTy, l_chunksize);
+            // printf("set Schedule type to %d, %d\n", l_schedTy, l_chunksize);
             omp_set_schedule(l_schedTy, l_chunksize);
 
             setenv("OMP_NUM_THREADS", l_omp_num_threads.c_str(), 1);
@@ -318,6 +318,6 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         throw std::runtime_error("YAML Error");
         return;
     }
-    printf("end parseFile\n");
+    // printf("end parseFile\n");
 
 }

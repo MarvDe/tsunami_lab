@@ -618,9 +618,6 @@ int main( int   i_argc,
       
       l_waveProp->setBathymetry( l_cx, l_cy, l_bathymetry );
 
-      if (l_bathymetry > 10){
-        std::cout << "Bath error: " << l_bathymetry << std::endl; 
-      }
 
       if (l_solverId == tsunami_lab::solvers::HYBRID){
         tsunami_lab::t_real l_xNext = (l_cx + 1) * l_dxy; 
