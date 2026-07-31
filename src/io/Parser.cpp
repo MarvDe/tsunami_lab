@@ -65,17 +65,6 @@ const std::unordered_map<std::string, bool> tsunami_lab::io::Parser::knownFlags 
     {"args", true},
     {"printSolvers", false},
     {"printFormats", false},
-    {"solver", true},
-    {"format", true},
-    {"cellx", true},
-    {"celly", true},
-    {"endtime", true},
-    {"dxy", true},
-    {"left", true},
-    {"upper", true},
-    {"stations", true},
-    {"res", true},
-    {"setup", true}
 };
 
 tsunami_lab::io::Parser::Parser(int i_argc, char *i_argv[]){

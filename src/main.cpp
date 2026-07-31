@@ -71,8 +71,7 @@ namespace {
   void printHelp( char const *i_programName ) {
     std::cout << "\n"
               << "Usage:\n"
-              << "  " << i_programName << " [command]\n"
-              << "  " << i_programName << " [key=value ...]\n\n"
+              << "  " << i_programName << " [command]\n\n"
               << "Simulate one- and two-dimensional tsunami scenarios.\n\n"
               << "Commands:\n"
               << "  <no arguments>               Print this help and exit.\n"
@@ -84,25 +83,11 @@ namespace {
               << "  printFormats                 Print all available output formats.\n\n"
               << "Configuration:\n"
               << "  args=<file>                  Read simulation arguments from a YAML file.\n\n"
-              << "Common key=value arguments:\n"
-              << "  solver=<name>                Solver: roe, fwave, hlle, hybrid\n"
-              << "                               Default: roe.\n"
-              << "  setup=<name>                 Setup name. Default: damBreak.\n"
-              << "  format=<name>                Output format: csv, nc, NONE. Default: csv.\n"
-              << "  cellx=<n>                    Number of cells in x-direction. Default: 1.\n"
-              << "  celly=<n>                    Number of cells in y-direction. Default: 1.\n"
-              << "  endtime=<t>                  End time of the simulation. Default: 3.0.\n"
-              << "  dxy=<dx>                     Cell size. Default: 1.\n"
-              << "  left=<x>                     X-coordinate of the upper-left cell. Default: 0.\n"
-              << "  upper=<y>                    Y-coordinate of the upper-left cell. Default: 0.\n"
-              << "  stations=<file>              YAML file with station definitions.\n"
-              << "  res=<n>                      Output resolution. Default: 1.\n\n"
               << "Examples:\n"
               << "  " << i_programName << " help\n"
               << "  " << i_programName << " printSetups\n"
               << "  " << i_programName << " printSetup=damBreak\n"
-              << "  " << i_programName << " args=utilities/args/argsDambreak1d.yml\n"
-              << "  " << i_programName << " setup=damBreak solver=fwave cellx=100 endtime=3\n";
+              << "  " << i_programName << " args=utilities/args/argsDambreak1d.yml\n";
   }
 
   void printSetups() {
