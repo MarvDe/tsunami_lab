@@ -217,7 +217,16 @@ int main( int   i_argc,
 
 
   // parse runtime arguments
-  auto l_parser = tsunami_lab::io::Parser(i_argc, i_argv);
+  
+  tsunami_lab::io::Parser* l_parser_ptr = nullptr;
+  try {
+    l_parser_ptr = new tsunami_lab::io::Parser(i_argc, i_argv);
+  } catch (std::exception &e){
+    std::cerr << "\nError: " << e.what() << "\n";
+    return 1;
+  }
+
+  auto l_parser = *l_parser_ptr;
 
   bool l_printHelp = i_argc == 1 || l_parser.get("help", "null").empty() || l_parser.get("h", "null").empty();
   if (l_printHelp) {
@@ -275,66 +284,38 @@ int main( int   i_argc,
 
 
   if (l_setupFile.compare("") != 0){
-    l_parser.parseFile( l_setupFile,
-                        l_solverName,
-                        l_setupName,
-                        l_formatName,
-                        l_dxy,
-                        // l_bathymetryNCFilePath,
-                        // l_displacementNCFilePath,
-                        l_nx,
-                        l_ny,
-                        l_endTime,
-                        l_stationsFilePath,
-                        l_checkPointFilePath,
-                        l_appendFile,
-                        l_outputResolution,
-                        l_manningFactor,
-                        l_useEntropyFix,
-                        l_maxTimeStep,
-                        l_outputInterval,
-                        l_compressionLevel,
-                        l_checkpointInterval,
-                        l_snapshots,
-                        l_setupArgs
-                        );
+    try {
+      l_parser.parseFile( l_setupFile,
+                          l_solverName,
+                          l_setupName,
+                          l_formatName,
+                          l_dxy,
+                          // l_bathymetryNCFilePath,
+                          // l_displacementNCFilePath,
+                          l_nx,
+                          l_ny,
+                          l_endTime,
+                          l_stationsFilePath,
+                          l_checkPointFilePath,
+                          l_appendFile,
+                          l_outputResolution,
+                          l_manningFactor,
+                          l_useEntropyFix,
+                          l_maxTimeStep,
+                          l_outputInterval,
+                          l_compressionLevel,
+                          l_checkpointInterval,
+                          l_snapshots,
+                          l_setupArgs
+                          );
+    } catch (std::exception &e) {
+      std::cerr << "\nError: " << e.what() << "\n";
+      return 0;
+    }
   }
   else {
-    // choose solver
-    l_solverName = l_parser.get("solver", "roe");
-    
-  
-    // choose setup
-    l_setupName = l_parser.get("setup", "damBreak");
-    
-  
-    // choose ouput format
-    l_formatName = l_parser.get("format", "csv");
-    
-  
-    // select number of cells in x direction
-    l_nx = l_parser.get("cellx", (tsunami_lab::t_idx)1);
-    
-  
-    l_ny = l_parser.get("celly", (tsunami_lab::t_idx)1);
-  
-    // select number of cells in x direction
-    l_endTime = l_parser.get("endtime", (tsunami_lab::t_real)3.0);
-
-  
-    // set stations yaml file;
-    l_stationsFilePath = l_parser.get("stations", "");
-
-    // select size of cell
-    l_dxy = l_parser.get("dxy", (tsunami_lab::t_real)1);
-
-    // select left most coordiante
-    l_left = l_parser.get("left", (tsunami_lab::t_real)0);
-
-    // select upper most coordinate
-    l_upper = l_parser.get("upper", (tsunami_lab::t_real)0);
-
-    l_outputResolution = l_parser.get("res", (tsunami_lab::t_idx) 1);
+    std::cerr << "\nError: " << "args file missing." << "\n";
+    return 1;
   }
   
   if (l_solverName.compare("roe") == 0) l_solverId = tsunami_lab::solvers::ROE;
@@ -485,8 +466,16 @@ int main( int   i_argc,
     tsunami_lab::t_real * l_bathymetry = nullptr;
     tsunami_lab::t_real * l_displacement = nullptr;
 
-    int l_batRes = tsunami_lab::io::NetCdf::read(l_setupArgs.get<std::string>("bathymetry"), l_bX, l_bY, l_dxyBat, l_leftBat, l_upperBat, &l_bathymetry);
-    int l_disRes = tsunami_lab::io::NetCdf::read(l_setupArgs.get<std::string>("displacement"), l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, &l_displacement);
+    int l_batRes;
+    int l_disRes;
+
+    try {
+      l_batRes = tsunami_lab::io::NetCdf::read(l_setupArgs.get<std::string>("bathymetry"), l_bX, l_bY, l_dxyBat, l_leftBat, l_upperBat, &l_bathymetry);
+      l_disRes = tsunami_lab::io::NetCdf::read(l_setupArgs.get<std::string>("displacement"), l_dX, l_dY, l_dxyDis, l_leftDis, l_upperDis, &l_displacement);
+    } catch (std::exception &e) {
+      std::cerr << "\nError: " << e.what() << "\n";
+      return 0;
+    }
 
     l_left = l_setupArgs.get<tsunami_lab::t_real>("startCoordX");
     l_upper = l_setupArgs.get<tsunami_lab::t_real>("startCoordY");
@@ -508,15 +497,20 @@ int main( int   i_argc,
     //l_formatId = tsunami_lab::io::NC;
     //l_endTime = 20;
     l_appendFile = l_setupArgs.get<bool>("appendFile");
-    l_setup = new tsunami_lab::setups::CheckPoint(  l_checkPointFilePath,
-                                                    l_simTime,
-                                                    l_timeStep,
-                                                    l_nx,
-                                                    l_ny,
-                                                    l_dxy,
-                                                    l_left,
-                                                    l_upper
-                                                  );
+    try {
+      l_setup = new tsunami_lab::setups::CheckPoint(  l_checkPointFilePath,
+                                                      l_simTime,
+                                                      l_timeStep,
+                                                      l_nx,
+                                                      l_ny,
+                                                      l_dxy,
+                                                      l_left,
+                                                      l_upper
+                                                    );
+    } catch (std::exception &e) {
+      std::cerr << "\nError: " << e.what() << "\n";
+      return 0;
+    }
     std::cout << "CheckPoint: " << std::endl;
     std::cout << "sim time: " << l_simTime << std::endl;
     std::cout << "time steps: " << l_timeStep << std::endl;
@@ -676,26 +670,36 @@ int main( int   i_argc,
   tsunami_lab::io::NetCdf* l_netCdf = nullptr;
   if (l_formatId == tsunami_lab::io::NC){
     if (!l_appendFile){
-      l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
-                                              l_ny,
-                                              l_dxy,
-                                              l_dt,
-                                              l_left,
-                                              l_upper,
-                                              l_outputResolution,
-                                              l_compressionLevel,
-                                              "solution.nc");
+      try {
+        l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
+                                                l_ny,
+                                                l_dxy,
+                                                l_dt,
+                                                l_left,
+                                                l_upper,
+                                                l_outputResolution,
+                                                l_compressionLevel,
+                                                "solution.nc");
+      } catch (std::exception &e) {
+        std::cerr << "\nError: " << e.what() << "\n";
+        return 0;
+      }
     } else {
-      l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
-                                              l_ny,
-                                              l_dxy,
-                                              l_dt,
-                                              l_left,
-                                              l_upper,
-                                              l_outputResolution,
-                                              l_compressionLevel,
-                                              l_checkPointFilePath,
-                                              true);
+      try {
+        l_netCdf = new tsunami_lab::io::NetCdf( l_nx,
+                                                l_ny,
+                                                l_dxy,
+                                                l_dt,
+                                                l_left,
+                                                l_upper,
+                                                l_outputResolution,
+                                                l_compressionLevel,
+                                                l_checkPointFilePath,
+                                                true);
+      } catch (std::exception &e) {
+        std::cerr << "\nError: " << e.what() << "\n";
+        return 0;
+      }
     }
   }
 
@@ -733,16 +737,21 @@ int main( int   i_argc,
       }
       else if (l_formatId == tsunami_lab::io::NC){
         bool l_writeCheckpoint = l_checkpointInterval != 0 && l_timeStep % l_checkpointInterval == 0;
-        l_netCdf->write( l_nx,
-                        l_ny,
-                        l_nOut,
-                        l_simTime,
-                        l_waveProp->getStride(),
-                        l_waveProp->getHeight(),
-                        l_waveProp->getMomentumX(),
-                        l_waveProp->getMomentumY(),
-                        l_waveProp->getBathymetry(),
-                        l_writeCheckpoint);
+        try {
+          l_netCdf->write( l_nx,
+                          l_ny,
+                          l_nOut,
+                          l_simTime,
+                          l_waveProp->getStride(),
+                          l_waveProp->getHeight(),
+                          l_waveProp->getMomentumX(),
+                          l_waveProp->getMomentumY(),
+                          l_waveProp->getBathymetry(),
+                          l_writeCheckpoint);
+        } catch (std::exception &e) {
+          std::cerr << "\nError: " << e.what() << "\n";
+          return 0;
+        }
         l_nOut++;
       }
       
