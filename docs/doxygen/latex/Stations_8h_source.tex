@@ -1,0 +1,62 @@
+\doxysection{Stations.\+h}
+\hypertarget{Stations_8h_source}{}\label{Stations_8h_source}\index{/home/marvind/Desktop/Programs/tsunami\_lab/src/io/Stations.h@{/home/marvind/Desktop/Programs/tsunami\_lab/src/io/Stations.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ TSUNAMI\_LAB\_IO\_STATIONS\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ TSUNAMI\_LAB\_IO\_STATIONS\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}../constants.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <cstring>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <fstream>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <yaml-\/cpp/yaml.h>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacetsunami__lab}{tsunami\_lab}}\ \{}
+\DoxyCodeLine{00012\ \ \ \textcolor{keyword}{namespace\ }io\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{class\ }Stations;}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{struct\ }Station;}
+\DoxyCodeLine{00015\ \ \ \ \ \}}
+\DoxyCodeLine{00016\ \}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structtsunami__lab_1_1io_1_1Station}{tsunami\_lab::io::Station}}\{}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ m\_name;}
+\DoxyCodeLine{00020\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_posX;}
+\DoxyCodeLine{00021\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_posY;}
+\DoxyCodeLine{00022\ \ \ \ \ std::ostream\ *m\_stream;}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{bool}\ m\_ownsStream;}
+\DoxyCodeLine{00024\ \};}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations}{tsunami\_lab::io::Stations}}\{}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ std::vector<tsunami\_lab::io::Station>\ m\_stations;}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\_idx}}\ m\_cellX\ =\ 0;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\_idx}}\ m\_cellY\ =\ 0;}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_dxy\ =\ 0;}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_leftUpperX\ =\ 0;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ m\_leftUpperY\ =\ 0;}
+\DoxyCodeLine{00041\ \ \ \ \ }
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations}{Stations}}(\ \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\_idx}}\ i\_cellX,\ \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\_idx}}\ i\_cellY,\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_dxy,\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_leftUpperX,\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_leftUpperY);}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations_aadabde2ad81d3e7e047e2a63df26d814}{\string~Stations}}();}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations_af27499a5750e39627e1a4823b79641ac}{addStation}}(\textcolor{keyword}{const}\ std::string\ \&i\_name,\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_posX,\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_posY,\ std::ostream\ *io\_stream,\ \textcolor{keywordtype}{bool}\ i\_ownsStream\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations_ad7279745ff9764ab67e6be57d791c2f3}{write}}(\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_simTime,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ *\ i\_height,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ *\ i\_momentumX,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ *\ i\_momentumY,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ *\ i\_bathymetry,\ \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\_idx}}\ i\_stride\ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations_a6108eb5014b68a0dd54e1a0eeec9fc2c}{readFile}}(std::string\ i\_filePath);}
+\DoxyCodeLine{00093\ \};}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

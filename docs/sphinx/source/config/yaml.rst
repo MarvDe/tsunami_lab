@@ -32,6 +32,7 @@ config
         stations: path to yaml station file
         compressionLevel: 0-3
         checkpointInterval: Intervall of iterations per output sync
+        snapshots: [] list of times
     
     omp:
         omp_num_threads: 8
@@ -66,6 +67,7 @@ beispiel
         outputResolution: 1
         compressionLevel: 0
         checkpointInterval: 100
+        snapshots: []
         stations: ""
 
     omp:

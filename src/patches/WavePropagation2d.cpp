@@ -15,6 +15,28 @@
 #include <cmath>
 #include <omp.h>
 
+namespace {
+  constexpr tsunami_lab::t_real DRY_TOLERANCE = 1e-5f;
+
+  void sanitizeCell( tsunami_lab::t_real &io_h,
+                     tsunami_lab::t_real &io_hu,
+                     tsunami_lab::t_real &io_hv ) {
+    if( !std::isfinite(io_h) || io_h <= DRY_TOLERANCE ) {
+      io_h = 0;
+      io_hu = 0;
+      io_hv = 0;
+      return;
+    }
+
+    if( !std::isfinite(io_hu) ) {
+      io_hu = 0;
+    }
+    if( !std::isfinite(io_hv) ) {
+      io_hv = 0;
+    }
+  }
+}
+
 tsunami_lab::patches::WavePropagation2d::WavePropagation2d( t_idx i_xCells, t_idx i_yCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix, t_real i_manningFactor, tsunami_lab::t_idx i_ghost ) : m_solverId(i_solverId), m_manningFactor(i_manningFactor), m_useEntropyFix(i_useEntropyFix) {
   m_xCells = i_xCells;
   m_yCells = i_yCells;
@@ -165,18 +187,20 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         if (m_solverId != solvers::HYBRID){
           if (!l_dryL){
             l_hNew[l_ceL]  -= i_scaling * l_netUpdatesX[0][0];
-            if (l_hNew[l_ceL] <= 1e-6f ){
-              l_hNew[l_ceL] = 1e-6f;
+            if (l_hNew[l_ceL] <= DRY_TOLERANCE ){
+              l_hNew[l_ceL] = 0;
               l_huNew[l_ceL] = 0;
+              l_hvNew[l_ceL] = 0;
             }
             l_huNew[l_ceL] -= i_scaling * l_netUpdatesX[0][1];
             l_hvNew[l_ceL] -= i_scaling * l_netUpdatesX[0][2];
           }
           if (!l_dryR){
             l_hNew[l_ceR]  -= i_scaling * l_netUpdatesX[1][0];
-            if (l_hNew[l_ceR] <= 1e-6f ){
-              l_hNew[l_ceR] = 1e-6f;
+            if (l_hNew[l_ceR] <= DRY_TOLERANCE ){
+              l_hNew[l_ceR] = 0;
               l_huNew[l_ceR] = 0;
+              l_hvNew[l_ceR] = 0;
             }
             l_huNew[l_ceR] -= i_scaling * l_netUpdatesX[1][1];
             l_hvNew[l_ceR] -= i_scaling * l_netUpdatesX[1][2];
@@ -265,8 +289,9 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         if (m_solverId != solvers::HYBRID){
           if (!l_dryU){
             l_hNew[l_ceU]  -= i_scaling * l_netUpdatesY[0][0];
-            if (l_hNew[l_ceU] <= 1e-6f ){
-              l_hNew[l_ceU] = 1e-6f;
+            if (l_hNew[l_ceU] <= DRY_TOLERANCE ){
+              l_hNew[l_ceU] = 0;
+              l_huNew[l_ceU] = 0;
               l_hvNew[l_ceU] = 0;
             }
             l_hvNew[l_ceU] -= i_scaling * l_netUpdatesY[0][1];
@@ -274,8 +299,9 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
           }
           if (!l_dryB){
             l_hNew[l_ceB]  -= i_scaling * l_netUpdatesY[1][0];
-            if (l_hNew[l_ceB] <= 1e-6f ){
-              l_hNew[l_ceB] = 1e-6f;
+            if (l_hNew[l_ceB] <= DRY_TOLERANCE ){
+              l_hNew[l_ceB] = 0;
+              l_huNew[l_ceB] = 0;
               l_hvNew[l_ceB] = 0;
             }
             l_hvNew[l_ceB] -= i_scaling * l_netUpdatesY[1][1];
@@ -318,7 +344,7 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
         for (t_idx l_ix = 1; l_ix < m_xCells + 1; l_ix++){
           t_idx l_ce = l_ix + l_iy * l_stride;
 
-          if (l_hNew[l_ce] > 1e-6f) {
+          if (l_hNew[l_ce] > DRY_TOLERANCE) {
             const t_real l_h = l_hNew[l_ce];
             const t_real speed = std::sqrt(l_huNew[l_ce] * l_huNew[l_ce] + l_hvNew[l_ce] * l_hvNew[l_ce]) / l_hNew[l_ce];
             const t_real h43 = l_h * std::cbrt(l_h);
@@ -328,6 +354,14 @@ void tsunami_lab::patches::WavePropagation2d::timeStep( t_real i_scaling ) {
             l_hvNew[l_ce] /= denom;
           }
         }
+      }
+    }
+    #pragma omp barrier
+    #pragma omp for schedule(runtime)
+    for (t_idx l_iy = 1; l_iy < m_yCells + 1; l_iy++){
+      for (t_idx l_ix = 1; l_ix < m_xCells + 1; l_ix++){
+        t_idx l_ce = l_ix + l_iy * l_stride;
+        sanitizeCell(l_hNew[l_ce], l_huNew[l_ce], l_hvNew[l_ce]);
       }
     }
   }

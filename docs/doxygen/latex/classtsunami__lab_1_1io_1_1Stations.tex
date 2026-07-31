@@ -1,0 +1,111 @@
+\doxysection{tsunami\+\_\+lab\+::io\+::Stations Class Reference}
+\hypertarget{classtsunami__lab_1_1io_1_1Stations}{}\label{classtsunami__lab_1_1io_1_1Stations}\index{tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations_a30122411428b6930c4f9ebe0480105dc}{Stations}} (\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+cellX, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+cellY, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+dxy, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+left\+UpperX, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+left\+UpperY)
+\item 
+\mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations_aadabde2ad81d3e7e047e2a63df26d814}{\texorpdfstring{$\sim$}{\string~}\+Stations}} ()
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations_af27499a5750e39627e1a4823b79641ac}{add\+Station}} (const std\+::string \&i\+\_\+name, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+posX, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+posY, std\+::ostream \texorpdfstring{$\ast$}{*}io\+\_\+stream, bool i\+\_\+owns\+Stream=false)
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations_ad7279745ff9764ab67e6be57d791c2f3}{write}} (\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+sim\+Time, const \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \texorpdfstring{$\ast$}{*}i\+\_\+height, const \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \texorpdfstring{$\ast$}{*}i\+\_\+momentumX, const \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \texorpdfstring{$\ast$}{*}i\+\_\+momentumY, const \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \texorpdfstring{$\ast$}{*}i\+\_\+bathymetry, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+stride) const
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1io_1_1Stations_a6108eb5014b68a0dd54e1a0eeec9fc2c}{read\+File}} (std\+::string i\+\_\+file\+Path)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classtsunami__lab_1_1io_1_1Stations_a30122411428b6930c4f9ebe0480105dc}\label{classtsunami__lab_1_1io_1_1Stations_a30122411428b6930c4f9ebe0480105dc} 
+\index{tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}!Stations@{Stations}}
+\index{Stations@{Stations}!tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}}
+\doxysubsubsection{\texorpdfstring{Stations()}{Stations()}}
+{\footnotesize\ttfamily tsunami\+\_\+lab\+::io\+::\+Stations\+::\+Stations (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+cellX,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+cellY,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+dxy,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+left\+UpperX,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+left\+UpperY }\end{DoxyParamCaption})}
+
+Constructs the stations class.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+cellX} & number of cells in x direction. \\
+\hline
+{\em i\+\_\+cellY} & number of cells in y direction. \\
+\hline
+{\em i\+\_\+dxy} & cell size \\
+\hline
+{\em i\+\_\+left\+UpperX} & x value of global left upper coordinate. \\
+\hline
+{\em i\+\_\+left\+UpperY} & y value of global left upper coordinate. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classtsunami__lab_1_1io_1_1Stations_aadabde2ad81d3e7e047e2a63df26d814}\label{classtsunami__lab_1_1io_1_1Stations_aadabde2ad81d3e7e047e2a63df26d814} 
+\index{tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}!````~Stations@{\texorpdfstring{$\sim$}{\string~}Stations}}
+\index{````~Stations@{\texorpdfstring{$\sim$}{\string~}Stations}!tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}Stations()}{\string~Stations()}}
+{\footnotesize\ttfamily tsunami\+\_\+lab\+::io\+::\+Stations\+::\texorpdfstring{$\sim$}{\string~}\+Stations (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Destructor. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classtsunami__lab_1_1io_1_1Stations_af27499a5750e39627e1a4823b79641ac}\label{classtsunami__lab_1_1io_1_1Stations_af27499a5750e39627e1a4823b79641ac} 
+\index{tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}!addStation@{addStation}}
+\index{addStation@{addStation}!tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}}
+\doxysubsubsection{\texorpdfstring{addStation()}{addStation()}}
+{\footnotesize\ttfamily void tsunami\+\_\+lab\+::io\+::\+Stations\+::add\+Station (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{i\+\_\+name,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+posX,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+posY,  }\item[{std\+::ostream \texorpdfstring{$\ast$}{*}}]{io\+\_\+stream,  }\item[{bool}]{i\+\_\+owns\+Stream = {\ttfamily false} }\end{DoxyParamCaption})}
+
+Adds a station for which data can be tracked.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+name} & name of stations \\
+\hline
+{\em i\+\_\+posX} & position in x direction \\
+\hline
+{\em i\+\_\+posY} & position in y direction \\
+\hline
+{\em io\+\_\+stream} & output stream for writing data \\
+\hline
+{\em i\+\_\+owns\+Stream} & flag for memory management if true memory io\+\_\+stream gets deleted else it is assumed that stream is externally managed. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classtsunami__lab_1_1io_1_1Stations_a6108eb5014b68a0dd54e1a0eeec9fc2c}\label{classtsunami__lab_1_1io_1_1Stations_a6108eb5014b68a0dd54e1a0eeec9fc2c} 
+\index{tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}!readFile@{readFile}}
+\index{readFile@{readFile}!tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}}
+\doxysubsubsection{\texorpdfstring{readFile()}{readFile()}}
+{\footnotesize\ttfamily void tsunami\+\_\+lab\+::io\+::\+Stations\+::read\+File (\begin{DoxyParamCaption}\item[{std\+::string}]{i\+\_\+file\+Path }\end{DoxyParamCaption})}
+
+Reads station from yaml file
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+file\+Path} & path of the stations yaml file. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classtsunami__lab_1_1io_1_1Stations_ad7279745ff9764ab67e6be57d791c2f3}\label{classtsunami__lab_1_1io_1_1Stations_ad7279745ff9764ab67e6be57d791c2f3} 
+\index{tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}!write@{write}}
+\index{write@{write}!tsunami\_lab::io::Stations@{tsunami\_lab::io::Stations}}
+\doxysubsubsection{\texorpdfstring{write()}{write()}}
+{\footnotesize\ttfamily void tsunami\+\_\+lab\+::io\+::\+Stations\+::write (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+sim\+Time,  }\item[{const \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \texorpdfstring{$\ast$}{*}}]{i\+\_\+height,  }\item[{const \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \texorpdfstring{$\ast$}{*}}]{i\+\_\+momentumX,  }\item[{const \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \texorpdfstring{$\ast$}{*}}]{i\+\_\+momentumY,  }\item[{const \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \texorpdfstring{$\ast$}{*}}]{i\+\_\+bathymetry,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+stride }\end{DoxyParamCaption}) const}
+
+Writes data to the output stream.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+sim\+Time} & current time of simulaton. \\
+\hline
+{\em i\+\_\+height} & water height. \\
+\hline
+{\em i\+\_\+momentumX} & water momentum in x direction. \\
+\hline
+{\em i\+\_\+momentumY} & water momentum in y direction. \\
+\hline
+{\em i\+\_\+bathymetry} & bathymetry data. \\
+\hline
+{\em i\+\_\+stride} & stride of data arrays. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/marvind/\+Desktop/\+Programs/tsunami\+\_\+lab/src/io/Stations.\+h\item 
+/home/marvind/\+Desktop/\+Programs/tsunami\+\_\+lab/src/io/Stations.\+cpp\end{DoxyCompactItemize}

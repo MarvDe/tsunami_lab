@@ -1,6 +1,6 @@
 args:
   solverName: hybrid
-  setupName: tsunamiEvent2d
+  setupName: artificialTsunami
   cellSize: 250
   cellx: 10800
   celly: 6000
@@ -20,6 +20,7 @@ output:
   outputResolution: 1
   compressionLevel: 0
   checkpointInterval: 100
+  snapshots: []
   stations: ""
 
 omp:

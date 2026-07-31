@@ -28,7 +28,8 @@ l_sources = [ 'solvers/Roe.cpp',
               'setups/TsunamiEvent2d.cpp',
               'setups/CheckPoint.cpp',
               'setups/SingleWaveCanonicalIsland.cpp',
-              'setups/SmallCity.cpp'
+              'setups/SmallCity.cpp',
+              'setups/SolitaryWaveBeach1d.cpp'
                ]
 
 for l_so in l_sources:
@@ -40,6 +41,8 @@ env.standalone = env.Object( "main.cpp" )
 l_tests = [ 'tests.cpp',
             'solvers/Roe.test.cpp',
             'solvers/F_wave.test.cpp',
+            'solvers/hlle.test.cpp',
+            'solvers/Hybrid.test.cpp',
             'patches/WavePropagation1d.test.cpp',
             'patches/WavePropagation2d.test.cpp',
             'io/Csv.test.cpp',
@@ -54,7 +57,11 @@ l_tests = [ 'tests.cpp',
             'setups/SupercriticalFlow1d.test.cpp',
             'setups/CircularDamBreak2d.test.cpp',
             'setups/ArtificialTsunami2d.test.cpp',
-            'setups/TsunamiEvent2d.test.cpp']
+            'setups/TsunamiEvent2d.test.cpp',
+            'setups/CheckPoint.test.cpp',
+            'setups/SolitaryWaveBeach1d.test.cpp',
+            'setups/SmallCity.test.cpp',
+            'setups/SingleWaveCanonicalIsland.test.cpp']
 
 for l_te in l_tests:
   env.tests.append( env.Object( l_te ) )

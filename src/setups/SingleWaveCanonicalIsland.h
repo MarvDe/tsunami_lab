@@ -12,6 +12,7 @@ namespace tsunami_lab{
 
 /**
  * 2d single wave on canonical island setup.
+ * This is a benchmark setup defined by the NOAA.
  */
 class tsunami_lab::setups::SingleWaveCanonicalIsland : public Setup {
 private:

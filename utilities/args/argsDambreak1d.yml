@@ -19,10 +19,10 @@ tweaks:
 
 output:
   formatName: nc
-  outputInterval: 10
+  outputInterval: 5
   outputResolution: 1
   compressionLevel: 0
-  checkpointInterval: 100
+  checkpointInterval: 10
   stations: ""
 
 omp:

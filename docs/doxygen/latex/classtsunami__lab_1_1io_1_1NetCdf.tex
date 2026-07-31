@@ -1,0 +1,118 @@
+\doxysection{tsunami\+\_\+lab\+::io\+::Net\+Cdf Class Reference}
+\hypertarget{classtsunami__lab_1_1io_1_1NetCdf}{}\label{classtsunami__lab_1_1io_1_1NetCdf}\index{tsunami\_lab::io::NetCdf@{tsunami\_lab::io::NetCdf}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classtsunami__lab_1_1io_1_1NetCdf_af9a5378c9860b207d7993122e123d0d3}{Net\+Cdf}} (\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+nx, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+ny, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+dxy, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+dt, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+left, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+upper, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+out\+Res, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+compression\+Level, const std\+::string \&i\+\_\+file\+Path, bool i\+\_\+existing\+File=false)
+\item 
+\mbox{\hyperlink{classtsunami__lab_1_1io_1_1NetCdf_abccbb171bba0f8ccec667387da0ea667}{\texorpdfstring{$\sim$}{\string~}\+Net\+Cdf}} ()
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1io_1_1NetCdf_ae1bb2721e69411d624196ae514865b30}{write}} (\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+nx, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+ny, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+time\+Index, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+sim\+Time, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+stride, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*}i\+\_\+h, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*}i\+\_\+hu, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*}i\+\_\+hv, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*}i\+\_\+bathymetry, bool i\+\_\+write\+Checkpoint)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static int \mbox{\hyperlink{classtsunami__lab_1_1io_1_1NetCdf_a0d63c2e6c869d7f6afc25d2cd9561f26}{read}} (const std\+::string \&i\+\_\+file\+Path, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} \&o\+\_\+cellX, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} \&o\+\_\+cellY, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \&o\+\_\+dxy, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \&o\+\_\+left, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \&o\+\_\+upper, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}o\+\_\+data, bool print\+Err=true)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classtsunami__lab_1_1io_1_1NetCdf_af9a5378c9860b207d7993122e123d0d3}\label{classtsunami__lab_1_1io_1_1NetCdf_af9a5378c9860b207d7993122e123d0d3} 
+\index{tsunami\_lab::io::NetCdf@{tsunami\_lab::io::NetCdf}!NetCdf@{NetCdf}}
+\index{NetCdf@{NetCdf}!tsunami\_lab::io::NetCdf@{tsunami\_lab::io::NetCdf}}
+\doxysubsubsection{\texorpdfstring{NetCdf()}{NetCdf()}}
+{\footnotesize\ttfamily io\+::\+Net\+Cdf\+::\+Net\+Cdf (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+nx,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+ny,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+dxy,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+dt,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+left,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+upper,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+out\+Res,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+compression\+Level,  }\item[{const std\+::string \&}]{i\+\_\+file\+Path,  }\item[{bool}]{i\+\_\+existing\+File = {\ttfamily false} }\end{DoxyParamCaption})}
+
+Constructs a \doxylink{classtsunami__lab_1_1io_1_1NetCdf}{Net\+Cdf} object and creates a new .nc file. With calls to the write function this nc file can be filled with data.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+nx} & number of cells in x-\/direction. \\
+\hline
+{\em i\+\_\+ny} & number of cells in y-\/direction. \\
+\hline
+{\em i\+\_\+dxy} & size of cell. \\
+\hline
+{\em i\+\_\+left} & coordinates of left most cell. \\
+\hline
+{\em i\+\_\+upper} & coordinates of upper most cell. \\
+\hline
+{\em i\+\_\+out\+Res} & output resolution (=1\+: same, \texorpdfstring{$>$}{>}1\+: m \doxylink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{tsunami\+\_\+lab\+::t\+\_\+idx} \&o\+\_\+compression\+Level,erge cells) \\
+\hline
+{\em i\+\_\+file\+Path} & path of the new nc file. \\
+\hline
+{\em i\+\_\+existing\+File} & if true do not create a new file, but use filepath file \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classtsunami__lab_1_1io_1_1NetCdf_abccbb171bba0f8ccec667387da0ea667}\label{classtsunami__lab_1_1io_1_1NetCdf_abccbb171bba0f8ccec667387da0ea667} 
+\index{tsunami\_lab::io::NetCdf@{tsunami\_lab::io::NetCdf}!````~NetCdf@{\texorpdfstring{$\sim$}{\string~}NetCdf}}
+\index{````~NetCdf@{\texorpdfstring{$\sim$}{\string~}NetCdf}!tsunami\_lab::io::NetCdf@{tsunami\_lab::io::NetCdf}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}NetCdf()}{\string~NetCdf()}}
+{\footnotesize\ttfamily io\+::\+Net\+Cdf\+::\texorpdfstring{$\sim$}{\string~}\+Net\+Cdf (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Destructor. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classtsunami__lab_1_1io_1_1NetCdf_a0d63c2e6c869d7f6afc25d2cd9561f26}\label{classtsunami__lab_1_1io_1_1NetCdf_a0d63c2e6c869d7f6afc25d2cd9561f26} 
+\index{tsunami\_lab::io::NetCdf@{tsunami\_lab::io::NetCdf}!read@{read}}
+\index{read@{read}!tsunami\_lab::io::NetCdf@{tsunami\_lab::io::NetCdf}}
+\doxysubsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily int io\+::\+Net\+Cdf\+::read (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{i\+\_\+file\+Path,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} \&}]{o\+\_\+cellX,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} \&}]{o\+\_\+cellY,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \&}]{o\+\_\+dxy,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \&}]{o\+\_\+left,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \&}]{o\+\_\+upper,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{o\+\_\+data,  }\item[{bool}]{print\+Err = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Reads data.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+file\+Path} & path to file. \\
+\hline
+{\em o\+\_\+cellX} & number of cells in x direction. \\
+\hline
+{\em o\+\_\+cellY} & number of cells in y direction. \\
+\hline
+{\em o\+\_\+dxy} & size of cell (calculated through the difference between the first and second element in the x variable of the nc file) \\
+\hline
+{\em o\+\_\+left} & x-\/coordinate of the left most cell in the nc file \\
+\hline
+{\em o\+\_\+upper} & y-\/coordinate of the upper most cell in the nc file \\
+\hline
+{\em o\+\_\+data} & data.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+success. 
+\end{DoxyReturn}
+\Hypertarget{classtsunami__lab_1_1io_1_1NetCdf_ae1bb2721e69411d624196ae514865b30}\label{classtsunami__lab_1_1io_1_1NetCdf_ae1bb2721e69411d624196ae514865b30} 
+\index{tsunami\_lab::io::NetCdf@{tsunami\_lab::io::NetCdf}!write@{write}}
+\index{write@{write}!tsunami\_lab::io::NetCdf@{tsunami\_lab::io::NetCdf}}
+\doxysubsubsection{\texorpdfstring{write()}{write()}}
+{\footnotesize\ttfamily void io\+::\+Net\+Cdf\+::write (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+nx,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+ny,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+time\+Index,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+sim\+Time,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+stride,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*}}]{i\+\_\+h,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*}}]{i\+\_\+hu,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*}}]{i\+\_\+hv,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*}}]{i\+\_\+bathymetry,  }\item[{bool}]{i\+\_\+write\+Checkpoint }\end{DoxyParamCaption})}
+
+Writes the data to a .nc file using the netcdf library.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+nx} & number of cells in x-\/direction. \\
+\hline
+{\em i\+\_\+ny} & number of cells in y-\/direction. \\
+\hline
+{\em i\+\_\+time\+Index} & current time step of simulation. \\
+\hline
+{\em i\+\_\+sim\+Time} & current time of simulation. \\
+\hline
+{\em i\+\_\+stride} & stride of the data arrays in y-\/direction (x is assumed to be stride-\/1). \\
+\hline
+{\em i\+\_\+h} & water height of the cells; optional\+: use nullptr if not required. \\
+\hline
+{\em i\+\_\+hu} & momentum in x-\/direction of the cells; optional\+: use nullptr if not required. \\
+\hline
+{\em i\+\_\+hv} & momentum in y-\/direction of the cells; optional\+: use nullptr if not required. \\
+\hline
+{\em i\+\_\+bathymetry} & bathymetry data of the cells; optional\+: use nullptr if not required. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/marvind/\+Desktop/\+Programs/tsunami\+\_\+lab/src/io/Net\+Cdf.\+h\item 
+/home/marvind/\+Desktop/\+Programs/tsunami\+\_\+lab/src/io/Net\+Cdf.\+cpp\end{DoxyCompactItemize}

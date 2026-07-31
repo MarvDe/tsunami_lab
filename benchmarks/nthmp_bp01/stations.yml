@@ -1,0 +1,13 @@
+stations:
+  # Official NTHMP BP01 time-series locations, shifted by shorelineX=50 m.
+  # Positive x/d is offshore/seaward in this setup.
+  - name: "nthmp_bp01_xd_0_25"
+    locX: 50.25
+    locY: 0.0
+  - name: "nthmp_bp01_xd_9_95"
+    locX: 59.95
+    locY: 0.0
+  # Extra dry-land probe for visualizing wetting/runup in the generated plots.
+  - name: "nthmp_bp01_runup_probe_xd_minus_0_50"
+    locX: 60
+    locY: 0.0

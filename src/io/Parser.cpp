@@ -9,6 +9,7 @@
 #include "../setups/SupercriticalFlow1d.h"
 #include "../setups/TsunamiEvent1d.h"
 #include "../setups/TsunamiEvent2d.h"
+#include "../setups/SolitaryWaveBeach1d.h"
 #include "../setups/SingleWaveCanonicalIsland.h"
 #include "../setups/SmallCity.h"
 
@@ -34,6 +35,7 @@ namespace {
         tsunami_lab::io::SetupDef l_supercritical = tsunami_lab::setups::SupercriticalFlow1d::getSetupDef();
         tsunami_lab::io::SetupDef l_tsunamiEvent1d = tsunami_lab::setups::TsunamiEvent1d::getSetupDef();
         tsunami_lab::io::SetupDef l_tsunamiEvent2d = tsunami_lab::setups::TsunamiEvent2d::getSetupDef();
+        tsunami_lab::io::SetupDef l_solitaryWaveBeach = tsunami_lab::setups::SolitaryWaveBeach1d::getSetupDef();
         tsunami_lab::io::SetupDef l_singleWaveCanonicalIsland = tsunami_lab::setups::SingleWaveCanonicalIsland::getSetupDef();
         tsunami_lab::io::SetupDef l_smallCity = tsunami_lab::setups::SmallCity::getSetupDef();
 
@@ -51,7 +53,8 @@ namespace {
             {l_tsunamiEvent1d.name, l_tsunamiEvent1d},
             {l_tsunamiEvent2d.name, l_tsunamiEvent2d},
             {l_singleWaveCanonicalIsland.name, l_singleWaveCanonicalIsland},
-            {l_smallCity.name, l_smallCity}
+            {l_smallCity.name, l_smallCity},
+            {l_solitaryWaveBeach.name, l_solitaryWaveBeach}
         };
     }
 }
@@ -65,17 +68,6 @@ const std::unordered_map<std::string, bool> tsunami_lab::io::Parser::knownFlags 
     {"args", true},
     {"printSolvers", false},
     {"printFormats", false},
-    {"solver", true},
-    {"format", true},
-    {"cellx", true},
-    {"celly", true},
-    {"endtime", true},
-    {"dxy", true},
-    {"left", true},
-    {"upper", true},
-    {"stations", true},
-    {"res", true},
-    {"setup", true}
 };
 
 tsunami_lab::io::Parser::Parser(int i_argc, char *i_argv[]){
@@ -184,6 +176,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
                                         tsunami_lab::t_idx &o_outputInterval,
                                         tsunami_lab::t_idx &o_compressionLevel,
                                         tsunami_lab::t_idx &o_checkpointInterval,
+                                        std::vector<tsunami_lab::t_real> &o_snapshots,
                                         tsunami_lab::io::SetupArgs &o_setupArgs
                                     ){
     YAML::Node l_file;
@@ -216,6 +209,7 @@ void tsunami_lab::io::Parser::parseFile(std::string &i_file,
         o_compressionLevel = output["compressionLevel"].as<tsunami_lab::t_idx>();
         o_stationsFilePath = output["stations"].as<std::string>();
         o_checkpointInterval = output["checkpointInterval"].as<tsunami_lab::t_idx>();
+        o_snapshots = output["snapshots"].as<std::vector<tsunami_lab::t_real>>();
         
         // printf("loaded file\n");
         

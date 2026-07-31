@@ -1,0 +1,272 @@
+\doxysection{tsunami\+\_\+lab\+::patches\+::Wave\+Propagation2d Class Reference}
+\hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d}{}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d}\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+
+
+Inheritance diagram for tsunami\+\_\+lab\+::patches\+::Wave\+Propagation2d\+:
+% FIG 0
+
+
+Collaboration diagram for tsunami\+\_\+lab\+::patches\+::Wave\+Propagation2d\+:
+% FIG 1
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a8cd252c7b2286a06ae709f32d9caae6e}{Wave\+Propagation2d}} (\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+x\+Cells, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+y\+Cells, tsunami\+\_\+lab\+::solvers\+::\+Ids i\+\_\+solver\+Id, bool i\+\_\+use\+Entropy\+Fix=true, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+manning\+Factor=0.\+02, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+ghost=0)
+\item 
+\mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a4b881588ee7509fbadf4970ad2fadfd2}{\texorpdfstring{$\sim$}{\string~}\+Wave\+Propagation2d}} ()
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a1608e328dc04c2147cfaebe86fd90315}{time\+Step}} (\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+scaling)
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a27728a7dd5b71b2bb8a44c1bfb87fc68}{set\+Ghost\+Outflow}} ()
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a13c33bd51ab333a4b84a1752d3e76524}{set\+Dt}} (\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+dt)
+\item 
+\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a7074c1930f4404318849a31cde2af10d}{get\+Stride}} ()
+\item 
+\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_aba9f51951b285fc77a6370c437635ef0}{get\+Height}} ()
+\item 
+\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a5e30cae45b016db1ff07b6698d70f22f}{get\+MomentumX}} ()
+\item 
+\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a9c1d3a4492ade69213eead68ea675cf1}{get\+MomentumY}} ()
+\item 
+\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_abecc72dc664195720514bb87e88f0138}{get\+Bathymetry}} ()
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a7af36f376a1d823f803465e93cf4664b}{set\+Height}} (\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+ix, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+iy, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+h)
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a813b7fd7e8fa628b3d24c067ffd4eb09}{set\+MomentumX}} (\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+ix, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+iy, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+hu)
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_a4379fe4285d593b77645b27fc32064dd}{set\+MomentumY}} (\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+ix, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+iy, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+hv)
+\item 
+void \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation2d_ae1ed818dd8b8f62387c007cc5bd864fb}{set\+Bathymetry}} (\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+ix, \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} i\+\_\+iy, \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} i\+\_\+height)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_a5f0a9d03b1ab9387cf90f172800aaa92}{\texorpdfstring{$\sim$}{\string~}\+Wave\+Propagation}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a8cd252c7b2286a06ae709f32d9caae6e}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a8cd252c7b2286a06ae709f32d9caae6e} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!WavePropagation2d@{WavePropagation2d}}
+\index{WavePropagation2d@{WavePropagation2d}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{WavePropagation2d()}{WavePropagation2d()}}
+{\footnotesize\ttfamily tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::\+Wave\+Propagation2d (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+x\+Cells,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+y\+Cells,  }\item[{tsunami\+\_\+lab\+::solvers\+::\+Ids}]{i\+\_\+solver\+Id,  }\item[{bool}]{i\+\_\+use\+Entropy\+Fix = {\ttfamily true},  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+manning\+Factor = {\ttfamily 0.02},  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{tsunami\+\_\+lab\+::t\+\_\+idx}}}]{i\+\_\+ghost = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+Constructs the 2d wave propagation solver.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+x\+Cells} & number of cells. \\
+\hline
+{\em i\+\_\+y\+Cells} & number of cells. \\
+\hline
+{\em i\+\_\+solver\+Id} & flag to choose solver. \\
+\hline
+{\em i\+\_\+ghost} & ghost cell updating condition (0 = outflow, 1 = reflecting) \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a4b881588ee7509fbadf4970ad2fadfd2}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a4b881588ee7509fbadf4970ad2fadfd2} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!````~WavePropagation2d@{\texorpdfstring{$\sim$}{\string~}WavePropagation2d}}
+\index{````~WavePropagation2d@{\texorpdfstring{$\sim$}{\string~}WavePropagation2d}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}WavePropagation2d()}{\string~WavePropagation2d()}}
+{\footnotesize\ttfamily tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::\texorpdfstring{$\sim$}{\string~}\+Wave\+Propagation2d (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Destructor which frees all allocated memory. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_abecc72dc664195720514bb87e88f0138}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_abecc72dc664195720514bb87e88f0138} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!getBathymetry@{getBathymetry}}
+\index{getBathymetry@{getBathymetry}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{getBathymetry()}{getBathymetry()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const  \texorpdfstring{$\ast$}{*} tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::get\+Bathymetry (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Gets the cells\textquotesingle{} bathymetry.
+
+\begin{DoxyReturn}{Returns}
+bathymetry 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_a670878aaf4ddebd1d4192a51f135df07}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_aba9f51951b285fc77a6370c437635ef0}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_aba9f51951b285fc77a6370c437635ef0} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!getHeight@{getHeight}}
+\index{getHeight@{getHeight}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{getHeight()}{getHeight()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const  \texorpdfstring{$\ast$}{*} tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::get\+Height (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Gets cells\textquotesingle{} water heights.
+
+\begin{DoxyReturn}{Returns}
+water heights. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_a05a01f836cba2182c00aeeb176569caf}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a5e30cae45b016db1ff07b6698d70f22f}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a5e30cae45b016db1ff07b6698d70f22f} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!getMomentumX@{getMomentumX}}
+\index{getMomentumX@{getMomentumX}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{getMomentumX()}{getMomentumX()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const  \texorpdfstring{$\ast$}{*} tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::get\+MomentumX (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Gets the cells\textquotesingle{} momenta in x-\/direction.
+
+\begin{DoxyReturn}{Returns}
+momenta in x-\/direction. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_a684918c61795726b873d50df69b28fdc}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a9c1d3a4492ade69213eead68ea675cf1}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a9c1d3a4492ade69213eead68ea675cf1} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!getMomentumY@{getMomentumY}}
+\index{getMomentumY@{getMomentumY}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{getMomentumY()}{getMomentumY()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}} const  \texorpdfstring{$\ast$}{*} tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::get\+MomentumY (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Dummy function which returns a nullptr. 
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_a3b2705760b36d5b0547e4be86df50c09}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a7074c1930f4404318849a31cde2af10d}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a7074c1930f4404318849a31cde2af10d} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!getStride@{getStride}}
+\index{getStride@{getStride}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{getStride()}{getStride()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}} tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::get\+Stride (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Gets the stride in y-\/direction. x-\/direction is stride-\/1.
+
+\begin{DoxyReturn}{Returns}
+stride in y-\/direction. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_ad87630b516ccda72b4a7bae3044e802a}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_ae1ed818dd8b8f62387c007cc5bd864fb}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_ae1ed818dd8b8f62387c007cc5bd864fb} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!setBathymetry@{setBathymetry}}
+\index{setBathymetry@{setBathymetry}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{setBathymetry()}{setBathymetry()}}
+{\footnotesize\ttfamily void tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::set\+Bathymetry (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+ix,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+iy,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+height }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+Sets the cells\textquotesingle{} bathymetry.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+ix} & id of the cell in x-\/direction. \\
+\hline
+{\em i\+\_\+iy} & id of the cell in y-\/direction. \\
+\hline
+{\em i\+\_\+height} & height of bathymetry \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_a0f1fae5b972f12a4aa1aabf7a56daab8}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a13c33bd51ab333a4b84a1752d3e76524}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a13c33bd51ab333a4b84a1752d3e76524} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!setDt@{setDt}}
+\index{setDt@{setDt}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{setDt()}{setDt()}}
+{\footnotesize\ttfamily void tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::set\+Dt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+dt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a27728a7dd5b71b2bb8a44c1bfb87fc68}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a27728a7dd5b71b2bb8a44c1bfb87fc68} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!setGhostOutflow@{setGhostOutflow}}
+\index{setGhostOutflow@{setGhostOutflow}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{setGhostOutflow()}{setGhostOutflow()}}
+{\footnotesize\ttfamily void tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::set\+Ghost\+Outflow (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+Sets the values of the ghost cells according to outflow boundary conditions. 
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_a02af1c6f56a9cc310efc8f997957faec}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a7af36f376a1d823f803465e93cf4664b}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a7af36f376a1d823f803465e93cf4664b} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!setHeight@{setHeight}}
+\index{setHeight@{setHeight}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{setHeight()}{setHeight()}}
+{\footnotesize\ttfamily void tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::set\+Height (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+ix,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+iy,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+h }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Sets the height of the cell to the given value.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+ix} & id of the cell in x-\/direction. \\
+\hline
+{\em i\+\_\+h} & water height. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_a46c844b7970b7cb96a62d13bc9f470f6}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a813b7fd7e8fa628b3d24c067ffd4eb09}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a813b7fd7e8fa628b3d24c067ffd4eb09} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!setMomentumX@{setMomentumX}}
+\index{setMomentumX@{setMomentumX}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{setMomentumX()}{setMomentumX()}}
+{\footnotesize\ttfamily void tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::set\+MomentumX (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+ix,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+iy,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+hu }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Sets the momentum in x-\/direction to the given value.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+ix} & id of the cell in x-\/direction. \\
+\hline
+{\em i\+\_\+iy} & id of the cell in y-\/direction. \\
+\hline
+{\em i\+\_\+hu} & momentum in x-\/direction. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_aed5a498ff7ca0dbefae90f21244e2671}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a4379fe4285d593b77645b27fc32064dd}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a4379fe4285d593b77645b27fc32064dd} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!setMomentumY@{setMomentumY}}
+\index{setMomentumY@{setMomentumY}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{setMomentumY()}{setMomentumY()}}
+{\footnotesize\ttfamily void tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::set\+MomentumY (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+ix,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\+\_\+idx}}}]{i\+\_\+iy,  }\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+hv }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+Sets the momentum in y-\/direction to the given value.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+ix} & id of the cell in x-\/direction. \\
+\hline
+{\em i\+\_\+iy} & id of the cell in x-\/direction. \\
+\hline
+{\em i\+\_\+hv} & momentum in y-\/direction. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_aa17fc8f451e46cf248b4cffd1604ef43}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+\Hypertarget{classtsunami__lab_1_1patches_1_1WavePropagation2d_a1608e328dc04c2147cfaebe86fd90315}\label{classtsunami__lab_1_1patches_1_1WavePropagation2d_a1608e328dc04c2147cfaebe86fd90315} 
+\index{tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}!timeStep@{timeStep}}
+\index{timeStep@{timeStep}!tsunami\_lab::patches::WavePropagation2d@{tsunami\_lab::patches::WavePropagation2d}}
+\doxysubsubsection{\texorpdfstring{timeStep()}{timeStep()}}
+{\footnotesize\ttfamily void tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation2d\+::time\+Step (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\+\_\+real}}}]{i\+\_\+scaling }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+Performs a time step.
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\+\_\+scaling} & scaling of the time step (dt / dx). \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classtsunami__lab_1_1patches_1_1WavePropagation_a3d8390f139fc8cede21eb4f534a4e7fc}{tsunami\+\_\+lab\+::patches\+::\+Wave\+Propagation}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/marvind/\+Desktop/\+Programs/tsunami\+\_\+lab/src/patches/Wave\+Propagation2d.\+h\item 
+/home/marvind/\+Desktop/\+Programs/tsunami\+\_\+lab/src/patches/Wave\+Propagation2d.\+cpp\end{DoxyCompactItemize}

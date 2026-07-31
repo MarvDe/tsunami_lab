@@ -41,6 +41,8 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
 
     t_real m_dt = 0.1;
 
+    t_real m_manningFactor = 0;
+
     bool m_useEntropyFix;
 
     void HydrostaticReconstruction(    
@@ -57,7 +59,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * @param i_nCells number of cells.
      * @param i_solver_id flag to choose solver.
      **/
-    WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix );
+    WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, bool i_useEntropyFix, t_real i_manningFactor = 0 );
 
     /**
      * Constructs the 1d wave propagation solver.
@@ -67,7 +69,7 @@ class tsunami_lab::patches::WavePropagation1d: public WavePropagation {
      * @param i_ghostL type of boundary for left ghost cell.
      * @param i_ghostR type of boundary for right ghost cell.
      **/
-    WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, t_idx i_ghostL, t_idx i_ghostR, bool i_useEntropyFix );
+    WavePropagation1d( t_idx i_nCells, tsunami_lab::solvers::Ids i_solverId, t_idx i_ghostL, t_idx i_ghostR, bool i_useEntropyFix, t_real i_manningFactor = 0 );
 
     /**
      * Destructor which frees all allocated memory.

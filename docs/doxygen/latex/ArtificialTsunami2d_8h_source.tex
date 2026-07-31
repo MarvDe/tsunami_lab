@@ -1,0 +1,57 @@
+\doxysection{Artificial\+Tsunami2d.\+h}
+\hypertarget{ArtificialTsunami2d_8h_source}{}\label{ArtificialTsunami2d_8h_source}\index{/home/marvind/Desktop/Programs/tsunami\_lab/src/setups/ArtificialTsunami2d.h@{/home/marvind/Desktop/Programs/tsunami\_lab/src/setups/ArtificialTsunami2d.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ TSUNAMI\_LAB\_SETUPS\_ARTIFICIAL\_TSUNAMI\_2D\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ TSUNAMI\_LAB\_SETUPS\_ARTIFICIAL\_TSUNAMI\_2D\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Setup.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacetsunami__lab}{tsunami\_lab}}\{}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keyword}{namespace\ }setups\{}
+\DoxyCodeLine{00008\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }ArtificialTsunami2d;}
+\DoxyCodeLine{00009\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ PI\ =\ 3.14159265358979323846;}
+\DoxyCodeLine{00010\ \ \ \ \ \}}
+\DoxyCodeLine{00011\ \}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtsunami__lab_1_1setups_1_1ArtificialTsunami2d}{tsunami\_lab::setups::ArtificialTsunami2d}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1Setup}{Setup}}\ \{}
+\DoxyCodeLine{00018\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00021\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\_idx}}\ m\_cellsX\ =\ 1000;}
+\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\_idx}}\ m\_cellsY\ =\ 1000;}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00025\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_afd26f38678e954f652489c828656cbca}{t\_idx}}\ m\_stride\ =\ 0;}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00033\ \ \ \ \ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_a4afa49f46c3ec2a5555eff11b281681a}{ArtificialTsunami2d}}()\{}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ m\_stride\ =\ m\_cellsX;}
+\DoxyCodeLine{00035\ \ \ \ \ \}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1ArtificialTsunami2d}{\string~ArtificialTsunami2d}}()\{\}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{structtsunami__lab_1_1io_1_1SetupDef}{tsunami\_lab::io::SetupDef}}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_a66fc906e9c81b38068956cdd8f81655e}{getSetupDef}}();}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00051\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_a4e17aa099a612fd51f2b35c4d085589c}{getHeight}}(\ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_x,}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_y)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00059\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_adc0d0c5338724c2118ad586b9fbf62ba}{getMomentumX}}(\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}},}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}})\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00062\ \ \ \ \ \}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00069\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_a56f954b1c89fe6a7d5e0a670c470909d}{getMomentumY}}(\mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}},}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}})\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00072\ \ \ \ \ \}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00081\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_ab41ede5a67d06ee485496a996b13fcc8}{getBathymetry}}(\ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_x,}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_y)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00083\ \ \ \ \ }
+\DoxyCodeLine{00091\ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ \mbox{\hyperlink{classtsunami__lab_1_1setups_1_1ArtificialTsunami2d_ace9ba40c26a93adae023c5798a5714b4}{getDisplacement}}(\ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_x,}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{namespacetsunami__lab_a2db0f215df0d48460ce6a8c1e7bfe5a9}{t\_real}}\ i\_y)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00093\ \};}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

@@ -1,0 +1,28 @@
+args:
+  solverName: hybrid
+  setupName: artificialTsunami
+  cellSize: 250
+  cellx: 100
+  celly: 100
+  endTime: 0
+  timeSteps: 5
+
+setup:
+
+
+tweaks:
+  useEntropyFix: true
+  manningFactor: 0.02
+
+output:
+  formatName: NONE
+  outputInterval: 1
+  outputResolution: 1
+  compressionLevel: 0
+  checkpointInterval: 100
+  snapshots: []
+  stations: ""
+
+omp:
+  omp_num_threads: 1
+  omp_schedule: static,8
